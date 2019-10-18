@@ -1,2 +1,5 @@
 sql_login
 sql_update
+venv
+__pycache__
+*.pyc
