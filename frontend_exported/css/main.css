@@ -490,4 +490,12 @@ div.responsive-picture.picture-1 {
   .subgrid > .row.subgrid-row-1 {
     padding-bottom: 4rem;
   }
+
+  input[type=file].file-1 {
+    color: #fff;
+  }
+
+  .container-fluid.container-2 {
+    background-color: #fff;
+  }
 }
