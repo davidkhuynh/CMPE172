@@ -62,11 +62,11 @@ CREATE TABLE IF NOT EXISTS PostTags (
     PRIMARY KEY (postId, tag)
 );
 
-CREATE TABLE IF NOT EXISTS Friends (
-    user1 VARCHAR(64) NOT NULL,
-    user2 VARCHAR(64) NOT NULL,
+CREATE TABLE IF NOT EXISTS Follows (
+    follower VARCHAR(64) NOT NULL,
+    following VARCHAR(64) NOT NULL,
 
-    PRIMARY KEY (user1, user2)
+    PRIMARY KEY (follower, following)
 );
 
 CREATE TABLE IF NOT EXISTS Blocks (
@@ -74,12 +74,5 @@ CREATE TABLE IF NOT EXISTS Blocks (
     blocked VARCHAR(64) NOT NULL,
 
     PRIMARY KEY (blocker, blocked)
-);
-
-CREATE TABLE IF NOT EXISTS FriendRequests (
-    requester VARCHAR(64) NOT NULL,
-    receiver VARCHAR(64) NOT NULL,
-
-    PRIMARY KEY (requester, receiver)
 );
 
