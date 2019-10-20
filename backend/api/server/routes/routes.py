@@ -85,10 +85,36 @@ def search(query: str, page: int=1):
 def user(username: str):
     """
         1. list user data
-        2. list n of user's posts
     """
     user = users.get_user(username)
     return success(user) if user else failure("user %s does not exist" % username)
+
+
+@app.route("/user_posts/<username>", methods=["GET","POST"])
+def user_posts(username, sortby, page: int=1):
+    """
+        1. list n of user's posts
+        supply post range and sort mode in request body
+        sort by:
+            mostRecent
+            leastRecent
+            (todo: most popular etc)
+    """
+    request_data = request.get_json()
+    sort_by = request_data.get("sort_by")
+    if not sort_by:
+        sort_by = "mostRecent"
+    # get from first_post to last_post
+    first_post = request_data.get("first_post") 
+    if not first_post:
+        first_post = 0
+    last_post = request_data.get("last_post") 
+    if not last_post:
+        last_post = 10
+
+    queried_posts = posts.user_posts(username, sort_by, first_post, last_post)
+
+    return queried_posts
 
 @app.route("/following/<username>", methods=["GET","POST"])
 @app.route("/following/<username>/<int:page>", methods=["GET","POST"])
