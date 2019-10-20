@@ -1,31 +1,69 @@
 from server import app
-from server.db import users
+from server.s3 import upload_picture
+from server.db import users, posts
 
-from flask import request
+from flask import request, abort
 
-@app.route("/make_post", methods=["GET","POST"])
-def make_post():
+### utils
+def update_picture(picture_file, post_id):
+    s3.upload_picture(picture_file, post_id=id)
+    posts.update_picture(post["id"])
+
+def success(return_object, code=200):
+    return return_object, code
+
+def failure(message, code=400):
+    return {"error": message}, code
+
+### routes
+@app.route("/create_post", methods=["GET","POST"])
+def create_post():
     """
         1. add new post to request.database
         2. upload image to s3
     """
-    return "make post\n request.data: %s" % (request.data)
+
+    request_data = request.get_json()
+    post = posts.create_post(request_data)
+
+    if "picture_file" in request.files:
+        picture_file = request.files["picture_file"]
+        if not update_picture(picture_file, post["id"]):
+            return failure("file is not an image or is too big")
+
+    return success(post)
 
 @app.route("/edit_post/<id>", methods=["GET","POST"])
 def edit_post(id: str):
     """
         1. check if user owns post
         2. get post 
-        3. update request.data in post (see make_post)
+        3. update request.data in post (see create_post)
     """
-    return "edit post %s\n request.data: %s" % (id, request.data)
+    # check if user owns post
+    request_data = request.get_json()
+    post = posts.get_post(id)
+    if not post or request_data["username"] != post["username"]:
+        return 
+
+    # if picture is updated, update picture
+    if "picture_file" in request.files:
+        picture_file = request.files["picture_file"]
+        if not update_picture(picture_file, id):
+            return failure("file is not an image or is too big")
+
+    # update db
+    post = posts.edit_post(id, request_data)
+
+    return success(post)
 
 @app.route("/post/<id>", methods=["GET","POST"])
 def post(id: str):
     """
         1. get post from db and format to json to return
     """
-    return "get post %s\n request.data: %s" % (id, request.data)
+    post = posts.get_post(id)
+    return success(post) if post else failure("post id %s does not exist" % id)
 
 @app.route("/feed", methods=["GET","POST"])
 @app.route("/feed/<int:page>", methods=["GET","POST"])
@@ -44,16 +82,13 @@ def search(query: str, page: int=1):
     return "search %s page %i" %(query, page)
 
 @app.route("/user/<username>", methods=["GET","POST"])
-@app.route("/user/<username>/<int:page>", methods=["GET","POST"])
-def user(username: str, page: int=1):
+def user(username: str):
     """
         1. list user data
         2. list n of user's posts
     """
-    user = users.get_user("db_test")
-    if not user:
-        return "%s user does not exist" % (username)
-    return "user page for username: %s, bday: %s, page: %i" % (user["username"], user["birthday"], page)
+    user = users.get_user(username)
+    return success(user) if user else failure("user %s does not exist" % username)
 
 @app.route("/following/<username>", methods=["GET","POST"])
 @app.route("/following/<username>/<int:page>", methods=["GET","POST"])
