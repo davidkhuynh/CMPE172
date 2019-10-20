@@ -1,5 +1,7 @@
 from typing import List
 from server.db import rds
+from server.utils import QueryConstraints
+
 
 def post_from_row(row):
     return {
@@ -34,14 +36,15 @@ ORDERS = {
     "leastRecent" : "ASC"
 }
 
-def user_posts(username: str, sort_by: str, first_post: int, last_post: int):
+
+def user_posts(constraints: QueryConstraints, username: str):
     posts = []
-    total_posts = last_post - first_post
-    order = ORDERS[sort_by]
+    total_items = constraints.last - constraints.first
+    order = ORDERS[constraints.sort_by]
 
     conn = rds.connect()
     with conn.cursor() as cur:
-        cur.execute(f"SELECT * FROM Posts WHERE username=%s ORDER BY {order} LIMIT {total_posts}, {first_post};", (username))
+        cur.execute(f"SELECT * FROM Posts WHERE username=%s ORDER BY {order} LIMIT {total_items}, {constraints.first};", (username))
         query_result = cur.fetchall()
         for row in query_result:
             posts.append(post_from_row(row))

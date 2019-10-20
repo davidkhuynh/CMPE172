@@ -1,21 +1,10 @@
 from server import app
 from server.s3 import upload_picture
 from server.db import users, posts
+from server.import *
 
 from flask import request, abort
 
-### utils
-def update_picture(picture_file, post_id):
-    s3.upload_picture(picture_file, post_id=id)
-    posts.update_picture(post["id"])
-
-def success(return_object, code=200):
-    return return_object, code
-
-def failure(message, code=400):
-    return {"error": message}, code
-
-### routes
 @app.route("/create_post", methods=["GET","POST"])
 def create_post():
     """
@@ -32,6 +21,15 @@ def create_post():
             return failure("file is not an image or is too big")
 
     return success(post)
+
+@app.route("/post/<id>", methods=["GET","POST"])
+def post(id: str):
+    """
+        1. get post from db and format to json to return
+    """
+    post = posts.get_post(id)
+    return success(post) if post else failure("post id %s does not exist" % id)
+
 
 @app.route("/edit_post/<id>", methods=["GET","POST"])
 def edit_post(id: str):
@@ -57,29 +55,31 @@ def edit_post(id: str):
 
     return success(post)
 
-@app.route("/post/<id>", methods=["GET","POST"])
-def post(id: str):
-    """
-        1. get post from db and format to json to return
-    """
-    post = posts.get_post(id)
-    return success(post) if post else failure("post id %s does not exist" % id)
 
 @app.route("/feed", methods=["GET","POST"])
-@app.route("/feed/<int:page>", methods=["GET","POST"])
-def feed(page: int=1):
+def feed():
     """
         1. list n most recent posts from people user follows
     """
-    return "feed page %i\n request.data: %s" % (page, request.data) 
+    request_data = request.get_json()
+    queried_posts = grab_range_from_db(request_data, posts.feed_posts, username=username)
+
+    return queried_posts
 
 @app.route("/search/<query>", methods=["GET","POST"])
-@app.route("/search/<query>/<int:page>", methods=["GET","POST"])
-def search(query: str, page: int=1):
+def search(query: str):
     """
         1. search users and posts by tag and text        
     """
-    return "search %s page %i" %(query, page)
+    request_data = request.get_json()
+    queried_posts = grab_range_from_db(request_data, posts.search_posts, search_string=query)
+    queried_users = grab_range_from_db(request_data, users.search_users, username=query)
+    response_data = {
+            "queriedPosts" : queried_posts,
+            "queriedUsers" : queried_users
+    }
+    
+    return success(response_data)
 
 @app.route("/user/<username>", methods=["GET","POST"])
 def user(username: str):
@@ -91,43 +91,40 @@ def user(username: str):
 
 
 @app.route("/user_posts/<username>", methods=["GET","POST"])
-def user_posts(username, sortby, page: int=1):
+def user_posts(username: str):
     """
         1. list n of user's posts
-        supply post range and sort mode in request body
-        sort by:
-            mostRecent
-            leastRecent
-            (todo: most popular etc)
     """
     request_data = request.get_json()
-    sort_by = request_data.get("sort_by")
-    if not sort_by:
-        sort_by = "mostRecent"
-    # get from first_post to last_post
-    first_post = request_data.get("first_post") 
-    if not first_post:
-        first_post = 0
-    last_post = request_data.get("last_post") 
-    if not last_post:
-        last_post = 10
+    queried_posts = grab_range_from_db(request_data, posts.user_posts, username=username)
 
-    queried_posts = posts.user_posts(username, sort_by, first_post, last_post)
+    return success(queried_posts)
 
-    return queried_posts
+@app.route("/edit_user/<username>"), methods=["GET", "POST"])
+def edit_user(username: str):
+    request_data = request.get_json()
+    if request_data["current_user"] != username:
+        failure("you can only edit your own profile!")
+
+    # TODO code for editing user profile data
+    return success("edit user")
 
 @app.route("/following/<username>", methods=["GET","POST"])
-@app.route("/following/<username>/<int:page>", methods=["GET","POST"])
-def following(username: str, page: int=1):
+def following(username: str):
     """
         1. list n of user's follows
     """
-    return "user follows for username: %s, page: %i" (username, page)
+    request_data = request.get_json()
+    queried_followings = grab_range_from_db(request_data, users.following, username=usernam)
+
+    return success(queried_followings)
 
 @app.route("/followers/<username>", methods=["GET","POST"])
-@app.route("/followers/<username>/<int:page>", methods=["GET","POST"])
-def followers(username: str, page: int=1):
+def followers(username: str):
     """
         1. list n of user's followers
     """
-    return "followers for username: %s, page: %i" (username, page)
+    request_data = request.get_json()
+    queried_followers = grab_range_from_db(request_data, users.followers, username=usernam)
+
+    return success(queried_followers)
