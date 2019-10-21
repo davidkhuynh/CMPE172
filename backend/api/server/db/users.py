@@ -18,7 +18,7 @@ def create_user(user_data: User):
         cur.execute(
             "INSERT INTO Users "
             "(username, birthday, firstName, lastName, bio) "
-            "VALUES (%s, '%s', %s, %s, %s);",
+            "VALUES (%s, %s, %s, %s, %s);",
             (user_data.username,
              user_data.birthday,
              user_data.first_name,
