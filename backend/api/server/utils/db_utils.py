@@ -5,7 +5,7 @@ from dataclasses import dataclass
 class QueryConstraints(object):
     sort_by: str = "mostRecent"
     first: int = 0
-    last: int = 10
+    total: int = 10
 
 
 def grab_range_from_db(request_data, query_func, **kwargs):
@@ -15,6 +15,7 @@ def grab_range_from_db(request_data, query_func, **kwargs):
 
 
 SORT_ORDERS = {
+    "": "DESC",
     "mostRecent": "DESC",
     "leastRecent": "ASC"
 }
@@ -26,15 +27,13 @@ def __parse_query_constraints(request_data):
         get the query constraints (sort by, first/last item number) from request data
     """
 
-    sort_by = request_data.get("sort_by")
-    if not sort_by:
-        sort_by = "mostRecent"
+    sort_by = SORT_ORDERS[request_data.get("sort_by", default="")]
     # get from first_post to last_post
     first = request_data.get("first")
     if not first:
         first = 0
-    last = request_data.get("last")
-    if not last:
-        last = 10
+    total = request_data.get("total")
+    if not total:
+        total = 10
 
-    return QueryConstraints(sort_by, first, last)
+    return QueryConstraints(sort_by, first, total)

@@ -1,8 +1,81 @@
 from server.db import rds
-from server.utils.db_utils import QueryConstraints, SORT_ORDERS
+from server.utils.db_utils import QueryConstraints
 
 
-def post_from_row(row):
+def get_post(post_id: str):
+    conn = rds.connect()
+    with conn.cursor() as cur:
+        cur.execute("SELECT * FROM Posts WHERE id=%s;", (post_id,))
+        row = cur.fetchone()
+
+    return __post_from_row(row)
+
+
+def edit_post(post_id: str, picture, text):
+    conn = rds.connect()
+    with conn.cursor() as cur:
+        cur.execute("UPDATE Posts SET text=%s WHERE id=%s;", (post_id, picture, text))
+
+    return get_post(post_id)
+
+
+def user_posts(constraints: QueryConstraints, username: str):
+    conn = rds.connect()
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT * FROM Posts WHERE username=%s ORDER BY {constraints.sort_by} LIMIT {constraints.total}, {constraints.first};",
+                    (username,))
+        posts = __posts_from_rows(cur)
+
+    return posts
+
+
+def create_post(username: str, picture: str, text: str):
+    conn = rds.connect()
+
+    # add post to db
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO Posts (username, picture, text) VALUES (%s, %s, %s)", (username, picture, text))
+    conn.commit()
+
+    # created post is the latest post
+    return __get_latest_post_from_user(conn, username)
+
+
+def search_posts(constraints: QueryConstraints, search_string: str):
+    conn = rds.connect()
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT * FROM Posts WHERE text LIKE '%%s%' ORDER_BY {constraints.sort_by} LIMIT {constraints.total}, {constraints.first};", (search_string,))
+        posts = __posts_from_rows(cur)
+
+    return posts
+
+
+def feed_posts(constraints: QueryConstraints, username: str):
+    posts = []
+    conn = rds.connect()
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT * FROM Posts WHERE username IN (SELECT following FROM Follows WHERE follower=%s) ORDER BY DESC LIMIT {constraints.total}, {constraints.first}")
+        posts = __posts_from_rows(cur)
+
+    return posts
+
+
+def delete_post(post_id: str):
+    conn = rds.connect()
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM Posts WHERE id=%s", (post_id,))
+
+
+## private
+def __get_latest_post_from_user(conn, username: str):
+    with conn.cursor() as cur:
+        cur.execute("SELECT * FROM Posts WHERE username=%s ORDER BY editedOn LIMIT 1", (username))
+        row = cur.fetchone()
+
+    return __post_from_row(row)
+
+
+def __post_from_row(row):
     return {
         "id": row[0],
         "username": row[1],
@@ -13,48 +86,10 @@ def post_from_row(row):
     } if row else {}
 
 
-def get_post(post_id: str):
-    conn = rds.connect()
-    with conn.cursor() as cur:
-        cur.execute("SELECT * FROM Posts WHERE id=%s;", (post_id))
-        row = cur.fetchone()
-
-    return post_from_row(row)
-
-
-def edit_post(post_id: str, request_data):
-    picture = request_data["picture"]  # in case new picture is a different format
-    text = request_data["text"]
-    conn = rds.connect()
-    with conn.cursor() as cur:
-        cur.execute("UPDATE Posts SET text=%s WHERE id=%s;", (post_id, picture, text))
-
-    return get_post(post_id)
-
-
-def user_posts(constraints: QueryConstraints, username: str):
+def __posts_from_rows(cur):
     posts = []
-    total_items = constraints.last - constraints.first
-    order = SORT_ORDERS[constraints.sort_by]
-
-    conn = rds.connect()
-    with conn.cursor() as cur:
-        cur.execute(f"SELECT * FROM Posts WHERE username=%s ORDER BY {order} LIMIT {total_items}, {constraints.first};",
-                    (username))
-        query_result = cur.fetchall()
-        for row in query_result:
-            posts.append(post_from_row(row))
-
+    query_result = cur.fetchall()
+    for row in query_result:
+        posts.append(__post_from_row(row))
     return posts
 
-
-def create_post(request_data):
-    return None
-
-
-def search_posts():
-    return None
-
-
-def feed_posts():
-    return None

@@ -14,12 +14,17 @@ def create_post():
     """
 
     request_data = request.get_json()
-    new_post = posts.create_post(request_data)
+
+    # update db with new post
+    picture_filename = request.files["picture_file"].filename if "picture_file" in request.files else ""
+    new_post = posts.create_post(request_data["current_user"], picture_filename, request_data["text"])
     if not new_post:
         failure("post creation failure (potentially db error)")
 
+    # upload picture
     if "picture_file" in request.files \
             and not pic_utils.upload_post_picture(request.files["picture_file"], new_post["id"]):
+        posts.delete_post(new_post["id"])
         return failure("failed to upload post picture")
 
     return success(new_post)
@@ -49,12 +54,13 @@ def edit_post(post_id: str):
         return failure(f"{current_user} does not own this post")
 
     # if picture is updated, update picture
+    picture_filename = request.files["picture_file"].filename if "picture_file" in request.files else ""
     if "picture_file" in request.files \
             and not pic_utils.upload_post_picture(request.files["picture_file"], queried_post["id"]):
         return failure("failed to upload post picture")
 
     # update db
-    edited_post = posts.edit_post(post_id, request_data)
+    edited_post = posts.edit_post(post_id, picture_filename, request_data["text"])
 
     return success(edited_post)
 
