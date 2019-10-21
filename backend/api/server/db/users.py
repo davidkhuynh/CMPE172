@@ -65,8 +65,8 @@ def following(constraints: QueryConstraints, username: str):
     with conn.cursor() as cur:
         cur.execute(f"SELECT following FROM Follows "
                     f"WHERE follower=%s "
-                    f"ORDER BY {constraints.sort_by} "
-                    f"LIMIT {constraints.total}, {constraints.first};",
+                    f"LIMIT {constraints.total} "
+                    f"OFFSET {constraints.first};",
                     (username,))
         followed_by = flatten(cur.fetchall())
 
@@ -78,8 +78,8 @@ def followers(constraints: QueryConstraints, username: str):
     with conn.cursor() as cur:
         cur.execute(f"SELECT * FROM Follows "
                     f"WHERE following=%s "
-                    f"ORDER BY {constraints.sort_by} "
-                    f"LIMIT {constraints.total}, {constraints.first};",
+                    f"LIMIT {constraints.total} "
+                    f"OFFSET {constraints.first};",
                     (username,))
         followers = flatten(cur.fetchall())
 
@@ -91,8 +91,9 @@ def search_users(constraints: QueryConstraints, search_string: str):
     with conn.cursor() as cur:
         cur.execute(f"SELECT * FROM Users"
                     f" WHERE username LIKE '%%s%' "
-                    f"ORDER_BY {constraints.sort_by} "
-                    f"LIMIT {constraints.total}, {constraints.first};",
+                    f"ORDER BY username {constraints.sort_by} "
+                    f"LIMIT {constraints.total} "
+                    f"OFFSET {constraints.first};",
                     (search_string,))
 
         users = __users_from_rows(cur)

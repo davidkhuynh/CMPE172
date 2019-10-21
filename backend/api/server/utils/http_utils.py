@@ -1,5 +1,7 @@
+from flask import jsonify
+
 def success(return_object, code=200):
-    return return_object, code
+    return jsonify(return_object), code
 
 
 def failure(message, code=400):

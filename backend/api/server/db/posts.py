@@ -25,8 +25,9 @@ def user_posts(constraints: QueryConstraints, username: str):
     with conn.cursor() as cur:
         cur.execute(f"SELECT * FROM Posts "
                     f"WHERE username=%s "
-                    f"ORDER BY {constraints.sort_by} "
-                    f"LIMIT {constraints.total}, {constraints.first};",
+                    f"ORDER BY postedOn {constraints.sort_by} "
+                    f"LIMIT {constraints.total} "
+                    f"OFFSET {constraints.first};",
                     (username,))
         posts = __posts_from_rows(cur)
 
@@ -53,8 +54,9 @@ def search_posts(constraints: QueryConstraints, search_string: str):
     with conn.cursor() as cur:
         cur.execute(f"SELECT * FROM Posts"
                     f" WHERE text LIKE '%%s%' "
-                    f"ORDER_BY {constraints.sort_by} "
-                    f"LIMIT {constraints.total}, {constraints.first};",
+                    f"ORDER BY postedOn {constraints.sort_by} "
+                    f"LIMIT {constraints.total} "
+                    f"OFFSET {constraints.first};",
                     (search_string,))
 
         posts = __posts_from_rows(cur)
@@ -69,8 +71,9 @@ def feed_posts(constraints: QueryConstraints, username: str):
         cur.execute(f"SELECT * FROM Posts "
                     f"WHERE username IN "
                         f"(SELECT following FROM Follows WHERE follower=%s) "
-                    f"ORDER BY DESC "
-                    f"LIMIT {constraints.total}, {constraints.first};",
+                    f"ORDER BY postedOn DESC "
+                    f"LIMIT {constraints.total} "
+                    f"OFFSET {constraints.first};",
                     (username,))
 
         posts = __posts_from_rows(cur)

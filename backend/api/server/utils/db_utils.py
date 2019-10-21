@@ -5,7 +5,7 @@ from datetime import date
 
 @dataclass
 class QueryConstraints(object):
-    sort_by: str = "mostRecent"
+    sort_by: str = "DESC"
     first: int = 0
     total: int = 10
 
@@ -37,6 +37,8 @@ def __parse_query_constraints(request_data):
     """
         get the query constraints (sort by, first/last item number) from request data
     """
+    if not request_data:
+        return QueryConstraints()
 
     sort_by = SORT_ORDERS[request_data.get("sort_by", default="")]
     # get from first_post to last_post
