@@ -9,6 +9,13 @@ from server.utils.http_utils import success, failure
 @app.route("/create_post", methods=["GET", "POST"])
 def create_post():
     """
+        request body:
+            currentUser, text
+
+        files:
+            pictureFile
+
+
         1. add new post to request.database
         2. upload image to s3
     """
@@ -17,7 +24,7 @@ def create_post():
 
     # update db with new post
     picture_filename = request.files["pictureFile"].filename if "pictureFile" in request.files else ""
-    new_post = posts.create_post(request_data["current_user"], picture_filename, request_data["text"])
+    new_post = posts.create_post(request_data["currentUser"], picture_filename, request_data["text"])
     if not new_post:
         failure("post creation failure (potentially db error)")
 
@@ -42,13 +49,19 @@ def post(post_id: str):
 @app.route("/edit_post/<post_id>", methods=["GET", "POST"])
 def edit_post(post_id: str):
     """
+        request body:
+            currentUser
+
+        files:
+            pictureFile
+
         1. check if user owns post
         2. get post 
         3. update request.data in post (see create_post)
     """
     # check if user owns post
     request_data = request.get_json()
-    current_user = request_data["current_user"]
+    current_user = request_data["currentUser"]
     queried_post = posts.get_post(post_id)
     if not queried_post or current_user != queried_post["username"]:
         return failure(f"{current_user} does not own this post")
@@ -68,10 +81,13 @@ def edit_post(post_id: str):
 @app.route("/feed", methods=["GET", "POST"])
 def feed():
     """
+        request body:
+            currentUser
+
         1. list n most recent posts from people user follows
     """
     request_data = request.get_json()
-    queried_posts = db_utils.grab_range_from_db(request_data, posts.feed_posts, username=request_data["current_user"])
+    queried_posts = db_utils.grab_range_from_db(request_data, posts.feed_posts, username=request_data["currentUser"])
 
     return success(queried_posts)
 
@@ -79,6 +95,9 @@ def feed():
 @app.route("/search/<query>", methods=["GET", "POST"])
 def search(query: str):
     """
+        request body:
+            <none>
+
         1. search users and posts by tag and text        
     """
     request_data = request.get_json()
@@ -96,6 +115,9 @@ def search(query: str):
 @app.route("/user/<username>", methods=["GET", "POST"])
 def user(username: str):
     """
+        request body:
+            <none>
+
         1. list user data
     """
 
@@ -106,6 +128,9 @@ def user(username: str):
 @app.route("/user_posts/<username>", methods=["GET", "POST"])
 def user_posts(username: str):
     """
+        request body:
+            <none>
+
         1. list n of user's posts
     """
     request_data = request.get_json()
@@ -116,6 +141,14 @@ def user_posts(username: str):
 
 @app.route("/create_user", methods=["GET", "POST"])
 def create_user():
+    """
+        request body:
+            username, birthday, firstName, lastName, bio
+
+        files:
+            profilePicture
+
+    """
     request_data = request.get_json()
     if "username" not in request_data or "birthday" not in request_data:
         return failure("username and birthday required to create a new user")
@@ -137,18 +170,20 @@ def create_user():
 
     return success(new_user)
 
-@app.route("/follow/<user_to_follow>", methods=["GET", "POST"])
-def follow(user_to_follow: str):
-    request_data = request.json()
-    current_user = request_data["current_user"]
-    return success(users.follow(current_user, user_to_follow))
-
 @app.route("/edit_user/<username>", methods=["GET", "POST"])
 def edit_user(username: str):
+    """
+        request body:
+            currentUser, firstName, lastName, bio
+
+        files:
+            profilePicture
+
+    """
     request_data = request.get_json()
 
     # verify that the current user matches username before editing user data
-    current_user = request_data["current_user"]
+    current_user = request_data["currentUser"]
     if current_user != username:
         failure("you can only edit your own profile!")
 
@@ -169,9 +204,23 @@ def edit_user(username: str):
     return success(edited_user)
 
 
+@app.route("/follow/<user_to_follow>", methods=["GET", "POST"])
+def follow(user_to_follow: str):
+    """
+        request body:
+            currentUser
+    """
+    request_data = request.json()
+    current_user = request_data["currentUser"]
+    return success(users.follow(current_user, user_to_follow))
+
+
 @app.route("/following/<username>", methods=["GET", "POST"])
 def following(username: str):
     """
+        request body:
+            <none>
+
         1. list n of user's follows
     """
     request_data = request.get_json()
@@ -183,6 +232,9 @@ def following(username: str):
 @app.route("/followers/<username>", methods=["GET", "POST"])
 def followers(username: str):
     """
+        request body:
+            <none>
+
         1. list n of user's followers
     """
     request_data = request.get_json()
