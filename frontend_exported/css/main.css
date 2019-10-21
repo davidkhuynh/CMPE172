@@ -11,14 +11,6 @@ h4 {
   line-height: 1.4;
 }
 
-h4.footer-heading {
-  margin-bottom: 0;
-  color: #f08537;
-  text-align: left;
-  font-weight: 700;
-  font-size: 1.06rem;
-}
-
 h4.heading-1 {
   font-size: 2rem;
 }
@@ -36,7 +28,7 @@ p.paragraph.paragraph-2 {
   float: none;
   margin-right: 0;
   padding-right: 2rem;
-  padding-left: 5rem;
+  padding-left: 1rem;
   background-color: #fff;
   color: #000;
 }
@@ -58,16 +50,6 @@ a.link-text.nav-link {
   text-align: center;
   text-transform: uppercase;
   font-family: 'Roboto Condensed', sans-serif;
-}
-
-a.link-text.footer-nav-link {
-  display: block;
-  margin-top: .625rem;
-  margin-bottom: .625rem;
-  color: #f08537;
-  font-size: .87rem;
-  font-family: 'Roboto', sans-serif;
-  line-height: 1.2rem;
 }
 
 a.link-text.nav-link:hover {
@@ -135,13 +117,6 @@ body > .row.nav-row {
   background-color: #4c4c4c;
 }
 
-body > .row.footer-row {
-  padding-top: 1.875rem;
-  padding-bottom: 3.125rem;
-  width: 100%;
-  background-color: #333;
-}
-
 body > .row.subscribe {
   padding: 2.5rem;
   width: 100%;
@@ -165,10 +140,12 @@ body > .row > [class*='col-xs-'].column-4 {
   background-color: #103d61;
 }
 
-.subgrid.footer-subgrid {
-  margin-right: auto;
-  margin-left: auto;
-  max-width: 75rem;
+body > .row.row-3 {
+  background-color: #103d60;
+}
+
+body.grid-1 {
+  background-color: #103d61;
 }
 
 .subgrid > .row.subgrid-row-1 {
@@ -187,17 +164,6 @@ body > .row > [class*='col-xs-'].column-4 {
   max-width: 75rem;
 }
 
-.rule.orange.small {
-  margin-top: 0;
-  margin-bottom: 0;
-  width: 4%;
-}
-
-.rule.orange.small hr {
-  border-top-width: 2px;
-  border-top-color: #f08537;
-}
-
 div.responsive-picture.picture-2 {
   max-width: 5rem;
 }
@@ -205,6 +171,24 @@ div.responsive-picture.picture-2 {
 div.responsive-picture.picture-1 {
   min-width: 30px;
   max-width: 30rem;
+}
+
+@media screen and (min-width: 23.75rem) {
+  /* Text Elements */
+
+  p.paragraph.paragraph-2 {
+    padding-left: 5rem;
+  }
+
+  /* Layout Elements */
+
+  body > .row.row-3 {
+    background-color: #103d60;
+  }
+
+  body.grid-1 {
+    background-color: #103d60;
+  }
 }
 
 @media screen and (min-width: 36rem) {
@@ -236,18 +220,10 @@ div.responsive-picture.picture-1 {
   body > .row.row-2 {
     background-color: #103d61;
   }
-
-  .rule.orange.small {
-    width: 3%;
-  }
 }
 
 @media screen and (min-width: 48rem) {
   /* Text Elements */
-
-  h4.footer-heading {
-    font-size: 1.06rem;
-  }
 
   p.paragraph {
     font-weight: 300;
@@ -286,23 +262,10 @@ div.responsive-picture.picture-1 {
     padding-top: 3.75rem;
     padding-bottom: 3.75rem;
   }
-
-  body > .row.footer-row {
-    padding-top: 3.125rem;
-    padding-bottom: 6.25rem;
-  }
-
-  .rule.orange.small {
-    width: 3%;
-  }
 }
 
 @media screen and (min-width: 62rem) {
   /* Text Elements */
-
-  h4.footer-heading {
-    font-size: 1.31rem;
-  }
 
   p.paragraph {
     font-size: .93rem;
@@ -326,12 +289,8 @@ div.responsive-picture.picture-1 {
   /* Layout Elements */
 
   body > .row.subscribe {
-    padding-top: 5.312rem;
-    padding-bottom: 5.312rem;
-  }
-
-  .rule.orange.small {
-    width: 5%;
+    padding-top: 3.312rem;
+    padding-bottom: 3rem;
   }
 }
 
@@ -388,16 +347,12 @@ div.responsive-picture.picture-1 {
     padding-left: 1.25rem;
   }
 
-  body > .row.footer-row {
-    max-width: none;
-  }
-
   body.grid-1 {
     background-color: #103d61;
   }
 
   body > .row.subscribe {
-    padding: 2.312rem 3rem 3.81rem;
+    padding: 2.312rem 3rem .81rem;
     background-color: #103d61;
   }
 
@@ -415,11 +370,6 @@ div.responsive-picture.picture-1 {
     padding-top: 0;
     padding-right: 8rem;
     padding-left: 8rem;
-  }
-
-  .subgrid.footer-subgrid {
-    margin-right: auto;
-    margin-left: auto;
   }
 
   .subgrid > .row > [class*='col-xs-'].subgrid-column-2 {
@@ -466,6 +416,17 @@ div.responsive-picture.picture-1 {
     font-family: 'Roboto', Arial, 'Helvetica Neue', Helvetica, sans-serif;
   }
 
+  /* Interaction Elements */
+
+  a.link-button.btn.subscribe {
+    background-color: #fff;
+    color: #000;
+  }
+
+  a.link-button.btn.viewbtn {
+    font-size: 1.19rem;
+  }
+
   /* Layout Elements */
 
   body > .row > [class*='col-xs-'].column-1 {
@@ -482,13 +443,18 @@ div.responsive-picture.picture-1 {
   }
 
   body > .row > [class*='col-xs-'].column-3 {
+    margin-right: .0625em;
     padding-right: 10rem;
     padding-bottom: 2rem;
     padding-left: 10rem;
   }
 
   .subgrid > .row.subgrid-row-1 {
-    padding-bottom: 4rem;
+    padding-bottom: 1rem;
+  }
+
+  .subgrid > .row.subgrid-row-2 {
+    padding-bottom: 1rem;
   }
 
   input[type=file].file-1 {
