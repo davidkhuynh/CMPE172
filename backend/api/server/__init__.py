@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, url_for
+from flask_cors import CORS
 import inspect
 
 app = Flask(__name__)
+CORS(app) # allow all origins for now (future maybe only allow from static site)
 
 from server.routes import test, routes
 

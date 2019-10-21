@@ -1,9 +1,11 @@
+import datetime
+
 from flask import request
 
 from server import app
 from server.db import users, posts
 from server.utils import pic_utils, db_utils
-from server.utils.http_utils import success, failure
+from server.utils.http_utils import success, failure, get_request_data
 
 ### home routes
 @app.route("/create_post", methods=["GET", "POST"])
@@ -20,7 +22,7 @@ def create_post():
         2. upload image to s3
     """
 
-    request_data = request.get_json()
+    request_data = get_request_data(request)
 
     # update db with new post
     picture_filename = request.files["pictureFile"].filename if "pictureFile" in request.files else ""
@@ -60,7 +62,7 @@ def edit_post(post_id: str):
         3. update request.data in post (see create_post)
     """
     # check if user owns post
-    request_data = request.get_json()
+    request_data = get_request_data(request)
     current_user = request_data["currentUser"]
     queried_post = posts.get_post(post_id)
     if not queried_post or current_user != queried_post["username"]:
@@ -86,7 +88,7 @@ def feed():
 
         1. list n most recent posts from people user follows
     """
-    request_data = request.get_json()
+    request_data = get_request_data(request)
     queried_posts = db_utils.grab_range_from_db(request_data, posts.feed_posts, username=request_data["currentUser"])
 
     return success(queried_posts)
@@ -100,7 +102,7 @@ def search(query: str):
 
         1. search users and posts by tag and text        
     """
-    request_data = request.get_json()
+    request_data = get_request_data(request)
     queried_posts = db_utils.grab_range_from_db(request_data, posts.search_posts, search_string=query)
     queried_users = db_utils.grab_range_from_db(request_data, users.search_users, username=query)
     response_data = {
@@ -133,7 +135,7 @@ def user_posts(username: str):
 
         1. list n of user's posts
     """
-    request_data = request.get_json()
+    request_data = get_request_data(request)
     queried_posts = db_utils.grab_range_from_db(request_data, posts.user_posts, username=username)
 
     return success(queried_posts)
@@ -149,7 +151,7 @@ def create_user():
             profilePicture
 
     """
-    request_data = request.get_json()
+    request_data = get_request_data(request)
     if "username" not in request_data or "birthday" not in request_data:
         return failure("username and birthday required to create a new user")
 
@@ -161,7 +163,7 @@ def create_user():
     # update db
     user_params = db_utils.User(
         username=request_data["username"],
-        birthday=request_data["birthday"],
+        birthday=datetime.datetime.strptime(request_data["birthday"], "%Y-%M-%d").date(),
         first_name=request_data["firstName"],
         last_name=request_data["lastName"],
         bio=request_data["bio"]
@@ -180,7 +182,7 @@ def edit_user(username: str):
             profilePicture
 
     """
-    request_data = request.get_json()
+    request_data = get_request_data(request)
 
     # verify that the current user matches username before editing user data
     current_user = request_data["currentUser"]
@@ -223,7 +225,7 @@ def following(username: str):
 
         1. list n of user's follows
     """
-    request_data = request.get_json()
+    request_data = get_request_data(request)
     queried_followings = db_utils.grab_range_from_db(request_data, users.following, username=username)
 
     return success(queried_followings)
@@ -237,7 +239,7 @@ def followers(username: str):
 
         1. list n of user's followers
     """
-    request_data = request.get_json()
+    request_data = get_request_data(request)
     queried_followers = db_utils.grab_range_from_db(request_data, users.followers, username=username)
 
     return success(queried_followers)

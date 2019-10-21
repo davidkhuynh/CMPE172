@@ -101,16 +101,17 @@
   
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script>
-$(document).ready(function(){
-  console.log($.post("http://ec2-54-188-118-157.us-west-2.compute.amazonaws.com:5000/create_user"),
-  {
-    username: "davidkhuynh",
-    birthday: "1996-10-10",
-    firstName: "David",
-    lastName: "Huynh",
-    bio: "Test1"
-  });
-});
+    function createUserTest() {
+      //console.log($.post("http://ec2-54-188-118-157.us-west-2.compute.amazonaws.com:5000/create_user"),
+      console.log($.post("http://0.0.0.0:5000/create_user",
+      {
+        username: "davidkhuynh",
+        birthday: "1996-10-10",
+        firstName: "David",
+        lastName: "Huynh",
+        bio: "Test1"
+      }));
+    }
 </script>
 
 
