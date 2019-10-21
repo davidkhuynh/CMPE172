@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify, url_for
 import inspect
 
 app = Flask(__name__)
@@ -7,6 +7,6 @@ from server.routes import test, routes
 
 @app.route("/")
 def api_index():
-    return  "%s" %(inspect.getmembers(routes, inspect.isfunction))
+    return jsonify([str(rule) for rule in app.url_map.iter_rules()])
 
 
