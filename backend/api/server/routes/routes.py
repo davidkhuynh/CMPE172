@@ -16,14 +16,14 @@ def create_post():
     request_data = request.get_json()
 
     # update db with new post
-    picture_filename = request.files["picture_file"].filename if "picture_file" in request.files else ""
+    picture_filename = request.files["pictureFile"].filename if "pictureFile" in request.files else ""
     new_post = posts.create_post(request_data["current_user"], picture_filename, request_data["text"])
     if not new_post:
         failure("post creation failure (potentially db error)")
 
     # upload picture
-    if "picture_file" in request.files \
-            and not pic_utils.upload_post_picture(request.files["picture_file"], new_post["id"]):
+    if "pictureFile" in request.files \
+            and not pic_utils.upload_post_picture(request.files["pictureFile"], new_post["id"]):
         posts.delete_post(new_post["id"])
         return failure("failed to upload post picture")
 
@@ -54,9 +54,9 @@ def edit_post(post_id: str):
         return failure(f"{current_user} does not own this post")
 
     # if picture is updated, update picture
-    picture_filename = request.files["picture_file"].filename if "picture_file" in request.files else ""
-    if "picture_file" in request.files \
-            and not pic_utils.upload_post_picture(request.files["picture_file"], queried_post["id"]):
+    picture_filename = request.files["pictureFile"].filename if "pictureFile" in request.files else queried_post["picture"]
+    if "pictureFile" in request.files \
+            and not pic_utils.upload_post_picture(request.files["pictureFile"], queried_post["id"]):
         return failure("failed to upload post picture")
 
     # update db
@@ -73,7 +73,7 @@ def feed():
     request_data = request.get_json()
     queried_posts = db_utils.grab_range_from_db(request_data, posts.feed_posts, username=request_data["current_user"])
 
-    return queried_posts
+    return success(queried_posts)
 
 
 @app.route("/search/<query>", methods=["GET", "POST"])
@@ -120,16 +120,28 @@ def create_user():
     if "username" not in request_data or "birthday" not in request_data:
         return failure("username and birthday required to create a new user")
 
-    if "profile_picture" in request.files:
-        profile_picture = request.files["profile_picture"]
+    if "profilePicture" in request.files:
+        profile_picture = request.files["profilePicture"]
         if not pic_utils.upload_profile_picture(profile_picture, request_data["username"]):
             return failure("file is not an image or is too big")
 
     # update db
-    new_user = users.create_user(request_data)
+    user_params = db_utils.User(
+        username=request_data["username"],
+        birthday=request_data["birthday"],
+        first_name=request_data["firstName"],
+        last_name=request_data["lastName"],
+        bio=request_data["bio"]
+    )
+    new_user = users.create_user(user_params)
 
     return success(new_user)
 
+@app.route("/follow/<user_to_follow>", methods=["GET", "POST"])
+def follow(user_to_follow: str):
+    request_data = request.json()
+    current_user = request_data["current_user"]
+    return success(users.follow(current_user, user_to_follow))
 
 @app.route("/edit_user/<username>", methods=["GET", "POST"])
 def edit_user(username: str):
@@ -141,13 +153,18 @@ def edit_user(username: str):
         failure("you can only edit your own profile!")
 
     # if profile picture is uploaded, update picture
-    if "profile_picture" in request.files:
-        profile_picture = request.files["profile_picture"]
+    if "profilePicture" in request.files:
+        profile_picture = request.files["profilePicture"]
         if not pic_utils.upload_profile_picture(profile_picture, username):
             return failure("profile pic file is not an image or is too big")
 
     # update db
-    edited_user = users.edit_user(username, request_data)
+    user_data = db_utils.User(
+        first_name=request_data["firstName"],
+        last_name=request_data["lastName"],
+        bio=request_data["bio"]
+    )
+    edited_user = users.edit_user(username, user_data)
 
     return success(edited_user)
 

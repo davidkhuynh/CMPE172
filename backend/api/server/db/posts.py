@@ -14,7 +14,8 @@ def get_post(post_id: str):
 def edit_post(post_id: str, picture, text):
     conn = rds.connect()
     with conn.cursor() as cur:
-        cur.execute("UPDATE Posts SET text=%s WHERE id=%s;", (post_id, picture, text))
+        cur.execute("UPDATE Posts SET text=%s, picture=%s WHERE id=%s;", (post_id, picture, text))
+    conn.commit()
 
     return get_post(post_id)
 
@@ -22,7 +23,10 @@ def edit_post(post_id: str, picture, text):
 def user_posts(constraints: QueryConstraints, username: str):
     conn = rds.connect()
     with conn.cursor() as cur:
-        cur.execute(f"SELECT * FROM Posts WHERE username=%s ORDER BY {constraints.sort_by} LIMIT {constraints.total}, {constraints.first};",
+        cur.execute(f"SELECT * FROM Posts "
+                    f"WHERE username=%s "
+                    f"ORDER BY {constraints.sort_by} "
+                    f"LIMIT {constraints.total}, {constraints.first};",
                     (username,))
         posts = __posts_from_rows(cur)
 
@@ -34,7 +38,10 @@ def create_post(username: str, picture: str, text: str):
 
     # add post to db
     with conn.cursor() as cur:
-        cur.execute("INSERT INTO Posts (username, picture, text) VALUES (%s, %s, %s)", (username, picture, text))
+        cur.execute("INSERT INTO Posts "
+                    "(username, picture, text) "
+                    "VALUES (%s, %s, %s);",
+                    (username, picture, text))
     conn.commit()
 
     # created post is the latest post
@@ -44,7 +51,12 @@ def create_post(username: str, picture: str, text: str):
 def search_posts(constraints: QueryConstraints, search_string: str):
     conn = rds.connect()
     with conn.cursor() as cur:
-        cur.execute(f"SELECT * FROM Posts WHERE text LIKE '%%s%' ORDER_BY {constraints.sort_by} LIMIT {constraints.total}, {constraints.first};", (search_string,))
+        cur.execute(f"SELECT * FROM Posts"
+                    f" WHERE text LIKE '%%s%' "
+                    f"ORDER_BY {constraints.sort_by} "
+                    f"LIMIT {constraints.total}, {constraints.first};",
+                    (search_string,))
+
         posts = __posts_from_rows(cur)
 
     return posts
@@ -54,7 +66,13 @@ def feed_posts(constraints: QueryConstraints, username: str):
     posts = []
     conn = rds.connect()
     with conn.cursor() as cur:
-        cur.execute(f"SELECT * FROM Posts WHERE username IN (SELECT following FROM Follows WHERE follower=%s) ORDER BY DESC LIMIT {constraints.total}, {constraints.first}")
+        cur.execute(f"SELECT * FROM Posts "
+                    f"WHERE username IN "
+                        f"(SELECT following FROM Follows WHERE follower=%s) "
+                    f"ORDER BY DESC "
+                    f"LIMIT {constraints.total}, {constraints.first};",
+                    (username,))
+
         posts = __posts_from_rows(cur)
 
     return posts
@@ -69,7 +87,9 @@ def delete_post(post_id: str):
 ## private
 def __get_latest_post_from_user(conn, username: str):
     with conn.cursor() as cur:
-        cur.execute("SELECT * FROM Posts WHERE username=%s ORDER BY editedOn LIMIT 1", (username))
+        cur.execute("SELECT * FROM Posts "
+                    "WHERE username=%s "
+                    "ORDER BY editedOn LIMIT 1", (username))
         row = cur.fetchone()
 
     return __post_from_row(row)

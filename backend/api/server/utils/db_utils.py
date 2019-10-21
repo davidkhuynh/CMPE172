@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+import datetime
+from datetime import date
 
 
 @dataclass
@@ -6,6 +8,15 @@ class QueryConstraints(object):
     sort_by: str = "mostRecent"
     first: int = 0
     total: int = 10
+
+
+@dataclass
+class User(object):
+    username: str=""
+    birthday: date=datetime.datetime.now().date()
+    first_name: str=""
+    last_name: str=""
+    bio: str=""
 
 
 def grab_range_from_db(request_data, query_func, **kwargs):
