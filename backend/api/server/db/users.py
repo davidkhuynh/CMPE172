@@ -1,4 +1,3 @@
-from typing import List
 from server.db import rds
 
 def get_user(username: str):
@@ -15,3 +14,23 @@ def get_user(username: str):
         "bio"   : user_data[4],
         "createdOn" : user_data[5]
     } if user_data else {}
+
+
+def create_user(request_data):
+    return None
+
+
+def edit_user(username, request_data):
+    pass
+
+
+def following():
+    pass
+
+
+def followers():
+    return None
+
+
+def search_users():
+    return None

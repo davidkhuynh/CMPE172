@@ -1,4 +1,3 @@
-import sys
 import pymysql
 from server.db import rds_config
 

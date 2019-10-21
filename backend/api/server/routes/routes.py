@@ -1,11 +1,12 @@
+from flask import request
+
 from server import app
-from server.s3 import upload_picture
 from server.db import users, posts
-from server.import *
+from server.utils import pic_utils, db_utils
+from server.utils.http_utils import success, failure
 
-from flask import request, abort
-
-@app.route("/create_post", methods=["GET","POST"])
+### home routes
+@app.route("/create_post", methods=["GET", "POST"])
 def create_post():
     """
         1. add new post to request.database
@@ -13,26 +14,28 @@ def create_post():
     """
 
     request_data = request.get_json()
-    post = posts.create_post(request_data)
+    new_post = posts.create_post(request_data)
+    if not new_post:
+        failure("post creation failure (potentially db error)")
 
-    if "picture_file" in request.files:
-        picture_file = request.files["picture_file"]
-        if not update_picture(picture_file, post["id"]):
-            return failure("file is not an image or is too big")
+    if "picture_file" in request.files \
+            and not pic_utils.upload_post_picture(request.files["picture_file"], new_post["id"]):
+        return failure("failed to upload post picture")
 
-    return success(post)
+    return success(new_post)
 
-@app.route("/post/<id>", methods=["GET","POST"])
-def post(id: str):
+
+@app.route("/post/<post_id>", methods=["GET", "POST"])
+def post(post_id: str):
     """
         1. get post from db and format to json to return
     """
-    post = posts.get_post(id)
-    return success(post) if post else failure("post id %s does not exist" % id)
+    queried_post = posts.get_post(post_id)
+    return success(queried_post) if queried_post else failure("post id %s does not exist" % post_id)
 
 
-@app.route("/edit_post/<id>", methods=["GET","POST"])
-def edit_post(id: str):
+@app.route("/edit_post/<post_id>", methods=["GET", "POST"])
+def edit_post(post_id: str):
     """
         1. check if user owns post
         2. get post 
@@ -40,91 +43,126 @@ def edit_post(id: str):
     """
     # check if user owns post
     request_data = request.get_json()
-    post = posts.get_post(id)
-    if not post or request_data["username"] != post["username"]:
-        return 
+    current_user = request_data["current_user"]
+    queried_post = posts.get_post(post_id)
+    if not queried_post or current_user != queried_post["username"]:
+        return failure(f"{current_user} does not own this post")
 
     # if picture is updated, update picture
-    if "picture_file" in request.files:
-        picture_file = request.files["picture_file"]
-        if not update_picture(picture_file, id):
-            return failure("file is not an image or is too big")
+    if "picture_file" in request.files \
+            and not pic_utils.upload_post_picture(request.files["picture_file"], queried_post["id"]):
+        return failure("failed to upload post picture")
 
     # update db
-    post = posts.edit_post(id, request_data)
+    edited_post = posts.edit_post(post_id, request_data)
 
-    return success(post)
+    return success(edited_post)
 
 
-@app.route("/feed", methods=["GET","POST"])
+@app.route("/feed", methods=["GET", "POST"])
 def feed():
     """
         1. list n most recent posts from people user follows
     """
     request_data = request.get_json()
-    queried_posts = grab_range_from_db(request_data, posts.feed_posts, username=username)
+    queried_posts = db_utils.grab_range_from_db(request_data, posts.feed_posts, username=request_data["current_user"])
 
     return queried_posts
 
-@app.route("/search/<query>", methods=["GET","POST"])
+
+@app.route("/search/<query>", methods=["GET", "POST"])
 def search(query: str):
     """
         1. search users and posts by tag and text        
     """
     request_data = request.get_json()
-    queried_posts = grab_range_from_db(request_data, posts.search_posts, search_string=query)
-    queried_users = grab_range_from_db(request_data, users.search_users, username=query)
+    queried_posts = db_utils.grab_range_from_db(request_data, posts.search_posts, search_string=query)
+    queried_users = db_utils.grab_range_from_db(request_data, users.search_users, username=query)
     response_data = {
-            "queriedPosts" : queried_posts,
-            "queriedUsers" : queried_users
+        "queriedPosts": queried_posts,
+        "queriedUsers": queried_users
     }
-    
+
     return success(response_data)
 
-@app.route("/user/<username>", methods=["GET","POST"])
+
+### user routes
+@app.route("/user/<username>", methods=["GET", "POST"])
 def user(username: str):
     """
         1. list user data
     """
-    user = users.get_user(username)
-    return success(user) if user else failure("user %s does not exist" % username)
+
+    queried_user = users.get_user(username)
+    return success(queried_user) if queried_user else failure("user %s does not exist" % username)
 
 
-@app.route("/user_posts/<username>", methods=["GET","POST"])
+@app.route("/user_posts/<username>", methods=["GET", "POST"])
 def user_posts(username: str):
     """
         1. list n of user's posts
     """
     request_data = request.get_json()
-    queried_posts = grab_range_from_db(request_data, posts.user_posts, username=username)
+    queried_posts = db_utils.grab_range_from_db(request_data, posts.user_posts, username=username)
 
     return success(queried_posts)
 
-@app.route("/edit_user/<username>"), methods=["GET", "POST"])
+
+@app.route("/create_user", methods=["GET", "POST"])
+def create_user():
+    request_data = request.get_json()
+    if "username" not in request_data or "birthday" not in request_data:
+        return failure("username and birthday required to create a new user")
+
+    if "profile_picture" in request.files:
+        profile_picture = request.files["profile_picture"]
+        if not pic_utils.upload_profile_picture(profile_picture, request_data["username"]):
+            return failure("file is not an image or is too big")
+
+    # update db
+    new_user = users.create_user(request_data)
+
+    return success(new_user)
+
+
+@app.route("/edit_user/<username>", methods=["GET", "POST"])
 def edit_user(username: str):
     request_data = request.get_json()
-    if request_data["current_user"] != username:
+
+    # verify that the current user matches username before editing user data
+    current_user = request_data["current_user"]
+    if current_user != username:
         failure("you can only edit your own profile!")
 
-    # TODO code for editing user profile data
-    return success("edit user")
+    # if profile picture is uploaded, update picture
+    if "profile_picture" in request.files:
+        profile_picture = request.files["profile_picture"]
+        if not pic_utils.upload_profile_picture(profile_picture, username):
+            return failure("profile pic file is not an image or is too big")
 
-@app.route("/following/<username>", methods=["GET","POST"])
+    # update db
+    edited_user = users.edit_user(username, request_data)
+
+    return success(edited_user)
+
+
+@app.route("/following/<username>", methods=["GET", "POST"])
 def following(username: str):
     """
         1. list n of user's follows
     """
     request_data = request.get_json()
-    queried_followings = grab_range_from_db(request_data, users.following, username=usernam)
+    queried_followings = db_utils.grab_range_from_db(request_data, users.following, username=username)
 
     return success(queried_followings)
 
-@app.route("/followers/<username>", methods=["GET","POST"])
+
+@app.route("/followers/<username>", methods=["GET", "POST"])
 def followers(username: str):
     """
         1. list n of user's followers
     """
     request_data = request.get_json()
-    queried_followers = grab_range_from_db(request_data, users.followers, username=usernam)
+    queried_followers = db_utils.grab_range_from_db(request_data, users.followers, username=username)
 
     return success(queried_followers)
