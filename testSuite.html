@@ -1,0 +1,153 @@
+<html>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+
+
+<script>
+
+	let EC2_URL = "http://ec2-52-13-103-159.us-west-2.compute.amazonaws.com:5000";
+	let LOCAL_URL = "http://0.0.0.0:5000";
+	let SERVER_URL = EC2_URL;
+
+
+
+	
+	let testUser = "db_test";
+	let testBirthday = "2000-01-01";
+	let testFirstName = "David1234";
+	let testLastName = "Huynh5";
+	let testBio = "Bio6";
+	let testPostText = "PostText3";
+	let testPostId = "8dcfd0026e18f3ae901e9ec861bd97ec";
+	let testUserToFollow = "Test3"
+	let testText = "TestText1"
+</script>
+
+<script>
+
+    function createUserTest(username, birthday, firstName, lastName, bio) {
+    	console.log(
+	    	$.post(EC2_URL + "/create_user",
+	    	{
+		        username: username,
+		        birthday: birthday,
+		        firstName: firstName,
+		        lastName: lastName,
+		        bio: bio
+		        //profilePicture
+     		})
+     	);
+    }
+
+    function viewUserData(user) {
+
+    	//user = testUser;
+    	console.log(
+    		$.post(EC2_URL + "/user/" + user)
+    	);
+
+    }
+
+    function editProfile(user, firstName, lastName, bio, profilePicture){
+
+    	console.log(
+	    	$.post(EC2_URL + "/edit_profile",
+	    	{
+		        currentUser: user,
+		        firstName: firstName,
+		        lastName: lastName,
+		        bio: bio
+		        //profilePicture
+     		})
+     	);
+    }
+
+    function createPost(user, text) {
+
+    	//user = testUser;
+    	//text = testPostText;
+    	console.log(
+    		$.post(EC2_URL + "/create_post",
+    		{
+    			currentUser: user,
+    			text: text
+    		})
+    	);
+
+    }
+
+    function viewPost(postId) {
+
+    	//postId = testPostId;
+    	console.log(
+    		$.post(EC2_URL + "/post/" + postId)
+    	);
+
+    }    
+
+    function editPost(user, postId, text){
+
+  
+    	console.log(
+    		$.post(EC2_URL + "/edit_post/" + postId,
+    		{
+    			currentUser: user,
+    			text: text
+    			//text: text
+    			//picturefile
+    		})
+    	);
+
+    }
+
+    function viewFeed(user){
+
+    	//user = testUser;
+    	console.log(
+    		$.post(EC2_URL + "/feed",
+    		{
+    			currentUser: user,
+    		})
+    	);
+    }
+
+    function search(query){
+    	console.log(
+    		$.post(EC2_URL + "/search/" + query,
+    		{
+    		})
+    	);    	
+    }
+
+    function follow(user, userToFollow){
+
+    	console.log(
+    		$.post(EC2_URL + "/follow/" + userToFollow,
+    		{
+    			currentUser: user,
+    		})
+    	);
+    }    
+
+    function following(user){
+
+    	//user = testUser;
+    	console.log(
+    		$.post(EC2_URL + "/following/" + user,
+    		{
+    			currentUser: user,
+    		})
+    	);
+    }      
+
+
+
+
+
+</script>
+
+<body>
+</body>
+</html>
