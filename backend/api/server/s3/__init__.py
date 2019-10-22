@@ -3,6 +3,8 @@ import boto3
 
 from server.s3 import s3_config
 
+
+
 def upload_picture(picture_file, filename, directory=""):
     s3_client = boto3.client("s3")
     filepath = os.path.join(directory, filename)

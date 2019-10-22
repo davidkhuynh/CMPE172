@@ -52,7 +52,7 @@ def post(post_id: str):
 def edit_post(post_id: str):
     """
         request body:
-            currentUser
+            currentUser, text
 
         files:
             pictureFile
@@ -172,8 +172,8 @@ def create_user():
 
     return success(new_user)
 
-@app.route("/edit_user/<username>", methods=["GET", "POST"])
-def edit_user(username: str):
+@app.route("/edit_profile", methods=["GET", "POST"])
+def edit_profile():
     """
         request body:
             currentUser, firstName, lastName, bio
@@ -183,16 +183,12 @@ def edit_user(username: str):
 
     """
     request_data = get_request_data(request)
-
-    # verify that the current user matches username before editing user data
     current_user = request_data["currentUser"]
-    if current_user != username:
-        failure("you can only edit your own profile!")
 
     # if profile picture is uploaded, update picture
     if "profilePicture" in request.files:
         profile_picture = request.files["profilePicture"]
-        if not pic_utils.upload_profile_picture(profile_picture, username):
+        if not pic_utils.upload_profile_picture(profile_picture, current_user):
             return failure("profile pic file is not an image or is too big")
 
     # update db
@@ -201,7 +197,7 @@ def edit_user(username: str):
         last_name=request_data["lastName"],
         bio=request_data["bio"]
     )
-    edited_user = users.edit_user(username, user_data)
+    edited_user = users.edit_user(current_user, user_data)
 
     return success(edited_user)
 
@@ -227,7 +223,7 @@ def follow(user_to_follow: str):
         request body:
             currentUser
     """
-    request_data = request.json()
+    request_data = get_request_data(request)
     current_user = request_data["currentUser"]
     return success(users.follow(current_user, user_to_follow))
 

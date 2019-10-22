@@ -14,7 +14,7 @@ def get_post(post_id: str):
 def edit_post(post_id: str, picture, text):
     conn = rds.connect()
     with conn.cursor() as cur:
-        cur.execute("UPDATE Posts SET text=%s, picture=%s WHERE id=%s;", (post_id, picture, text))
+        cur.execute("UPDATE Posts SET text=%s, picture=%s WHERE id=%s;", (text, picture, post_id))
     conn.commit()
 
     return get_post(post_id)

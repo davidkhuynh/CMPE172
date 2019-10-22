@@ -32,10 +32,10 @@ def create_user(user_data: User):
 def edit_user(username: str, user_data: User):
     conn = rds.connect()
     with conn.cursor() as cur:
-        cur.execute("UPDATE Users"
-                    "SET firstName=%s,"
-                    "lastName=%s,"
-                    "bio=%s"
+        cur.execute("UPDATE Users "
+                    "SET firstName=%s, "
+                    "lastName=%s, "
+                    "bio=%s "
                     "WHERE username=%s;",
                     (user_data.first_name,
                      user_data.last_name,
@@ -54,7 +54,7 @@ def follow(follower: str, following: str):
             return False
 
         # follow user
-        cur.execute("INSERT INTO Follows (follower, following) VALUES (%s, %s), (follower, following)")
+        cur.execute("INSERT INTO Follows (follower, following) VALUES (%s, %s);", (follower, following))
 
     conn.commit()
     return True
