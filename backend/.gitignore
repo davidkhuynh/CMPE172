@@ -6,3 +6,4 @@ venv
 __pycache__
 *.pyc
 rds_config.py
+s3_config.py
