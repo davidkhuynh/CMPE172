@@ -206,6 +206,21 @@ def edit_user(username: str):
     return success(edited_user)
 
 
+@app.route("/delete_user/", methods=["GET", "POST"])
+def delete_user():
+    """
+        request body: currentUser
+    """
+    request_data = get_request_data(request)
+    current_user = request_data["currentUser"]
+
+    # delete profile pic from s3
+    pic_utils.delete_profile_picture(current_user)
+
+    # update db
+    users.delete_user(current_user)
+
+
 @app.route("/follow/<user_to_follow>", methods=["GET", "POST"])
 def follow(user_to_follow: str):
     """

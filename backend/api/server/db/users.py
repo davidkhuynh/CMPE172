@@ -101,6 +101,12 @@ def search_users(constraints: QueryConstraints, search_string: str):
     return users
 
 
+def delete_user(username: str):
+    conn = rds.connect()
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM Users WHERE username=%s", (username,))
+    conn.commit()
+
 ## private
 def __user_from_row(row):
     return {
@@ -119,4 +125,5 @@ def __users_from_rows(cur):
     for row in query_result:
         users.append(__user_from_row(row))
     return users
+
 
