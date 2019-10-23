@@ -3,7 +3,7 @@
     let SERVER_URL = EC2_URL;
 
 
-    function createUser(username, birthday, firstName, lastName, bio) {
+    function createUser(username, birthday, firstName, lastName, bio, pictureFile) {
     	console.log(
 	    	$.post(EC2_URL + "/create_user",
 	    	{
@@ -11,8 +11,8 @@
 		        birthday: birthday,
 		        firstName: firstName,
 		        lastName: lastName,
-		        bio: bio
-		        //profilePicture
+		        bio: bio,
+		        //pictureFile: pictureFile
      		})
      	);
     }
@@ -293,7 +293,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
 /* index.html
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/routeFunctions.js"></script>
-  <script> viewFeed("davidkhuynh") </script>
+  <script> viewFeed("db_test2") </script>
 */ 
 
 /* signup.html
@@ -348,5 +348,28 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
   <script> 
   var userProfile = window.location.hash.substring(1);
   viewUserProfile(userProfile); 
+  </script>
+*/
+
+
+
+
+/* signup.html do not use, still trying to figure out how to upload pictures
+  <script>
+      $( document ).ready(function() {
+
+        var createUserButton = document.getElementById("createUserButton");
+        createUserButton.onclick = function(){
+
+          //var fd = new FormData();
+          //var files = $('#createProfilePicture')[0].files[0];
+          //fd.append('file', files);
+
+          //console.log(fd);
+          //createUser(document.getElementById('createUserName').value, document.getElementById('createBirthday').value,document.getElementById('createFirstName').value, document.getElementById('createLastName').value, document.getElementById('createBio').value);
+          //createUser("dan", "1996-12-11", "tsk", "toe", "til");
+          alert("success! check db, select * from Users");
+        }
+    });
   </script>
 */
