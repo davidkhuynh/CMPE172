@@ -43,7 +43,7 @@
         <span class="text-element form-input-caption">Birthday</span>
       </form><input value="" name="text-name" type="text" class="form-input" id="createBirthday">
       <span class="text-element form-input-caption">Email</span><input value="" name="text-name" type="text" class="form-input" id="createEmail">
-      <span class="text-element form-input-caption" id="createProfilePicture">Profile Picture</span><input value="" name="file-name" type="file" class="file-1"><a class="link-button btn form" href="#" title="" id="createUserButton">REGISTER</a>
+      <span class="text-element form-input-caption">Profile Picture</span><input value="" name="file" type="file" class="file-1" id="file"><a class="link-button btn form" href="#" title="" id="createUserButton">REGISTER</a>
     </div>
   </div>
 
@@ -54,12 +54,21 @@
       $( document ).ready(function() {
 
         var createUserButton = document.getElementById("createUserButton");
-        createUserButton.onclick = function(){
 
-          createUser(document.getElementById('createUserName').value, document.getElementById('createBirthday').value,document.getElementById('createFirstName').value, document.getElementById('createLastName').value, document.getElementById('createBio').value);
+        createUserButton.onclick = function(){
+          var fd = new FormData();
+          var files = $('#file')[0].files[0];
+          
+          fd.append('file', files);
+          createUser(document.getElementById('createUserName').value, document.getElementById('createBirthday').value,document.getElementById('createFirstName').value, document.getElementById('createLastName').value, document.getElementById('createBio').value, fd);
           //createUser("dan", "1996-12-11", "tsk", "toe", "til");
           alert("success! check db, select * from Users");
+          console.log(fd);
         }
+
+
+
+
     });
   </script>
   <script src="js/jquery.min.js"></script>
