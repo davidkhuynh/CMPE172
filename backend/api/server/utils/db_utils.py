@@ -14,6 +14,7 @@ class QueryConstraints(object):
 class User(object):
     username: str=""
     birthday: date=datetime.datetime.now().date()
+    picture: str=""
     first_name: str=""
     last_name: str=""
     bio: str=""

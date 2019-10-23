@@ -8,6 +8,9 @@ from server.utils import pic_utils, db_utils
 from server.utils.http_utils import success, failure, get_request_data
 
 ### home routes
+from server.utils.pic_utils import UploadState
+
+
 @app.route("/create_post", methods=["GET", "POST"])
 def create_post():
     """
@@ -155,15 +158,13 @@ def create_user():
     if "username" not in request_data or "birthday" not in request_data:
         return failure("username and birthday required to create a new user")
 
-    if "profilePicture" in request.files:
-        profile_picture = request.files["profilePicture"]
-        if not pic_utils.upload_profile_picture(profile_picture, request_data["username"]):
-            return failure("file is not an image or is too big")
+    upload_info = pic_utils.upload_profile_picture(request, request_data["username"])
 
     # update db
     user_params = db_utils.User(
         username=request_data["username"],
         birthday=datetime.datetime.strptime(request_data["birthday"], "%Y-%M-%d").date(),
+        picture=upload_info.filename,
         first_name=request_data["firstName"],
         last_name=request_data["lastName"],
         bio=request_data["bio"]
@@ -183,21 +184,22 @@ def edit_profile():
 
     """
     request_data = get_request_data(request)
-    current_user = request_data["currentUser"]
+    current_username = request_data["currentUser"]
+    current_user = users.get_user(current_username)
 
-    # if profile picture is uploaded, update picture
-    if "profilePicture" in request.files:
-        profile_picture = request.files["profilePicture"]
-        if not pic_utils.upload_profile_picture(profile_picture, current_user):
-            return failure("profile pic file is not an image or is too big")
+    upload_info = pic_utils.upload_profile_picture(request, current_username)
+    new_picture = upload_info.filename \
+        if upload_info.upload_state == UploadState.success \
+        else current_user["picture"]
 
     # update db
     user_data = db_utils.User(
         first_name=request_data["firstName"],
         last_name=request_data["lastName"],
+        picture=new_picture,
         bio=request_data["bio"]
     )
-    edited_user = users.edit_user(current_user, user_data)
+    edited_user = users.edit_user(current_username, user_data)
 
     return success(edited_user)
 
