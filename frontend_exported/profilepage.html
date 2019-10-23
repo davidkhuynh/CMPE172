@@ -27,7 +27,7 @@
       </div>
     </div>
   </div>
-  <div class="row subscribe">
+  <div class="row subscribe userProfileInformation">
     <div class="col-xs-12 column-1 col-xl-6 offset-xl-3">
       <div class="subgrid">
         <div class="row">
@@ -41,6 +41,8 @@
             <h4 id="userProfileName">Jeremiah</h4>
           </div>
           <div class="col-xs-4"><a class="link-button btn follow" href="" title="" id="followButton">Follow</a>
+          </div>
+          <div class="col-xs-4"><a class="link-button btn follow" href="editProfile.html" title="" id="editProfileButton">Edit Profile</a>
           </div>
         </div>
         <div class="row">
@@ -64,6 +66,18 @@
     </div>
   </div>
   <div class="row subscribe">
+    <div class="col-xs-12 column-1 col-xl-8 offset-xl-2">
+      <div class="subgrid action-subgrid">
+        <div class="row">
+          <div class="col-xs-6 col-md-6 subgrid-column-5 col-xl-6"><a class="link-button btn subscribe" href="#" title="">YOUR POST</a>
+          </div>
+          <div class="col-xs-6 col-md-6 subgrid-column-5 col-xl-6"><a class="link-button btn subscribe" href="#" title="">SAVED POSTS</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row subscribe postRow">
     <div class="col-xs-12 offset-xl-1 col-xl-10 column-3">
       <div class="subgrid">
         <div class="row subgrid-row-2">
@@ -119,6 +133,13 @@
       </nav>
     </div>
   </div>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="js/routeFunctions.js"></script>
+  <script> 
+    var userProfile = window.location.hash.substring(1);
+    viewUserProfile(userProfile); 
+  </script>
   <script src="js/jquery.min.js"></script>
   <script src="js/outofview.js"></script>
   <script src="js/tether.min.js"></script>

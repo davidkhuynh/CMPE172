@@ -153,6 +153,8 @@ body > .row.row-1 {
 }
 
 body > .row > [class*='col-xs-'].column-3 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   border-radius: 0;
 }
 

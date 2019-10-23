@@ -22,7 +22,7 @@
       <div class="container-fluid nav-container navbar-sticky-top">
         <a class="link-text nav-link" href="index.html" title="Download">HOME</a>
         <a class="link-text nav-link" href="signup.html" title="Signup">SIGNUP</a>
-        <a class="link-text nav-link" href="myprofilepage.html" title="Profile">YOUR PROFILE</a>
+        <a class="link-text nav-link" href="profilepage.html" title="Profile">YOUR PROFILE</a>
         <a class="link-text nav-link" href="gallery.html" title="Profile">EXPLORE</a>
       </div>
     </div>
@@ -41,26 +41,9 @@
         <span class="text-element form-input-caption">Last Name</span><input value="" name="text-name" type="text" class="form-input" id="createBio">
         <span class="text-element form-input-caption">Bio</span><input value="" name="text-name" type="text" class="form-input" id="createBirthday">
         <span class="text-element form-input-caption">Birthday</span>
-      </form><a class="link-button btn form" href="#" title="" id="createUserButton">REGISTER</a>
+      </form><a class="link-button btn form" href="#" title="" id="createUserButtonn">REGISTER</a>
     </div>
   </div>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="js/routeFunctions.js"></script>
-  <script>
-      $( document ).ready(function() {
-
-        var createUserButton = document.getElementById("createUserButton");
-        createUserButton.onclick = function(){
-
-          createUser(document.getElementById('createUserName').value, document.getElementById('createBirthday').value,document.getElementById('createFirstName').value, document.getElementById('createLastName').value, document.getElementById('createBio').value);
-          //createUser("dan", "1996-12-11", "tsk", "toe", "til");
-          alert("success! check db, select * from Users");
-
-        }
-
-    });
-  </script>
   <script src="js/jquery.min.js"></script>
   <script src="js/outofview.js"></script>
   <script src="js/tether.min.js"></script>

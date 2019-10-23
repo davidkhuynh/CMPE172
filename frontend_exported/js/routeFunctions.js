@@ -1,8 +1,3 @@
- 
-
-
-
-
     let EC2_URL = "http://ec2-34-221-65-162.us-west-2.compute.amazonaws.com:5000";
     let LOCAL_URL = "http://0.0.0.0:5000";
     let SERVER_URL = EC2_URL;
@@ -29,9 +24,51 @@
         });
     });
 
-    function viewUserData(user) {
+    function viewUserProfile(user) {
 
-    		$.post(EC2_URL + "/user/" + user)
+    		$.post(EC2_URL + "/user/" + user, function(user_data){
+                console.log(user_data);
+                var profile_html_to_append = '';
+
+profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3">' +
+                              '<div class="subgrid">' +
+                                '<div class="row">' +
+                                  '<div class="col-xs-4">' +
+                                    '<div class="responsive-picture">' +
+                                      '<picture><img alt="Placeholder Picture" src="img/picture.svg">' +
+                                      '</picture>' +
+                                    '</div>' +
+                                  '</div>' +
+                                  '<div class="col-xs-8 custom-380-col-xs-6">' +
+                                    '<h4>' + user_data.username + '</h4>' +
+                                  '</div>' +
+                                  '<div class="col-xs-4"><a class="link-button btn follow" href="" title="" id="followButton">Follow</a>' +
+                                  '</div>' +
+                                  '<div class="col-xs-4"><a class="link-button btn follow" href="editProfile.html" title="" id="editProfileButton">Edit Profile</a>' +
+                                  '</div>' +
+                                '</div>' +
+                                '<div class="row">' +
+                                  '<div class="col-xs-12"></div>' +
+                                '</div>' +
+                                '<div class="row">' +
+                                  '<div class="col-xs-6">' +
+                                    '<h4>FOLLOWERS</h4>' +
+                                  '</div>' +
+                                  '<div class="col-xs-6">' +
+                                    '<h4>FOLLOWING</h4>' +
+                                  '</div>' +
+                                  '<div class="col-xs-6">' +
+                                    '<h4 id="followerCount">#</h4>' +
+                                  '</div>' +
+                                  '<div class="col-xs-6">' +
+                                    '<h4 id="followingCount">#</h4>' +
+                                  '</div>' +
+                                '</div>' +
+                              '</div>' +
+                            '</div>'
+                $(".userProfileInformation").html(profile_html_to_append);
+                viewFeed(user);
+            });
 
     }
 
@@ -79,7 +116,7 @@
     function viewPost(user, postId) {
 
     		$.post(EC2_URL + "/post/" + postId, function(post_data){
-                console.log(data);
+                console.log(post_data);
                 var html_to_append = '';
 
                 $.post(EC2_URL + "/user/" + user, function(user_data){
@@ -94,9 +131,8 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                             '</div>' +
                           '</div>' +
                           '<div class="col-xs-6">' +
-                            '<a class="link-text text-link-1" href="profilepage.html">' + user_data.username + '</a>'
-                });
- 
+                            '<a class="link-text text-link-1" href="profilepage.html">' + user_data.username + '</a>';
+                
 html_to_append +=        '</div>' +
                         '</div>' + 
                       '</div>' +
@@ -117,9 +153,10 @@ html_to_append +=        '</div>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
-                    '</div>'
+                    '</div>';
+                    $(".postRow").html(html_to_append);
+                });
             });
-                $(".postRow").html(html_to_append);
     };
 
         
@@ -143,6 +180,7 @@ html_to_append +=        '</div>' +
     function viewFeed(user){
 
     	//user = testUser;
+
  
     		$.post(EC2_URL + "/feed",
     		{
@@ -159,20 +197,22 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                         '<div class="row subgrid-row-2">' +
                           '<div class="col-xs-3 offset-xs-1 col-md-2">' +
                             '<div class="responsive-picture picture-2">' +
-                              '<picture><img alt="Placeholder Picture" src="' + item.profilePicture + '">' +
+                              '<picture><img alt="Placeholder Picture" src="img/picture.svg">' +
                               '</picture>' +
                             '</div>' +
                           '</div>' +
-                          '<div class="col-xs-6">' +
-                            '<a class="link-text text-link-1" href="profilepage.html">' + item.username + '</a>' +
+                          '<div class="col-xs-3">' +
+                            '<a class="link-text text-link-1 profileUsername">' + item.username + '</a>' +
                           '</div>' +
-                        '</div>' + 
+                          '<div class="col-xs-2"><a class="link-button btn viewbtn" href="viewpost.html" title="">Follow</a>' +
+                          '</div>' +
+                        '</div>' +
                       '</div>' +
                       '<div class="subgrid">' +
                         '<div class="row subgrid-row-1">' +
                           '<div class="col-xs-10 push-xs-0 offset-xs-1">' +
                             '<div class="responsive-picture picture-1">' +
-                              '<picture><img alt="Placeholder Picture" src="' + item.picture + '">' +
+                              '<picture><img alt="Placeholder Picture" src="img/picture.svg">' +
                               '</picture>' +
                             '</div>' +
                           '</div>' +
@@ -181,15 +221,34 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                           '<div class="col-xs-12 col-xl-12">' +
                             '<p class="paragraph paragraph-2">' + item.text + '</p>' +
                           '</div>' +
-                          '<div class="col-xs-2 custom-1260-pull-xl-0 push-xs-2 custom-1260-col-xl-4 custom-1260-push-xl-1"><a class="link-button btn viewbtn" href="viewpost.html" title="">View Post</a>' +
+                          '<div class="col-xs-2 push-xs-2"><a class="link-button btn viewbtn viewPostButton" name="' + item.username +  '" value="' + item.id + '" title="">View Post</a>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
                     '</div>'
                 });
                 $(".postRow").html(html_to_append);
+                //$('.profileUsername').click(function() {
+                //    alert($(this).text());
+                //});
+                $('.profileUsername').click(function() {
+                    window.location = "profilepage.html#" + $(this).text();
+                });
+
+                $('.viewPostButton').click(function() {
+                    console.log($(this)[0].getAttribute("value"));
+                    window.location = "viewpost.html#" + $(this)[0].getAttribute("name") + '&' + $(this)[0].getAttribute("value") ;
+                });
+
             });
+
     	
+    }
+
+    function redirect(){
+            $('.profileUsername').click(function() {
+            alert($(this).text());
+        });
     }
 
     function search(query){
@@ -237,19 +296,57 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
   <script> viewFeed("davidkhuynh") </script>
 */ 
 
-/* editprofile.html
+/* signup.html
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/routeFunctions.js"></script>
   <script>
       $( document ).ready(function() {
 
+        var createUserButton = document.getElementById("createUserButton");
+        createUserButton.onclick = function(){
+
+          createUser(document.getElementById('createUserName').value, document.getElementById('createBirthday').value,document.getElementById('createFirstName').value, document.getElementById('createLastName').value, document.getElementById('createBio').value);
+          //createUser("dan", "1996-12-11", "tsk", "toe", "til");
+          alert("success! check db, select * from Users");
+        }
+    });
+  </script>
+*/
+
+/* editprofile.html
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="js/routeFunctions.js"></script>
+  <script>
+    $( document ).ready(function() {
+
         var editProfileButton = document.getElementById("editProfileButton");
         editProfileButton.onclick = function(){
           editProfile("davidkhuynh", document.getElementById('editFirstName').value, document.getElementById('editLastName').value, document.getElementById('editBio').value);
           alert("success! check db, select * from Users");
-
         }
 
     });
+  </script>
+*/
+
+/* viewpost.html
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="js/routeFunctions.js"></script>
+  <script> 
+    var queryString = window.location.hash.substring(1);
+    var splitString = queryString.split("&");
+    var user = splitString[0];
+    var id = splitString[1];
+    
+    viewPost(user,id);
+  </script>
+*/
+
+/* profilepage.html
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="js/routeFunctions.js"></script>
+  <script> 
+  var userProfile = window.location.hash.substring(1);
+  viewUserProfile(userProfile); 
   </script>
 */
