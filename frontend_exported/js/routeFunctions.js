@@ -303,14 +303,23 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
       $( document ).ready(function() {
 
         var createUserButton = document.getElementById("createUserButton");
+
         createUserButton.onclick = function(){
+      
+          signUpUser(document.getElementById('createUserName').value, document.getElementById('createEmail').value, document.getElementById('createPassword').value);
 
           createUser(document.getElementById('createUserName').value, document.getElementById('createBirthday').value,document.getElementById('createFirstName').value, document.getElementById('createLastName').value, document.getElementById('createBio').value);
-          //createUser("dan", "1996-12-11", "tsk", "toe", "til");
-          alert("success! check db, select * from Users");
         }
     });
   </script>
+  <!-- Bootstrap's JavaScript dependencies -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+                    
+  <!-- Cognito User Pool related code -->
+  <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script>
+  <script type="text/javascript" src="js/authentication.js"></script>
+  <script type="text/javascript" src="js/user-interface.js"></script>
 */
 
 /* editprofile.html
@@ -372,4 +381,9 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
         }
     });
   </script>
+*/
+
+/*
+
+
 */

@@ -65,7 +65,7 @@ a.link-text.nav-link:hover {
 
 a.link-button.btn.form {
   display: block;
-  margin: 0 auto .437rem;
+  margin: 1rem auto .437rem;
   padding: 1.312rem .937rem;
   max-width: 50rem;
   width: 100%;

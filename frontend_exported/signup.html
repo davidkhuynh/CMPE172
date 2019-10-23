@@ -17,6 +17,7 @@
 </head>
 
 <body class="grid-1">
+<body class="grid-1">
   <div class="row nav-row">
     <div class="col-xs-12 col-xl-12 column-2 navbar-sticky-top">
       <div class="container-fluid nav-container navbar-sticky-top">
@@ -37,13 +38,14 @@
     <div class="col-xs-8 push-xs-2 column-5 col-xl-4 pull-xl-0 push-xl-4 col-lg-4 push-lg-4 pull-lg-0">
       <form class="form-container form-container-1">
         <span class="text-element form-input-caption">Username</span><input value="" name="text-name" type="text" class="form-input" id="createUserName">
+        <span class="text-element form-input-caption">Password</span><input value="" name="text-name" type="text" class="form-input" id="createPassword">
+        <span class="text-element form-input-caption">Email</span><input value="" name="text-name" type="text" class="form-input" id="createEmail">
         <span class="text-element form-input-caption">First Name</span><input value="" name="text-name" type="text" class="form-input" id="createFirstName">
         <span class="text-element form-input-caption">Last Name</span><input value="" name="text-name" type="text" class="form-input" id="createLastName">
         <span class="text-element form-input-caption">Bio</span><input value="" name="text-name" type="text" class="form-input" id="createBio">
         <span class="text-element form-input-caption">Birthday</span>
       </form><input value="" name="text-name" type="text" class="form-input" id="createBirthday">
-      <span class="text-element form-input-caption">Email</span><input value="" name="text-name" type="text" class="form-input" id="createEmail">
-      <span class="text-element form-input-caption">Profile Picture</span><input value="" name="file" type="file" class="file-1" id="file"><a class="link-button btn form" href="#" title="" id="createUserButton">REGISTER</a>
+      <span class="text-element form-input-caption" id="createProfilePicture">Profile Picture</span><input value="" name="file-name" type="file" class="file-1" id="file"><a class="link-button btn form" href="#" title="" id="createUserButton">REGISTER</a>
     </div>
   </div>
 
@@ -56,25 +58,37 @@
         var createUserButton = document.getElementById("createUserButton");
 
         createUserButton.onclick = function(){
-          var fd = new FormData();
-          var files = $('#file')[0].files[0];
-          
-          fd.append('file', files);
-          createUser(document.getElementById('createUserName').value, document.getElementById('createBirthday').value,document.getElementById('createFirstName').value, document.getElementById('createLastName').value, document.getElementById('createBio').value, fd);
-          //createUser("dan", "1996-12-11", "tsk", "toe", "til");
-          alert("success! check db, select * from Users");
-          console.log(fd);
-        }
+      
+
+          signUpUser(document.getElementById('createUserName').value, document.getElementById('createEmail').value, document.getElementById('createPassword').value, (err, response) => {
+              if (err) {
+                console.log(err);
+              }
+          });
+
+ 
+        };
 
 
 
 
     });
   </script>
+
+      <!-- Bootstrap's JavaScript dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+    <!-- Cognito User Pool related code -->
+    <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script>
+    <script type="text/javascript" src="js/authentication.js"></script>
+    <script type="text/javascript" src="js/user-interface.js"></script>
   <script src="js/jquery.min.js"></script>
   <script src="js/outofview.js"></script>
   <script src="js/tether.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
+
+
 </body>
 
 </html>
