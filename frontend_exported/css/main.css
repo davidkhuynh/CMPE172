@@ -15,6 +15,11 @@ h4.heading-1 {
   font-size: 2rem;
 }
 
+h4.heading-2 {
+  color: #000;
+  text-align: left;
+}
+
 p.paragraph {
   color: #808080;
   font-weight: 300;
@@ -36,7 +41,7 @@ p.paragraph.paragraph-2 {
 span.text-element.form-input-caption {
   margin-top: .437rem;
   margin-bottom: .437rem;
-  color: #fff;
+  color: #000;
   font-size: 1.03rem;
   font-family: 'Roboto', Arial, 'Helvetica Neue', Helvetica, sans-serif;
 }
@@ -100,6 +105,10 @@ a.link-button.btn.follow {
   color: #4e5256;
 }
 
+form.form-container.form-container-1 {
+  background-color: #fff;
+}
+
 input[type=text].form-input {
   padding: 1.125rem .937rem;
   width: 100%;
@@ -138,6 +147,7 @@ body > .row > [class*='col-xs-'].column-2 {
 }
 
 body > .row.row-1 {
+  padding-top: 2rem;
   padding-bottom: 2rem;
   background-color: #103d61;
 }
@@ -158,6 +168,12 @@ body.grid-1 {
   background-color: #103d61;
 }
 
+body > .row > [class*='col-xs-'].column-5 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: #fff;
+}
+
 .subgrid > .row.subgrid-row-1 {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -168,11 +184,6 @@ body.grid-1 {
   padding-top: 2rem;
   padding-bottom: 2rem;
   background-color: #fff;
-}
-
-.subgrid > .row > [class*='col-xs-'].subgrid-column-1 {
-  padding-right: 1px;
-  padding-left: 0;
 }
 
 .container-fluid.nav-container {
@@ -200,12 +211,20 @@ div.responsive-picture.picture-1 {
     padding-left: 5rem;
   }
 
+  span.text-element.form-input-caption {
+    color: #000;
+  }
+
   /* Interaction Elements */
 
   input[type=text].input-1 {
     min-width: 15px;
     max-width: 25rem;
     width: 15rem;
+  }
+
+  input[type=text].form-input {
+    word-spacing: 0;
   }
 
   /* Layout Elements */
@@ -341,7 +360,7 @@ div.responsive-picture.picture-1 {
   /* Text Elements */
 
   span.text-element.form-input-caption {
-    color: #fff;
+    color: #000;
   }
 
   a.link-text.nav-link {
@@ -413,8 +432,14 @@ div.responsive-picture.picture-1 {
   }
 
   body > .row > [class*='col-xs-'].column-5 {
-    padding-top: 6rem;
-    padding-bottom: 5rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 1.25rem;
+    background-color: #fff;
+  }
+
+  body > .row.row-1 {
+    padding-top: 1rem;
   }
 
   .subgrid > .row > [class*='col-xs-'].subgrid-column-2 {
