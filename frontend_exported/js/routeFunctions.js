@@ -3,6 +3,10 @@
     let SERVER_URL = EC2_URL;
 
 
+    function getCurrentUser(){
+        console.log($.post(EC2_URL + "/get_current_user"));
+    }
+
     function createUser(username, birthday, firstName, lastName, bio, pictureFile) {
     	console.log(
 	    	$.post(EC2_URL + "/create_user",

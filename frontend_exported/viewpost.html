@@ -71,6 +71,16 @@
   <script src="js/outofview.js"></script>
   <script src="js/tether.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="js/routeFunctions.js"></script>
+  <script> 
+    var queryString = window.location.hash.substring(1);
+    var splitString = queryString.split("&");
+    var user = splitString[0];
+    var id = splitString[1];
+    
+    viewPost(user,id);
+  </script>
 </body>
 
 </html>
