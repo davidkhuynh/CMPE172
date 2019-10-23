@@ -1,4 +1,5 @@
 import datetime
+from uuid import uuid4
 
 from flask import request
 
@@ -21,23 +22,21 @@ def create_post():
             pictureFile
 
 
-        1. add new post to request.database
-        2. upload image to s3
+        1. upload image to s3
+        2. add new post to request.database
     """
 
     request_data = get_request_data(request)
 
-    # update db with new post
-    picture_filename = request.files["pictureFile"].filename if "pictureFile" in request.files else ""
-    new_post = posts.create_post(request_data["currentUser"], picture_filename, request_data["text"])
-    if not new_post:
-        failure("post creation failure (potentially db error)")
+    # upload picture if it exists
+    upload_info = pic_utils.upload_post_picture(request, str(uuid4())) # todo check duplicates (highly unlikely)
+    if upload_info.upload_state == UploadState.failure:
+        failure("failed to upload image")
 
-    # upload picture
-    if "pictureFile" in request.files \
-            and not pic_utils.upload_post_picture(request.files["pictureFile"], new_post["id"]):
-        posts.delete_post(new_post["id"])
-        return failure("failed to upload post picture")
+    picture_filename = upload_info.filename
+
+    # update db with new post
+    new_post = posts.create_post(request_data["currentUser"], picture_filename, request_data["text"])
 
     return success(new_post)
 
@@ -72,10 +71,11 @@ def edit_post(post_id: str):
         return failure(f"{current_user} does not own this post")
 
     # if picture is updated, update picture
-    picture_filename = request.files["pictureFile"].filename if "pictureFile" in request.files else queried_post["picture"]
-    if "pictureFile" in request.files \
-            and not pic_utils.upload_post_picture(request.files["pictureFile"], queried_post["id"]):
-        return failure("failed to upload post picture")
+    upload_info = pic_utils.upload_post_picture(request, str(uuid4())) # todo check duplicates (highly unlikely)
+    if upload_info.upload_state == UploadState.failure:
+        failure("failed to upload image")
+
+    picture_filename = upload_info.filename if upload_info.upload_state == UploadState.success else queried_post["picture"]
 
     # update db
     edited_post = posts.edit_post(post_id, picture_filename, request_data["text"])
