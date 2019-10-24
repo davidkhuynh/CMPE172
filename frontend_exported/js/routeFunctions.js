@@ -2,6 +2,7 @@
     let LOCAL_URL = "http://0.0.0.0:5000";
     let EC2_bucket_URL = "http://s3.fumblr.club/feed";
     let SERVER_URL = LOCAL_URL;
+    let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/";
 
 
     function getCurrentUser(){
@@ -130,9 +131,11 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
 //for viewpost.html
     function viewPost(user, postId) {
 
-    		$.post(SERVER_URL + "/post/" + postId, function(post_data){
+    		$.post(
+    		    SERVER_URL + "/post/" + postId,
+                function(post_data){
                 console.log(post_data);
-                var html_to_append = '';
+                let html_to_append = '';
 
                 $.post(SERVER_URL + "/user/" + user, function(user_data){
 
@@ -155,7 +158,7 @@ html_to_append +=        '</div>' +
                         '<div class="row subgrid-row-1">' +
                           '<div class="col-xs-10 push-xs-0 offset-xs-1">' +
                             '<div class="responsive-picture picture-1">' +
-                              '<picture><img alt="Placeholder Picture" src="' + post_data.picture + '">' +
+                              '<picture><img alt="Placeholder Picture" src="' + IMAGE_HOST_URL + post_data.picture + '">' +
                               '</picture>' +
                             '</div>' +
                           '</div>' +
@@ -227,7 +230,8 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                         '<div class="row subgrid-row-1">' +
                           '<div class="col-xs-10 push-xs-0 offset-xs-1">' +
                             '<div class="responsive-picture picture-1">' +
-                              '<picture><img alt="Placeholder Picture" src="img/picture.svg">' +
+                              '<picture><img alt="Placeholder Picture" src="' + IMAGE_HOST_URL + item.picture + '">' +
+
                               '</picture>' +
                             '</div>' +
                           '</div>' +
