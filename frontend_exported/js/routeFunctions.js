@@ -1,12 +1,8 @@
     let EC2_URL = "http://ec2-34-221-65-162.us-west-2.compute.amazonaws.com:5000";
     let LOCAL_URL = "http://0.0.0.0:5000";
-    let EC2_bucket_URL = "http://s3.fumblr.club/feed";
-<<<<<<< HEAD
-    let SERVER_URL = EC2_URL;
-=======
-    let SERVER_URL = LOCAL_URL;
+    let EC2_bucket_URL = "http://s3.fumblr.club";
+    let SERVER_URL = EC2_bucket_URL;
     let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/";
->>>>>>> image-uploading
 
 
     function getCurrentUser(){
