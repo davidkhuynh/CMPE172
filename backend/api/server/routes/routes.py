@@ -11,6 +11,9 @@ from server.utils.http_utils import success, failure, get_request_data
 ### home routes
 from server.utils.pic_utils import UploadState
 
+@app.route("/get_current_user", methods=["GET", "POST"])
+def get_current_user():
+    return "anon"
 
 @app.route("/create_post", methods=["GET", "POST"])
 def create_post():

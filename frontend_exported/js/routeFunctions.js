@@ -1,8 +1,8 @@
     let EC2_URL = "http://ec2-34-221-65-162.us-west-2.compute.amazonaws.com:5000";
     let LOCAL_URL = "http://0.0.0.0:5000";
     let EC2_bucket_URL = "http://s3.fumblr.club";
-    let SERVER_URL = EC2_bucket_URL;
-    let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/";
+    let SERVER_URL = LOCAL_URL;
+    let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/"; // this needs a slash at the end
 
 
     function getCurrentUser(){
@@ -235,12 +235,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                         '<div class="row subgrid-row-1">' +
                           '<div class="col-xs-10 push-xs-0 offset-xs-1">' +
                             '<div class="responsive-picture picture-1">' +
-<<<<<<< HEAD
-                              '<picture><img alt="Placeholder Picture" src="http://d35f612x9d99xv.cloudfront.net/sk8.jpg">' +
-=======
                               '<picture><img alt="Placeholder Picture" src="' + IMAGE_HOST_URL + item.picture + '">' +
-
->>>>>>> image-uploading
                               '</picture>' +
                             '</div>' +
                           '</div>' +
