@@ -181,6 +181,11 @@ html_to_append +=        '</div>' +
 
     }
 
+    function deletePost(postId){
+        console.log(postId);
+        $.post(EC2_URL + "/delete_post/" + postId);
+    }
+
 //for index.html
     function viewFeed(user){
 
@@ -226,7 +231,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                           '<div class="col-xs-12 col-xl-12">' +
                             '<p class="paragraph paragraph-2">' + item.text + '</p>' +
                           '</div>' +
-                          '<div class="col-xs-8 push-xs-2"><a class="link-button btn viewbtn deletePostButton" href="" title="">Delete Post</a><a class="link-button btn viewbtn viewPostButton" name="' + item.username +  '" value="' + item.id + '" title="">View Post</a>' +
+                          '<div class="col-xs-8 push-xs-2"><a class="link-button btn viewbtn deletePostButton" value="' + item.id + '" title="">Delete Post</a><a class="link-button btn viewbtn viewPostButton" name="' + item.username +  '" value="' + item.id + '" title="">View Post</a>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
@@ -243,6 +248,11 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                 $('.viewPostButton').click(function() {
                     console.log($(this)[0].getAttribute("value"));
                     window.location = "viewpost.html#" + $(this)[0].getAttribute("name") + '&' + $(this)[0].getAttribute("value") ;
+                });
+
+                $('.deletePostButton').click(function() {
+                    console.log($(this)[0].getAttribute("value"));
+                    deletePost($(this)[0].getAttribute("value"));
                 });
 
             });
