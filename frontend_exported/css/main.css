@@ -15,6 +15,11 @@ h4.heading-1 {
   font-size: 2rem;
 }
 
+h4.heading-2 {
+  color: #000;
+  text-align: left;
+}
+
 p.paragraph {
   color: #808080;
   font-weight: 300;
@@ -36,7 +41,7 @@ p.paragraph.paragraph-2 {
 span.text-element.form-input-caption {
   margin-top: .437rem;
   margin-bottom: .437rem;
-  color: #fff;
+  color: #000;
   font-size: 1.03rem;
   font-family: 'Roboto', Arial, 'Helvetica Neue', Helvetica, sans-serif;
 }
@@ -60,7 +65,7 @@ a.link-text.nav-link:hover {
 
 a.link-button.btn.form {
   display: block;
-  margin: 0 auto .437rem;
+  margin: 1rem auto .437rem;
   padding: 1.312rem .937rem;
   max-width: 50rem;
   width: 100%;
@@ -95,9 +100,23 @@ a.link-button.btn.subscribe {
   font-size: 1rem;
 }
 
+a.link-button.btn.follow {
+  background-color: #fff;
+  color: #4e5256;
+}
+
+form.form-container.form-container-1 {
+  background-color: #fff;
+}
+
 input[type=text].form-input {
   padding: 1.125rem .937rem;
   width: 100%;
+}
+
+input[type=text].input-1 {
+  margin-top: 1rem;
+  max-width: 75rem;
 }
 
 /* Layout Elements */
@@ -118,7 +137,7 @@ body > .row.nav-row {
 }
 
 body > .row.subscribe {
-  padding: 2.5rem;
+  padding: 2.5rem 2.5rem 1rem;
   width: 100%;
   background-color: #103d61;
 }
@@ -128,11 +147,14 @@ body > .row > [class*='col-xs-'].column-2 {
 }
 
 body > .row.row-1 {
+  padding-top: 2rem;
   padding-bottom: 2rem;
   background-color: #103d61;
 }
 
 body > .row > [class*='col-xs-'].column-3 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
   border-radius: 0;
 }
 
@@ -146,6 +168,12 @@ body > .row.row-3 {
 
 body.grid-1 {
   background-color: #103d61;
+}
+
+body > .row > [class*='col-xs-'].column-5 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: #fff;
 }
 
 .subgrid > .row.subgrid-row-1 {
@@ -173,11 +201,37 @@ div.responsive-picture.picture-1 {
   max-width: 30rem;
 }
 
+.container-fluid.container-2 {
+  padding: 1rem;
+  background-color: #fff;
+}
+
+input[type=file].file-1 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
 @media screen and (min-width: 23.75rem) {
   /* Text Elements */
 
   p.paragraph.paragraph-2 {
     padding-left: 5rem;
+  }
+
+  span.text-element.form-input-caption {
+    color: #000;
+  }
+
+  /* Interaction Elements */
+
+  input[type=text].input-1 {
+    min-width: 15px;
+    max-width: 25rem;
+    width: 15rem;
+  }
+
+  input[type=text].form-input {
+    word-spacing: 0;
   }
 
   /* Layout Elements */
@@ -205,6 +259,13 @@ div.responsive-picture.picture-1 {
     margin-bottom: 0;
     padding: 30px 14px;
     font-size: 1.5rem;
+  }
+
+  input[type=text].input-1 {
+    padding-top: 2rem;
+    padding-right: 1px;
+    max-width: 27rem;
+    width: 50rem;
   }
 
   /* Layout Elements */
@@ -256,6 +317,10 @@ div.responsive-picture.picture-1 {
     line-height: 1.875rem;
   }
 
+  input[type=text].input-1 {
+    max-width: 20.6rem;
+  }
+
   /* Layout Elements */
 
   body > .row.subscribe {
@@ -286,6 +351,10 @@ div.responsive-picture.picture-1 {
     font-size: 1.5rem;
   }
 
+  input[type=text].input-1 {
+    max-width: 31rem;
+  }
+
   /* Layout Elements */
 
   body > .row.subscribe {
@@ -294,27 +363,11 @@ div.responsive-picture.picture-1 {
   }
 }
 
-@media screen and (min-width: 68.875rem) {
-  /* Text Elements */
-
-  a.link-text.nav-link {
-    float: left;
-    text-align: right;
-  }
-
-  /* Layout Elements */
-
-  body > .row > [class*='col-xs-'].column-3 {
-    padding-right: 7rem;
-    padding-left: 7rem;
-  }
-}
-
 @media screen and (min-width: 75rem) {
   /* Text Elements */
 
   span.text-element.form-input-caption {
-    color: #fff;
+    color: #000;
   }
 
   a.link-text.nav-link {
@@ -338,6 +391,19 @@ div.responsive-picture.picture-1 {
     border-radius: 0;
     background-color: #fff;
     color: #000;
+  }
+
+  input[type=text].input-1 {
+    position: relative;
+    float: none;
+    margin-top: .39rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+    padding-top: 2.86rem;
+    padding-right: 1rem;
+    min-width: 20px;
+    max-width: 31rem;
+    width: 29.5rem;
   }
 
   /* Layout Elements */
@@ -372,6 +438,17 @@ div.responsive-picture.picture-1 {
     padding-left: 8rem;
   }
 
+  body > .row > [class*='col-xs-'].column-5 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    padding-left: 1.25rem;
+    background-color: #fff;
+  }
+
+  body > .row.row-1 {
+    padding-top: 1rem;
+  }
+
   .subgrid > .row > [class*='col-xs-'].subgrid-column-2 {
     padding-right: 0;
     padding-left: 0;
@@ -399,69 +476,5 @@ div.responsive-picture.picture-1 {
   .container-fluid.container-1 {
     padding-right: 10rem;
     padding-left: 20.5rem;
-  }
-}
-
-@media screen and (min-width: 78.75rem) {
-  /* Text Elements */
-
-  h4 span.heading-text-1 {
-    font-size: 3.5625rem;
-  }
-
-  span.text-element.form-input-caption {
-    color: #fff;
-    font-weight: 300;
-    font-size: 1.19rem;
-    font-family: 'Roboto', Arial, 'Helvetica Neue', Helvetica, sans-serif;
-  }
-
-  /* Interaction Elements */
-
-  a.link-button.btn.subscribe {
-    background-color: #fff;
-    color: #000;
-  }
-
-  a.link-button.btn.viewbtn {
-    font-size: 1.19rem;
-  }
-
-  /* Layout Elements */
-
-  body > .row > [class*='col-xs-'].column-1 {
-    padding-top: 1.31rem;
-    background-color: transparent;
-  }
-
-  body > .row.row-1 {
-    padding-bottom: 7rem;
-  }
-
-  body > .row.subscribe {
-    padding-top: 3.312rem;
-  }
-
-  body > .row > [class*='col-xs-'].column-3 {
-    margin-right: .0625em;
-    padding-right: 10rem;
-    padding-bottom: 2rem;
-    padding-left: 10rem;
-  }
-
-  .subgrid > .row.subgrid-row-1 {
-    padding-bottom: 1rem;
-  }
-
-  .subgrid > .row.subgrid-row-2 {
-    padding-bottom: 1rem;
-  }
-
-  input[type=file].file-1 {
-    color: #fff;
-  }
-
-  .container-fluid.container-2 {
-    background-color: #fff;
   }
 }

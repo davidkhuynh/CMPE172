@@ -31,50 +31,47 @@
   </div>
   <div class="row subscribe">
     <div class="col-xs-12 col-xl-6 offset-xl-3">
-      <h4 class="heading-1"><span class="heading-text-1">SIGN UP</span>
+      <h4 class="heading-1"><span class="heading-text-1">LOGIN</span>
       </h4>
+      <h4></h4>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-8 push-xs-2 column-5 col-xl-4 pull-xl-0 push-xl-4 col-lg-4 push-lg-4 pull-lg-0">
       <form class="form-container form-container-1">
-        <span class="text-element form-input-caption">Username</span><input value="" name="text-name" type="text" class="form-input" id="createUserName">
-        <span class="text-element form-input-caption">Password</span><input value="" name="text-name" type="text" class="form-input" id="createPassword">
-        <span class="text-element form-input-caption">Email</span><input value="" name="text-name" type="text" class="form-input" id="createEmail">
-        <span class="text-element form-input-caption">First Name</span><input value="" name="text-name" type="text" class="form-input" id="createFirstName">
-        <span class="text-element form-input-caption">Last Name</span><input value="" name="text-name" type="text" class="form-input" id="createLastName">
-        <span class="text-element form-input-caption">Bio</span><input value="" name="text-name" type="text" class="form-input" id="createBio">
-        <span class="text-element form-input-caption">Birthday</span>
-      </form><input value="" name="text-name" type="text" class="form-input" id="createBirthday">
-      <span class="text-element form-input-caption" id="createProfilePicture">Profile Picture</span><input value="" name="file-name" type="file" class="file-1" id="file"><a class="link-button btn form" href="#" title="" id="createUserButton">REGISTER</a>
+        <span class="text-element form-input-caption">Username</span><input value="" name="text-name" type="text" class="form-input" id="confirmUser">
+        <span class="text-element form-input-caption" id="loginUser">Password</span><input value="" name="text-name" type="text" class="form-input" id="loginPassword">
+      </form><a class="link-button btn form" href="#" title="" id="loginButton">LOGIN</a>
     </div>
   </div>
   <script src="js/jquery.min.js"></script>
   <script src="js/outofview.js"></script>
   <script src="js/tether.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="js/routeFunctions.js"></script>
-  <script>
-      $( document ).ready(function() {
+        <script>
 
-        var createUserButton = document.getElementById("createUserButton");
+        $( document ).ready(function() {
 
-        createUserButton.onclick = function(){
-      
-
-          signUpUser(document.getElementById('createUserName').value, document.getElementById('createEmail').value, document.getElementById('createPassword').value, (err, response) => {
-              if (err) {
-                console.log(err);
-              }
-          });
-
- 
+        var loginButton = document.getElementById("loginButton");
+        loginButton.onclick = function(){
+              console.log(
+                signInUser(
+                  document.getElementById("loginUser").value, 
+                  document.getElementById("loginPassword").value,   
+                  (err, response) => 
+                  {
+                    if (err) {
+                      console.log(err);
+                    }
+                  }
+                )
+              );
         };
-    });
-  </script>
 
-      <!-- Bootstrap's JavaScript dependencies -->
+    });
+
+  </script>
+          <!-- Bootstrap's JavaScript dependencies -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     
@@ -82,10 +79,6 @@
     <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script>
     <script type="text/javascript" src="js/authentication.js"></script>
     <script type="text/javascript" src="js/user-interface.js"></script>
-  <script src="js/jquery.min.js"></script>
-  <script src="js/outofview.js"></script>
-  <script src="js/tether.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
 </body>
 
 </html>
