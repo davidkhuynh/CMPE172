@@ -100,14 +100,24 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
     function createPost(user, text) {
 
     	//text = testPostText;
+        let fd = new FormData();
+        let file = $('input[name="pictureFile"]').get(0).files[0];
+        fd.append("pictureFile", file);
+        let data = [];
+        data.push(
+            {
+                currentUser: user,
+                text: text
+            });
+        fd.append("data", JSON.stringify(data));
     	console.log(
-    		$.post(EC2_URL + "/create_post",
-    		{
-    			currentUser: user,
-    			text: text
-    		})
-    	);
-
+    		$.ajax({
+                url: SERVER_URL + "/create_post",
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: fd
+            }));
     }
 
 //for uploadpost.html not yet
