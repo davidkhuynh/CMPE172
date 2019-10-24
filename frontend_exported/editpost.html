@@ -42,7 +42,7 @@
           <div class="responsive-picture picture-1" id="postPicturePreview">
             <picture><img alt="Placeholder Picture" id="postPicture" src="img/picture.svg">
             </picture>
-          </div><input value="" type="file" class="file-1" id="editImage">
+          </div><input value="" type="file" class="file-1" id="pictureFile">
           <span class="text-element form-input-caption">Description</span><input value="" name="text-name" type="text" class="form-input" id="editPostText">
         </div>
       </form>
@@ -89,8 +89,8 @@
           window.location = "index.html";
       });
 
-      $(document).on("change", "#editImage", () => {
-          let picture = $("#editImage").get(0).files[0];
+      $(document).on("change", "#pictureFile", () => {
+          let picture = $("#pictureFile").get(0).files[0];
           let reader = new FileReader();
           reader.onload = (e) => {
               $("#postPicture").attr("src", e.target.result);

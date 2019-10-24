@@ -40,9 +40,9 @@
       <form class="form-container">
         <div class="container-fluid container-2">
           <div class="responsive-picture picture-1" id="postPicturePreview">
-            <picture><img alt="Placeholder Picture" src="img/picture.svg">
+            <picture><img alt="Placeholder Picture" src="img/picture.svg" id="postPicture">
             </picture>
-          </div><input value="" type="file" class="file-1" id="pictureFile" name="pictureFile">
+          </div><input value="" type="file" class="file-1" id="pictureFile">
           <span class="text-element form-input-caption">Description</span><input value="" name="text-name" type="text" class="form-input" id="createPostText">
         </div>
       </form>
@@ -72,13 +72,22 @@
   <script src="js/bootstrap.min.js"></script>
 
   <script>
-        $( document ).ready(function() {
+    $( document ).ready(function() {
         let createPostButton = document.getElementById("createPostButton");
         createPostButton.onclick = function(){
           createPost("anon", document.getElementById('createPostText').value);
         };
     });
-  </script>
+
+    $(document).on("change", "#pictureFile", () => {
+        let picture = $("#pictureFile").get(0).files[0];
+        let reader = new FileReader();
+        reader.onload = (e) => {
+            $("#postPicture").attr("src", e.target.result);
+        };
+        reader.readAsDataURL(picture);
+    });
+</script>
 </body>
 
 
