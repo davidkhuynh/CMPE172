@@ -64,14 +64,13 @@ def search_posts(constraints: QueryConstraints, search_string: str):
     return posts
 
 
-def all_posts(constraints: QueryConstraints, username: str):
+def all_posts(constraints: QueryConstraints):
     conn = rds.connect()
     with conn.cursor() as cur:
         cur.execute(f"SELECT * FROM Posts "
-                    f"ORDER BY postedOn DESC "
+                    f"ORDER BY postedOn {constraints.sort_by} "
                     f"LIMIT {constraints.total} "
-                    f"OFFSET {constraints.first};",
-                    (username,))
+                    f"OFFSET {constraints.first};")
 
         posts = __posts_from_rows(cur)
 

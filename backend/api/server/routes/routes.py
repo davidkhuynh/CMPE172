@@ -114,7 +114,7 @@ def feed(sort_by: str="mostRecent", first: int=0):
 
     # todo: followers etc
     #queried_posts = db_utils.grab_range_from_db(request_data, posts.feed_posts, username=request_data["currentUser"])
-    queried_posts = db_utils.grab_range_from_db(request_data, posts.all_posts, username=request_data["currentUser"])
+    queried_posts = db_utils.grab_range_from_db(request_data, posts.all_posts)
 
     return success(queried_posts)
 
