@@ -7,6 +7,29 @@ function getPoolData(){
 }
 
 var userPool;
+var currentToken;
+getUserPool();
+getCurrentToken();
+
+function getCurrentToken() {
+    const cognitoUser = userPool.getCurrentUser();
+    if (cognitoUser != null) {
+        cognitoUser.getSession((err, session) => {
+            if (err) {
+                console.log(err);
+            } else if (!session.isValid()) {
+                console.log("Invalid session.");
+                return null;
+            } else {
+                console.log("IdToken: " + session.getIdToken().getJwtToken());
+                currentToken = session.getIdToken().getJwtToken();
+            }
+        });
+    } else {
+        console.log("User not found.");
+        return null;
+    }
+}
 
 function getUserPool(){
 	if (userPool===undefined){

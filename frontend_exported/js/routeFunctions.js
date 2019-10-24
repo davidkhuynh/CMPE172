@@ -4,7 +4,6 @@
     let SERVER_URL = LOCAL_URL;
     let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/"; // this needs a slash at the end
 
-
     function getCurrentUser(){
         console.log($.post(SERVER_URL + "/get_current_user"));
     }

@@ -61,12 +61,17 @@
         var createUserButton = document.getElementById("createUserButton");
 
         createUserButton.onclick = function(){
-      
-
-          signUpUser(document.getElementById('createUserName').value, document.getElementById('createEmail').value, document.getElementById('createPassword').value, (err, response) => {
-              if (err) {
-                console.log(err);
-              }
+          signUpUser(
+              $("#createUserName").val(),
+              $('createEmail').val(),
+              $('createPassword').val(),
+              (err, response) => {
+                  if (err) {
+                    console.log(err);
+                  }
+                  else {
+                    window.location = "confirmation.html";
+                  }
           });
 
  
