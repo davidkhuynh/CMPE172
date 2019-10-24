@@ -128,67 +128,14 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
         });
     });
 
-//for viewpost.html
-    function viewPost(user, postId) {
-
-    		$.post(
-    		    SERVER_URL + "/post/" + postId,
-                function(post_data){
-                console.log(post_data);
-                let html_to_append = '';
-
-                $.post(SERVER_URL + "/user/" + user, function(user_data){
-
-html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
-                      '<div class="subgrid">' +
-                        '<div class="row subgrid-row-2">' +
-                          '<div class="col-xs-3 offset-xs-1 col-md-2">' +
-                            '<div class="responsive-picture picture-2">' +
-                              '<picture><img alt="Placeholder Picture" src="' + user_data.profilePicture + '">' +
-                              '</picture>' +
-                            '</div>' +
-                          '</div>' +
-                          '<div class="col-xs-6">' +
-                            '<a class="link-text text-link-1" href="profilepage.html">' + user_data.username + '</a>';
-                
-html_to_append +=        '</div>' +
-                        '</div>' + 
-                      '</div>' +
-                      '<div class="subgrid">' +
-                        '<div class="row subgrid-row-1">' +
-                          '<div class="col-xs-10 push-xs-0 offset-xs-1">' +
-                            '<div class="responsive-picture picture-1">' +
-                              '<picture><img alt="Placeholder Picture" src="' + IMAGE_HOST_URL + post_data.picture + '">' +
-                              '</picture>' +
-                            '</div>' +
-                          '</div>' +
-                        '</div>' +
-                        '<div class="row subgrid-row-2">' +
-                          '<div class="col-xs-12 col-xl-12">' +
-                            '<p class="paragraph paragraph-2">' + post_data.text + '</p>' +
-                          '</div>' +
-                          '<div class="col-xs-2 custom-1260-pull-xl-0 push-xs-2 custom-1260-col-xl-4 custom-1260-push-xl-1"><a class="link-button btn viewbtn" href="viewpost.html" title="">View Post</a><a class="link-button btn viewbtn deletePostButton" href="" title="">Delete Post</a>' +
-                          '</div>' +
-                        '</div>' +
-                      '</div>' +
-                    '</div>';
-                    $(".postRow").html(html_to_append);
-                });
-            });
-    };
-
-        
-
     function editPost(user, postId, text){
 
-  
+
     	console.log(
     		$.post(SERVER_URL + "/edit_post/" + postId,
     		{
     			currentUser: user,
     			text: text
-    			//text: text
-    			//picturefile
     		})
     	);
 
@@ -206,7 +153,7 @@ html_to_append +=        '</div>' +
 
     	//user = testUser;
 
- 
+
     		$.post(SERVER_URL + "/feed",
     		{
     			currentUser: user,
@@ -216,7 +163,7 @@ html_to_append +=        '</div>' +
 
                 $.each(data, function(i, item)
                 {
- 
+
 html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                       '<div class="subgrid">' +
                         '<div class="row subgrid-row-2">' +
@@ -272,7 +219,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
 
             });
 
-    	
+
     }
 
     function redirect(){
@@ -286,7 +233,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
     		$.post(SERVER_URL + "/search/" + query,
     		{
     		})
-    	);    	
+    	);
     }
 
     function follow(user, userToFollow){
@@ -297,7 +244,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
     			currentUser: user,
     		})
     	);
-    }    
+    }
 
 //for followButton
     $( document ).ready(function(e) {
