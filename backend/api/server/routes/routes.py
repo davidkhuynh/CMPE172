@@ -91,13 +91,16 @@ def delete_post(post_id: str):
     :return:
     """
 
+    '''
     request_data = get_request_data(request)
     current_user = request_data["currentUser"]
     queried_post = posts.get_post(post_id)
     if not queried_post or current_user != queried_post["username"]:
         return failure(f"{current_user} does not own this post, cannot delete")
+    '''
 
     posts.delete_post(post_id)
+    return success({})
 
 
 @app.route("/feed", methods=["GET", "POST"])
@@ -239,6 +242,8 @@ def delete_user():
 
     # update db
     users.delete_user(current_user)
+
+    return success({})
 
 
 @app.route("/follow/<user_to_follow>", methods=["GET", "POST"])

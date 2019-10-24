@@ -1,16 +1,16 @@
     let EC2_URL = "http://ec2-34-221-65-162.us-west-2.compute.amazonaws.com:5000";
     let LOCAL_URL = "http://0.0.0.0:5000";
     let EC2_bucket_URL = "http://s3.fumblr.club/feed";
-    let SERVER_URL = EC2_bucket_URL;
+    let SERVER_URL = LOCAL_URL;
 
 
     function getCurrentUser(){
-        console.log($.post(EC2_URL + "/get_current_user"));
+        console.log($.post(SERVER_URL + "/get_current_user"));
     }
 
     function createUser(username, birthday, firstName, lastName, bio, pictureFile) {
     	console.log(
-	    	$.post(EC2_URL + "/create_user",
+	    	$.post(SERVER_URL + "/create_user",
 	    	{
 		        username: username,
 		        birthday: birthday,
@@ -31,7 +31,7 @@
 
     function viewUserProfile(user) {
 
-    		$.post(EC2_URL + "/user/" + user, function(user_data){
+    		$.post(SERVER_URL + "/user/" + user, function(user_data){
                 console.log(user_data);
                 var profile_html_to_append = '';
 
@@ -80,7 +80,7 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
     function editProfile(user, firstName, lastName, bio, profilePicture){
 
     	console.log(
-	    	$.post(EC2_URL + "/edit_profile",
+	    	$.post(SERVER_URL + "/edit_profile",
 	    	{
 		        currentUser: user,
 		        firstName: firstName,
@@ -120,11 +120,11 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
 //for viewpost.html
     function viewPost(user, postId) {
 
-    		$.post(EC2_URL + "/post/" + postId, function(post_data){
+    		$.post(SERVER_URL + "/post/" + postId, function(post_data){
                 console.log(post_data);
                 var html_to_append = '';
 
-                $.post(EC2_URL + "/user/" + user, function(user_data){
+                $.post(SERVER_URL + "/user/" + user, function(user_data){
 
 html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                       '<div class="subgrid">' +
@@ -170,7 +170,7 @@ html_to_append +=        '</div>' +
 
   
     	console.log(
-    		$.post(EC2_URL + "/edit_post/" + postId,
+    		$.post(SERVER_URL + "/edit_post/" + postId,
     		{
     			currentUser: user,
     			text: text
@@ -192,7 +192,7 @@ html_to_append +=        '</div>' +
     	//user = testUser;
 
  
-    		$.post(EC2_URL + "/feed",
+    		$.post(SERVER_URL + "/feed",
     		{
     			currentUser: user,
     		}, function(data){
@@ -268,7 +268,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
 
     function search(query){
     	console.log(
-    		$.post(EC2_URL + "/search/" + query,
+    		$.post(SERVER_URL + "/search/" + query,
     		{
     		})
     	);    	
@@ -277,7 +277,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
     function follow(user, userToFollow){
 
     	console.log(
-    		$.post(EC2_URL + "/follow/" + userToFollow,
+    		$.post(SERVER_URL + "/follow/" + userToFollow,
     		{
     			currentUser: user,
     		})
@@ -295,7 +295,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
 
     	//user = testUser;
     	console.log(
-    		$.post(EC2_URL + "/following/" + user,
+    		$.post(SERVER_URL + "/following/" + user,
     		{
     			currentUser: user,
     		})
