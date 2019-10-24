@@ -4,7 +4,7 @@
 
 
     function getCurrentUser(){
-        console.log($.post(EC2_URL + "/get_current_user", headers: {"Authorization": localStorage}));
+        console.log($.post(EC2_URL + "/get_current_user"));
     }
 
     function createUser(username, birthday, firstName, lastName, bio, pictureFile) {
@@ -429,4 +429,35 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
     <script type="text/javascript" src="js/authentication.js"></script>
     <script type="text/javascript" src="js/user-interface.js"></script>
 
+*/
+
+/*
+    <!-- Cognito User Pool related code -->
+    <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script>
+    <script type="text/javascript" src="js/authentication.js"></script>
+    <script type="text/javascript" src="js/user-interface.js"></script>
+
+    <script>
+
+        $( document ).ready(function() {
+
+        var loginButton = document.getElementById("loginButton");
+        loginButton.onclick = function(){
+              console.log(
+                signInUser(
+                  document.getElementById("loginUser").value, 
+                  document.getElementById("loginPassword").value,   
+                  (err, response) => 
+                  {
+                    if (err) {
+                      console.log(err);
+                    }
+                  }
+                )
+              );
+        };
+
+    });
+
+  </script>
 */
