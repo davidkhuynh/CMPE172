@@ -40,7 +40,7 @@
       <form class="form-container">
         <div class="container-fluid container-2">
           <div class="responsive-picture picture-1" id="postPicturePreview">
-            <picture><img alt="Placeholder Picture" src="img/picture.svg">
+            <picture><img alt="Placeholder Picture" id="postPicture" src="img/picture.svg">
             </picture>
           </div><input value="" type="file" class="file-1" id="editImage">
           <span class="text-element form-input-caption">Description</span><input value="" name="text-name" type="text" class="form-input" id="editPostText">
@@ -65,17 +65,39 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/routeFunctions.js"></script>
   <script>
-  var postId = window.location.hash.substring(1);
+      const postId = window.location.hash.substring(1);
 
-        $( document ).ready(function() {
+      // load current content
+      $.post(
+          SERVER_URL + "/post/" + postId,
+          (postData) => {
+              $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
+              $("#editPostText").val(postData.text);
+          }
+      );
 
-        var editPostButton = document.getElementById("editPostButton");
-        editPostButton.onclick = function(){
-          editPost("anon", postId, document.getElementById('editPostText').value,);
-          alert("success! check db, select * from Users");
-        }
+      // button/input handlers
+      $("#editPostButton").click(() => {
+          let newText = $("#editPostText").val();
+          let picture = $("#editImage").get(0).files[0];
 
-    });
+          if (picture) {
+              editPostWithPicture("anon", postId, picture, newText);
+          } else {
+              editPost("anon", postId, newText);
+          }
+          window.location = "index.html";
+      });
+
+      $(document).on("change", "#editImage", () => {
+          let picture = $("#editImage").get(0).files[0];
+          let reader = new FileReader();
+          reader.onload = (e) => {
+              $("#postPicture").attr("src", e.target.result);
+          };
+          reader.readAsDataURL(picture);
+      });
+
   </script>
 </body>
 

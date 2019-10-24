@@ -76,31 +76,31 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/routeFunctions.js"></script>
   <script>
-    // set url
-    let queryString = window.location.hash.substring(1);
-    let splitString = queryString.split("&");
-    let user = splitString[0];
-    let postId = splitString[1];
+        // set url
+        let queryString = window.location.hash.substring(1);
+        let splitString = queryString.split("&");
+        let user = splitString[0];
+        let postId = splitString[1];
 
-    // update content
-    $.post(
-        SERVER_URL + "/post/" + postId,
-        (postData) => {
-            $("#postUser").text(postData.username);
-            $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
-            $("#postText").text(postData.text);
-            $("#editPostButton").attr("value", postData.id);
-            $("#deletePostButton").attr("value", postData.id);
-        }
-    );
-
-    // button handlers
-    $('#editPostButton').click(function() {
-         window.location = "editpost.html#" + postId ;
-     });
-
-    $('#deletePostButton').click(function() {
+        // update content
         $.post(
+            SERVER_URL + "/post/" + postId,
+            (postData) => {
+                $("#postUser").text(postData.username);
+                $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
+                $("#postText").text(postData.text);
+                $("#editPostButton").attr("value", postData.id);
+                $("#deletePostButton").attr("value", postData.id);
+            }
+        );
+
+        // button handlers
+        $('#editPostButton').click(() => {
+             window.location = "editpost.html#" + postId ;
+         });
+
+        $('#deletePostButton').click(() => {
+            $.post(
             SERVER_URL + "/delete_post/" + postId,
             () => {
                 window.location = "index.html";

@@ -129,8 +129,6 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
     });
 
     function editPost(user, postId, text){
-
-
     	console.log(
     		$.post(SERVER_URL + "/edit_post/" + postId,
     		{
@@ -138,8 +136,26 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
     			text: text
     		})
     	);
+    }
 
-        window.location = "index.html";
+    function editPostWithPicture(user, postId, picture, text) {
+        let fd = new FormData();
+        fd.append("pictureFile", picture);
+        let data = [];
+        data.push(
+            {
+                currentUser: user,
+                text: text
+            });
+        fd.append("data", JSON.stringify(data));
+        console.log(
+            $.ajax({
+                url: SERVER_URL + "/edit_post/" + postId,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                data: fd
+            }));
     }
 
     function deletePost(postId){
