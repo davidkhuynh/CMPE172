@@ -11,6 +11,12 @@ var currentToken;
 getUserPool();
 getCurrentToken();
 
+const authBeforeSend = (xhr) => {
+    xhr.setRequestHeader("X-MyApp-Authorization", "Bearer " + currentToken);
+};
+
+
+
 function getCurrentToken() {
     const cognitoUser = userPool.getCurrentUser();
     if (cognitoUser != null) {

@@ -52,12 +52,8 @@
 
         $( document ).ready(function() {
 
-        var confirmationButton = document.getElementById("confirmationButton");
-        confirmationButton.onclick = function(){
-              getUser(document.getElementById("confirmUser").value).confirmRegistration(document.getElementById("confirmCode").value, true,  (err, response) => {if (err) {
-                console.log(err);
-              }});
-           
+
+
         };
 
     });

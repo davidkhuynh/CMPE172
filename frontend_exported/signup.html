@@ -46,7 +46,7 @@
         <span class="text-element form-input-caption">Bio</span><input value="" name="text-name" type="text" class="form-input" id="createBio">
         <span class="text-element form-input-caption">Birthday</span>
       </form><input value="" name="text-name" type="text" class="form-input" id="createBirthday">
-      <span class="text-element form-input-caption" id="createProfilePicture">Profile Picture</span><input value="" name="file-name" type="file" class="file-1" id="file"><a class="link-button btn form" href="#" title="" id="createUserButton">REGISTER</a>
+      <span class="text-element form-input-caption" id="createProfilePicture">Profile Picture</span><input value="" name="file-name" type="file" class="file-1" id="profilePicture"><a class="link-button btn form" href="#" title="" id="createUserButton">REGISTER</a>
     </div>
   </div>
   <script src="js/jquery.min.js"></script>
@@ -58,19 +58,31 @@
   <script>
       $( document ).ready(function() {
 
-        var createUserButton = document.getElementById("createUserButton");
+        let createUserButton = document.getElementById("createUserButton");
+        let username = $("#createUserName").val();
+        let email = $("#createEmail").val();
+        let password = $("#createPassword").val();
+        let birthday = $("#createBirthday").val();
+        let firstName = $("#createFirstName").val();
+        let lastName = $("#createLastName").val();
+        let profilePicture = $("#profilePicture").get(0).files[0];
 
         createUserButton.onclick = function(){
           signUpUser(
-              $("#createUserName").val(),
-              $('createEmail').val(),
-              $('createPassword').val(),
+              username,
+              email,
+              password,
               (err, response) => {
                   if (err) {
-                    console.log(err);
+                      console.log(err);
                   }
                   else {
-                    window.location = "confirmation.html";
+                      if (profilePicture) {
+                          createUserWithProfilePicture(username, birthday, firstName, lastName, bio, profilePicture);
+                      } else {
+                          createUser(username, birthday, firstName, lastName, bio);
+                      }
+                      window.location = "confirmation.html";
                   }
           });
 

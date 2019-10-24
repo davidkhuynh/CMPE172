@@ -8,7 +8,20 @@
         console.log($.post(SERVER_URL + "/get_current_user"));
     }
 
-    function createUser(username, birthday, firstName, lastName, bio, pictureFile) {
+    function createUserWithProfilePicture(username, birthday, firstName, lastName, bio, profilePicture) {
+        postWithFile(
+            SERVER_URL + "/create_user",
+            profilePicture,
+            "profilePicture",
+            {
+                username: username,
+                birthday: birthday,
+                firstName: firstName,
+                lastName: lastName,
+                bio: bio,
+            });
+    }
+        function createUser(username, birthday, firstName, lastName, bio) {
     	console.log(
 	    	$.post(SERVER_URL + "/create_user",
 	    	{
