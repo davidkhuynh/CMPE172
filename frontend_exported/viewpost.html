@@ -36,6 +36,7 @@
           <div class="col-xs-3 offset-xs-1 col-md-2">
             <div class="responsive-picture picture-2">
               <picture><img alt="Placeholder Picture" src="img/picture.svg">
+
               </picture>
             </div>
           </div>
@@ -50,7 +51,7 @@
         <div class="row subgrid-row-1">
           <div class="col-xs-10 push-xs-0 offset-xs-1">
             <div class="responsive-picture picture-1">
-              <picture><img alt="Placeholder Picture" src="img/picture.svg" id="postPicture">
+              <picture><img alt="Placeholder Picture" id="postPicture">
               </picture>
             </div>
           </div>
@@ -86,8 +87,13 @@
         $.post(
             SERVER_URL + "/post/" + postId,
             (postData) => {
+                console.log(postData);
                 $("#postUser").text(postData.username);
-                $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
+                if (postData.picture.length > 0) {
+                    $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
+                } else {
+                    $("#postPicture").hide();
+                }
                 $("#postText").text(postData.text);
                 $("#editPostButton").attr("value", postData.id);
                 $("#deletePostButton").attr("value", postData.id);

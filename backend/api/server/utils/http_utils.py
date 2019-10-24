@@ -14,7 +14,7 @@ def get_request_data(request):
     request_data = request.form
     if not request_data:
         return ImmutableMultiDict()
-    # for request data with image uploads where the actual data is encoded as as string
-    if "data" in request_data and len(request_data) == 1:
+    # for request data with image uploads where the actual data is encoded as as string in a field called "data"
+    if "data" in request_data:
         return ast.literal_eval(request_data["data"])[0]
     return request_data

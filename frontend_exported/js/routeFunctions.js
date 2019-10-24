@@ -18,7 +18,6 @@
 		        firstName: firstName,
 		        lastName: lastName,
 		        bio: bio,
-		        //pictureFile: pictureFile
      		})
      	);
     }
@@ -91,6 +90,7 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
      		})
      	);
     }
+
 //for profilepage.html
     $( document ).ready(function(e) {
         $(".editProfileButton").click(function(){
@@ -100,62 +100,62 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
 
 //for uploadpost.html
     function createPost(user, text) {
-        let fd = new FormData();
-        let file = $('input[name="pictureFile"]').get(0).files[0];
-        fd.append("pictureFile", file);
-        let data = [];
-        data.push(
+        console.log(
+            $.post(SERVER_URL + "/create_post",
+                {
+                    currentUser: user,
+                    text: text,
+                })
+        );
+    }
+
+    function createPostWithPicture(user, picture, text) {
+        postWithFile(
+            SERVER_URL + "/create_post",
+            picture,
+            "pictureFile",
             {
                 currentUser: user,
                 text: text
             });
-        fd.append("data", JSON.stringify(data));
-    	console.log(
-    		$.ajax({
-                url: SERVER_URL + "/create_post",
-                type: "POST",
-                processData: false,
-                contentType: false,
-                data: fd
-            }));
-
         window.location = "index.html";
     }
-
-    $( document ).ready(function(e) {
-        $(".createPostButton").click(function(){
-            createPost(document.getElementById('createUserPost').value, document.getElementById('createPostText').value)
-        });
-    });
 
     function editPost(user, postId, text){
     	console.log(
     		$.post(SERVER_URL + "/edit_post/" + postId,
     		{
     			currentUser: user,
-    			text: text
+    			text: text,
     		})
     	);
     }
 
-    function editPostWithPicture(user, postId, picture, text) {
+    function postWithFile(url, file, fileField, otherFields) {
         let fd = new FormData();
-        fd.append("pictureFile", picture);
+        fd.append(fileField, file);
         let data = [];
-        data.push(
+        data.push(otherFields);
+        fd.append("data", JSON.stringify(data));
+        console.log(
+            $.ajax(
+                {
+                  url: url,
+                  type: "POST",
+                  processData: false,
+                  contentType: false,
+                  data: fd
+                }
+            )
+        );
+    }
+
+    function editPostWithPicture(user, postId, picture, text) {
+        postWithFile( `${SERVER_URL}/edit_post/${postId}`, picture, "pictureFile",
             {
                 currentUser: user,
                 text: text
             });
-        fd.append("data", JSON.stringify(data));
-        console.log(
-            $.ajax({
-                url: SERVER_URL + "/edit_post/" + postId,
-                type: "POST",
-                processData: false,
-                contentType: false,
-                data: fd
-            }));
     }
 
     function deletePost(postId){

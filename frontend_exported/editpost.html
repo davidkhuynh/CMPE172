@@ -43,14 +43,14 @@
             <picture><img alt="Placeholder Picture" id="postPicture" src="img/picture.svg">
             </picture>
           </div><input value="" type="file" class="file-1" id="pictureFile">
-          <span class="text-element form-input-caption">Description</span><input value="" name="text-name" type="text" class="form-input" id="editPostText">
+          <span class="text-element form-input-caption">Description</span><input value="" name="text-name" type="text" class="form-input" id="postText">
         </div>
       </form>
     </div>
   </div>
   <div class="row row-1">
     <div class="col-xs-4"></div>
-    <div class="col-xs-4"><a class="link-button btn form submit" href="#" title="Subscribe" id="editPostButton">SUBMIT</a>
+    <div class="col-xs-4"><a class="link-button btn form submit" href="#" title="Subscribe" id="submitPostButton">SUBMIT</a>
     </div>
     <div class="col-xs-4"></div>
   </div>
@@ -72,19 +72,19 @@
           SERVER_URL + "/post/" + postId,
           (postData) => {
               $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
-              $("#editPostText").val(postData.text);
+              $("#postText").val(postData.text);
           }
       );
 
       // button/input handlers
-      $("#editPostButton").click(() => {
-          let newText = $("#editPostText").val();
-          let picture = $("#editImage").get(0).files[0];
+      $("#submitPostButton").click(() => {
+          let text = $("#postText").val();
+          let picture = $("#pictureFile").get(0).files[0];
 
           if (picture) {
-              editPostWithPicture("anon", postId, picture, newText);
+              editPostWithPicture("anon", postId, picture, text);
           } else {
-              editPost("anon", postId, newText);
+              editPost("anon", postId, text);
           }
           window.location = "index.html";
       });
