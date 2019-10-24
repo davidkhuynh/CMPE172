@@ -153,7 +153,7 @@ html_to_append +=        '</div>' +
                           '<div class="col-xs-12 col-xl-12">' +
                             '<p class="paragraph paragraph-2">' + post_data.text + '</p>' +
                           '</div>' +
-                          '<div class="col-xs-2 custom-1260-pull-xl-0 push-xs-2 custom-1260-col-xl-4 custom-1260-push-xl-1"><a class="link-button btn viewbtn" href="viewpost.html" title="">View Post</a>' +
+                          '<div class="col-xs-2 custom-1260-pull-xl-0 push-xs-2 custom-1260-col-xl-4 custom-1260-push-xl-1"><a class="link-button btn viewbtn" href="viewpost.html" title="">View Post</a><a class="link-button btn viewbtn deletePostButton" href="" title="">Delete Post</a>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
