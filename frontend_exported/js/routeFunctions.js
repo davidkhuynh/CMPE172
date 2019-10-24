@@ -1,6 +1,7 @@
     let EC2_URL = "http://ec2-34-221-65-162.us-west-2.compute.amazonaws.com:5000";
     let LOCAL_URL = "http://0.0.0.0:5000";
-    let SERVER_URL = EC2_URL;
+    let EC2_bucket_URL = "http://s3.fumblr.club/feed";
+    let SERVER_URL = EC2_bucket_URL;
 
 
     function getCurrentUser(){
