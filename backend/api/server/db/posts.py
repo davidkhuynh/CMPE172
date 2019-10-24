@@ -97,6 +97,7 @@ def delete_post(post_id: str):
     conn = rds.connect()
     with conn.cursor() as cur:
         cur.execute("DELETE FROM Posts WHERE id=%s", (post_id,))
+    conn.commit()
 
 
 ## private

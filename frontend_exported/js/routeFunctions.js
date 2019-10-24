@@ -34,7 +34,7 @@
 
     		$.post(SERVER_URL + "/user/" + user, function(user_data){
                 console.log(user_data);
-                var profile_html_to_append = '';
+                let profile_html_to_append = '';
 
 profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3">' +
                               '<div class="subgrid">' +
@@ -98,9 +98,8 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
         });
     });
 
+//for uploadpost.html
     function createPost(user, text) {
-
-    	//text = testPostText;
         let fd = new FormData();
         let file = $('input[name="pictureFile"]').get(0).files[0];
         fd.append("pictureFile", file);
@@ -119,9 +118,10 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
                 contentType: false,
                 data: fd
             }));
+
+        window.location = "index.html";
     }
 
-//for uploadpost.html not yet
     $( document ).ready(function(e) {
         $(".createPostButton").click(function(){
             createPost(document.getElementById('createUserPost').value, document.getElementById('createPostText').value)
@@ -192,11 +192,13 @@ html_to_append +=        '</div>' +
     		})
     	);
 
+        window.location = "index.html";
     }
 
     function deletePost(postId){
         console.log(postId);
-        $.post(EC2_URL + "/delete_post/" + postId);
+        $.post(SERVER_URL + "/delete_post/" + postId);
+        window.location = "index.html";
     }
 
 //for index.html
@@ -210,7 +212,7 @@ html_to_append +=        '</div>' +
     			currentUser: user,
     		}, function(data){
                 console.log(data);
-                var html_to_append = '';
+                let html_to_append = '';
 
                 $.each(data, function(i, item)
                 {
@@ -331,7 +333,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
   <script>
       $( document ).ready(function() {
 
-        var createUserButton = document.getElementById("createUserButton");
+        let createUserButton = document.getElementById("createUserButton");
 
         createUserButton.onclick = function(){
       
@@ -367,10 +369,9 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
   <script>
     $( document ).ready(function() {
 
-        var editProfileButton = document.getElementById("editProfileButton");
+        let editProfileButton = document.getElementById("editProfileButton");
         editProfileButton.onclick = function(){
           editProfile("davidkhuynh", document.getElementById('editFirstName').value, document.getElementById('editLastName').value, document.getElementById('editBio').value);
-          alert("success! check db, select * from Users");
         }
 
     });
@@ -381,10 +382,10 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/routeFunctions.js"></script>
   <script> 
-    var queryString = window.location.hash.substring(1);
-    var splitString = queryString.split("&");
-    var user = splitString[0];
-    var id = splitString[1];
+    let queryString = window.location.hash.substring(1);
+    let splitString = queryString.split("&");
+    let user = splitString[0];
+    let id = splitString[1];
     
     viewPost(user,id);
   </script>
@@ -394,7 +395,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/routeFunctions.js"></script>
   <script> 
-  var userProfile = window.location.hash.substring(1);
+  let userProfile = window.location.hash.substring(1);
   viewUserProfile(userProfile); 
   </script>
 */
@@ -406,17 +407,16 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
   <script>
       $( document ).ready(function() {
 
-        var createUserButton = document.getElementById("createUserButton");
+        let createUserButton = document.getElementById("createUserButton");
         createUserButton.onclick = function(){
 
-          //var fd = new FormData();
-          //var files = $('#createProfilePicture')[0].files[0];
+          //let fd = new FormData();
+          //let files = $('#createProfilePicture')[0].files[0];
           //fd.append('file', files);
 
           //console.log(fd);
           //createUser(document.getElementById('createUserName').value, document.getElementById('createBirthday').value,document.getElementById('createFirstName').value, document.getElementById('createLastName').value, document.getElementById('createBio').value);
           //createUser("dan", "1996-12-11", "tsk", "toe", "til");
-          alert("success! check db, select * from Users");
         }
     });
   </script>
@@ -432,7 +432,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
 
         $( document ).ready(function() {
 
-        var confirmationButton = document.getElementById("confirmationButton");
+        let confirmationButton = document.getElementById("confirmationButton");
         confirmationButton.onclick = function(){
               getUser(document.getElementById("confirmUser").value).confirmRegistration(document.getElementById("confirmCode").value, true,  (err, response) => {if (err) {
                 console.log(err);
@@ -465,7 +465,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
 
         $( document ).ready(function() {
 
-        var loginButton = document.getElementById("loginButton");
+        let loginButton = document.getElementById("loginButton");
         loginButton.onclick = function(){
               console.log(
                 signInUser(
