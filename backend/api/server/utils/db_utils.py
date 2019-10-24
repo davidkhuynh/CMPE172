@@ -41,7 +41,7 @@ def __parse_query_constraints(request_data):
     if not request_data:
         return QueryConstraints()
 
-    sort_by = SORT_ORDERS[request_data.get("sort_by", default="")]
+    sort_by = SORT_ORDERS[request_data.get("sortBy", default="")]
     # get from first_post to last_post
     first = request_data.get("first")
     if not first:

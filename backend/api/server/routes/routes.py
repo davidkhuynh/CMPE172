@@ -101,7 +101,9 @@ def delete_post(post_id: str):
 
 
 @app.route("/feed", methods=["GET", "POST"])
-def feed():
+@app.route("/feed/<sort_by>", methods=["GET", "POST"])
+@app.route("/feed/<sort_by>/<int:first>", methods=["GET", "POST"])
+def feed(sort_by: str="mostRecent", first: int=0):
     """
         request body:
             currentUser
@@ -109,7 +111,10 @@ def feed():
         1. list n most recent posts from people user follows
     """
     request_data = get_request_data(request)
-    queried_posts = db_utils.grab_range_from_db(request_data, posts.feed_posts, username=request_data["currentUser"])
+
+    # todo: followers etc
+    #queried_posts = db_utils.grab_range_from_db(request_data, posts.feed_posts, username=request_data["currentUser"])
+    queried_posts = db_utils.grab_range_from_db(request_data, posts.all_posts, username=request_data["currentUser"])
 
     return success(queried_posts)
 
