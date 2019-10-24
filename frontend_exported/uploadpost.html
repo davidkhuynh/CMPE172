@@ -64,7 +64,7 @@
   <script>
         $( document ).ready(function() {
         var createPostButton = document.getElementById("createPostButton");
-        confirmationButton.onclick = function(){
+        createPostButton.onclick = function(){
           createPost("anon", document.getElementById('createPostText').value);
           alert("success! check db, select * from Users");
            
