@@ -1,7 +1,7 @@
     let EC2_URL = "http://ec2-34-221-65-162.us-west-2.compute.amazonaws.com:5000";
     let LOCAL_URL = "http://0.0.0.0:5000";
     let EC2_bucket_URL = "http://s3.fumblr.club/feed";
-    let SERVER_URL = LOCAL_URL;
+    let SERVER_URL = EC2_URL;
 
 
     function getCurrentUser(){
@@ -155,7 +155,7 @@ html_to_append +=        '</div>' +
                         '<div class="row subgrid-row-1">' +
                           '<div class="col-xs-10 push-xs-0 offset-xs-1">' +
                             '<div class="responsive-picture picture-1">' +
-                              '<picture><img alt="Placeholder Picture" src="' + post_data.picture + '">' +
+                              '<picture><img alt="Placeholder Picture" src=" http://d35f612x9d99xv.cloudfront.net/sk8.jpg ">' +
                               '</picture>' +
                             '</div>' +
                           '</div>' +
@@ -189,6 +189,11 @@ html_to_append +=        '</div>' +
     		})
     	);
 
+    }
+
+    function deletePost(postId){
+        console.log(postId);
+        $.post(EC2_URL + "/delete_post/" + postId);
     }
 
 //for index.html
@@ -227,7 +232,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                         '<div class="row subgrid-row-1">' +
                           '<div class="col-xs-10 push-xs-0 offset-xs-1">' +
                             '<div class="responsive-picture picture-1">' +
-                              '<picture><img alt="Placeholder Picture" src="img/picture.svg">' +
+                              '<picture><img alt="Placeholder Picture" src="http://d35f612x9d99xv.cloudfront.net/sk8.jpg">' +
                               '</picture>' +
                             '</div>' +
                           '</div>' +
@@ -236,7 +241,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                           '<div class="col-xs-12 col-xl-12">' +
                             '<p class="paragraph paragraph-2">' + item.text + '</p>' +
                           '</div>' +
-                          '<div class="col-xs-8 push-xs-2"><a class="link-button btn viewbtn deletePostButton" href="" title="">Delete Post</a><a class="link-button btn viewbtn viewPostButton" name="' + item.username +  '" value="' + item.id + '" title="">View Post</a>' +
+                          '<div class="col-xs-8 push-xs-2"><a class="link-button btn viewbtn deletePostButton" value="' + item.id + '" title="">Delete Post</a><a class="link-button btn viewbtn viewPostButton" name="' + item.username +  '" value="' + item.id + '" title="">View Post</a>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
@@ -253,6 +258,11 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                 $('.viewPostButton').click(function() {
                     console.log($(this)[0].getAttribute("value"));
                     window.location = "viewpost.html#" + $(this)[0].getAttribute("name") + '&' + $(this)[0].getAttribute("value") ;
+                });
+
+                $('.deletePostButton').click(function() {
+                    console.log($(this)[0].getAttribute("value"));
+                    deletePost($(this)[0].getAttribute("value"));
                 });
 
             });
