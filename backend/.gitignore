@@ -1,10 +1,12 @@
 sql_login
 sql_update
 *ec2_login
-export_backend
 venv
 __pycache__
 *.pyc
 rds_config.py
 s3_config.py
 cognito_config.py
+oregon
+tokyo
+serverpass
