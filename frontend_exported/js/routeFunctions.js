@@ -4,7 +4,7 @@
 
 
     function getCurrentUser(){
-        console.log($.post(EC2_URL + "/get_current_user"));
+        console.log($.post(EC2_URL + "/get_current_user", headers: {"Authorization": localStorage}));
     }
 
     function createUser(username, birthday, firstName, lastName, bio, pictureFile) {
@@ -109,7 +109,7 @@ profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3
 
     }
 
-//for uploadpost.html
+//for uploadpost.html not yet
     $( document ).ready(function(e) {
         $(".createPostButton").click(function(){
             createPost(document.getElementById('createUserPost').value, document.getElementById('createPostText').value)
@@ -208,7 +208,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                           '<div class="col-xs-3">' +
                             '<a class="link-text text-link-1 profileUsername">' + item.username + '</a>' +
                           '</div>' +
-                          '<div class="col-xs-2"><a class="link-button btn viewbtn" href="viewpost.html" title="">Follow</a>' +
+                          '<div class="col-xs-2"><a class="link-button btn viewbtn" title="">Follow</a>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
@@ -225,7 +225,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
                           '<div class="col-xs-12 col-xl-12">' +
                             '<p class="paragraph paragraph-2">' + item.text + '</p>' +
                           '</div>' +
-                          '<div class="col-xs-2 push-xs-2"><a class="link-button btn viewbtn viewPostButton" name="' + item.username +  '" value="' + item.id + '" title="">View Post</a>' +
+                          '<div class="col-xs-8 push-xs-2"><a class="link-button btn viewbtn deletePostButton" href="" title="">Delete Post</a><a class="link-button btn viewbtn viewPostButton" name="' + item.username +  '" value="' + item.id + '" title="">View Post</a>' +
                           '</div>' +
                         '</div>' +
                       '</div>' +
@@ -298,6 +298,7 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/routeFunctions.js"></script>
   <script> viewFeed("db_test2") </script>
+  <script> getCurrentUser() </script>
 */ 
 
 /* signup.html
@@ -397,7 +398,35 @@ html_to_append +=   '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
   </script>
 */
 
-/*
+/* confirmation.html
+  <script src="js/jquery.min.js"></script>
+  <script src="js/outofview.js"></script>
+  <script src="js/tether.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
 
+  <script>
+
+        $( document ).ready(function() {
+
+        var confirmationButton = document.getElementById("confirmationButton");
+        confirmationButton.onclick = function(){
+              getUser(document.getElementById("confirmUser").value).confirmRegistration(document.getElementById("confirmCode").value, true,  (err, response) => {if (err) {
+                console.log(err);
+              }});
+           
+        };
+
+    });
+
+  </script>
+
+        <!-- Bootstrap's JavaScript dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+    <!-- Cognito User Pool related code -->
+    <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script>
+    <script type="text/javascript" src="js/authentication.js"></script>
+    <script type="text/javascript" src="js/user-interface.js"></script>
 
 */
