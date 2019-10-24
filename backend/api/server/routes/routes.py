@@ -26,13 +26,13 @@ def create_post():
         2. add new post to request.database
     """
 
-    request_data = get_request_data(request)
 
     # upload picture if it exists
     upload_info = pic_utils.upload_post_picture(request, str(uuid4())) # todo check duplicates (highly unlikely)
     if upload_info.upload_state == UploadState.failure:
         failure("failed to upload image")
 
+    request_data = get_request_data(request)
     picture_filename = upload_info.filename
 
     # update db with new post
