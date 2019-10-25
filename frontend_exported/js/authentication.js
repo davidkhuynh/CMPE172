@@ -13,17 +13,20 @@ function authAjax(url, ajaxData, processUsernameCallback, afterResponseCallback)
     let userPool = new CognitoUserPool(GLOBALS.poolData);
     let cognitoUser = userPool.getCurrentUser();
 
-    if (cognitoUser != null) {
-        cognitoUser.getSession((error, session) => {
-            if (error) {
-                console.log("cognito session error: " + error);
-                return;
-            }
-            if (session) {
-                processUsernameCallback(cognitoUser.username);
-            }
-        });
+    if (cognitoUser == null) {
+        afterResponseCallback(false);
+        return;
     }
+
+    cognitoUser.getSession((error, session) => {
+        if (error) {
+            console.log("cognito session error: " + error);
+            return;
+        }
+        if (session) {
+            processUsernameCallback(cognitoUser.username);
+        }
+    });
 
     ajaxData.accessToken = cognitoUser.signInUserSession.accessToken.jwtToken;
 
@@ -54,7 +57,9 @@ function wrapCallback(callback){
 function isLoggedIn() {
     let userPool = new CognitoUserPool(GLOBALS.poolData);
     let cognitoUser = userPool.getCurrentUser();
-    return cognitoUser != null;
+    if (cognitoUser == null)
+        return false;
+    return cognitoUser.Session != null;
 }
 
 
@@ -107,10 +112,14 @@ function signInUser(username, password, callback){
 function signOutUser(){
     let userPool = new CognitoUserPool(GLOBALS.poolData);
     let cognitoUser = userPool.getCurrentUser();
-    if (cognitoUser){
+    if (cognitoUser != null){
         if (cognitoUser.signInUserSession){
-            cognitoUser.signOut();
+            console.log("signing out...");
+            cognitoUser.globalSignOut();
         }
     }
+
+    // clear cache ourselves because amazon didnt do it...
+    this.storage.clear();
 }
 

@@ -46,4 +46,5 @@ def __decode_token(token: str):
         return False
     # now we can use the claims
     print(claims)
-    return claims
+    #return claims
+    return True
