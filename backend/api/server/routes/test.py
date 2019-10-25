@@ -1,6 +1,6 @@
 from server import app
-from flask_cognito import cognito_auth_required, current_user, current_cognito_jwt
-from flask import jsonify
+from server import cognito
+from flask import request
 
 @app.route("/test")
 def test():
@@ -8,10 +8,9 @@ def test():
         "data": "test"
     }
 
-@app.route("/secret_test")
-@cognito_auth_required
+@app.route("/secret_test", methods=["GET", "POST"])
 def secret_test():
-    return jsonify({
-        'cognito_username': current_cognito_jwt['username'],   # from cognito pool
-        'user_id': current_user.id,   # from your database
-    })
+    access_token = request.form["accessToken"]
+    if (cognito.token_valid(access_token)):
+        return "Successfully validated!"
+    return "Failure to validate, no accessToken in request data"

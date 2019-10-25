@@ -39,7 +39,7 @@
   <div class="row">
     <div class="col-xs-8 push-xs-2 column-5 col-xl-4 pull-xl-0 push-xl-4 col-lg-4 push-lg-4 pull-lg-0">
       <form class="form-container form-container-1">
-        <span class="text-element form-input-caption">Username</span><input value="" name="text-name" type="text" class="form-input" id="confirmUser">
+        <span class="text-element form-input-caption">Username</span><span id="username">n</span>
         <span class="text-element form-input-caption">Confirmation Code</span><input value="" name="text-name" type="text" class="form-input" id="confirmCode">
       </form><a class="link-button btn form" href="#" title="" id="confirmationButton">CONFIRM</a>
     </div>
@@ -51,13 +51,15 @@
   <script>
 
         $( document ).ready(function() {
+            // get auth data to load username field
+            let currentUser = userPool.getCurrentUser();
 
-
-
-        };
-
-    });
-
+            // check jwt token
+            if (currentUser != null) {
+                refreshCurrentToken();
+                $("#username").text(currentUser.username);
+            }
+        });
   </script>
 
         <!-- Bootstrap's JavaScript dependencies -->
