@@ -106,6 +106,16 @@ def delete_post(post_id: str):
     return success({})
 
 
+@app.route("/explore", methods=["GET", "POST"])
+def explore():
+    """
+        1. list n most recent posts
+    """
+    request_data = get_request_data(request)
+    queried_posts = db_utils.grab_range_from_db(request_data, posts.all_posts)
+    return success(queried_posts)
+
+
 @app.route("/feed", methods=["GET", "POST"])
 @app.route("/feed/<sort_by>", methods=["GET", "POST"])
 @app.route("/feed/<sort_by>/<int:first>", methods=["GET", "POST"])

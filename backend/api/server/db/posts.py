@@ -105,7 +105,7 @@ def __get_latest_post_from_user(conn, username: str):
     with conn.cursor() as cur:
         cur.execute("SELECT * FROM Posts "
                     "WHERE username=%s "
-                    "ORDER BY editedOn LIMIT 1", (username))
+                    "ORDER BY editedOn DESC LIMIT 1", (username))
         row = cur.fetchone()
 
     return __post_from_row(row)

@@ -1,32 +1,10 @@
 <!DOCTYPE html>
 <html lang="la">
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="generator" content="Responsive Bootstrap Builder 2.5.308 - Trial Version">
-  <title>Rocket - Home</title>
-  <link rel="stylesheet" href="css/bootstrap4.min.css">
-  <link rel="stylesheet" href="css/wireframe-theme.min.css">
-  <script>document.createElement( "picture" );</script>
-  <script class="picturefill" async="async" src="js/picturefill.min.js"></script>
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Condensed%7CRoboto:300,400">
-</head>
-
 <body class="grid-1">
-  <div class="row nav-row">
-    <div class="col-xs-12 col-xl-12 column-2 navbar-sticky-top">
-      <div class="container-fluid nav-container navbar-sticky-top">
-        <a class="link-text nav-link" href="index.html" title="Download">HOME</a>
-        <a class="link-text nav-link" href="signup.html" title="Signup">SIGNUP</a>
-        <a class="link-text nav-link" href="confirm.html" title="Signup">CONFIRM</a>
-        <a class="link-text nav-link" href="login.html" title="Signup">LOGIN</a>
-        <a class="link-text nav-link" href="profilepage.html" title="Profile">YOUR PROFILE</a>
-        <a class="link-text nav-link" href="gallery.html" title="Profile">EXPLORE</a>
-      </div>
+  <div id="navArea" class="row nav-row">
+    <div id="navOuter">
+      <!-- loaded in ui.js -->
     </div>
   </div>
   <div class="row subscribe">
@@ -70,29 +48,9 @@
   <script src="js/outofview.js"></script>
   <script src="js/tether.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script src="js/ui.js"></script>
 
-  <script>
-      $("#submitPostButton").click(() => {
-          let text = $("#postText").val();
-          let picture = $("#pictureFile").get(0).files[0];
-
-          if (picture) {
-              createPostWithPicture("anon", picture, text);
-          } else {
-              createPost("anon", text);
-          }
-          window.location = "index.html";
-      });
-
-      $(document).on("change", "#pictureFile", () => {
-          let picture = $("#pictureFile").get(0).files[0];
-          let reader = new FileReader();
-          reader.onload = (e) => {
-              $("#postPicture").attr("src", e.target.result);
-          };
-          reader.readAsDataURL(picture);
-      });
-</script>
+  <script> uploadPostPage() </script>
 </body>
 
 

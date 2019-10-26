@@ -29,14 +29,17 @@ function makeNav(authState) {
   $("#navOuter").append(`<div id="nav" class="col-xs-12 col-xl-12 column-2 navbar-sticky-top navbar">`);
 
   // append navbar functions
-  $("#nav").append(`<a class="link-text nav-link" href="gallery.html" title="Explore">EXPLORE</a>`);
+  if (authState === AUTH_STATE.authenticated) {
+    $("#nav").append(` <a class="link-text nav-link" href="feed.html" title="Feed">FEED</a>`);
+  }
+
+  $("#nav").append(`<a class="link-text nav-link" href="explore.html" title="Explore">EXPLORE</a>`);
   if (authState === AUTH_STATE.none) {
     $("#nav").append(`<a class="link-text nav-link" href="signup.html" title="Signup">SIGNUP</a>`);
     $("#nav").append(`<a class="link-text nav-link" href="login.html" title="Login">LOGIN</a>`);
   } else if (authState === AUTH_STATE.notConfirmed) {
     $("#nav").append(`<a class="link-text nav-link" href="confirmation.html" title="Confirm">CONFIRM</a>`);
   } else {
-    $("#nav").append(` <a class="link-text nav-link" href="index.html" title="Feed">FEED</a>`);
     $("#nav").append(`<a class="link-text nav-link" href="profilepage.html" title="Profile">YOUR PROFILE</a>`);
   }
 
@@ -54,10 +57,11 @@ function makeHeader(pageTitle, authState) {
 // page content
 function indexPage() {
   makeHeader("Feed", AUTH_STATE.none);
+}
 
-  // upload/explore/search buttons
-
-  // feed posts
+function explorePage() {
+  makeHeader("Explore", AUTH_STATE.none);
+  loadExplorePosts();
 }
 
 function loginPage() {
@@ -70,6 +74,27 @@ function confirmationPage() {
 
 function uploadPostPage() {
   makeHeader("Upload Post", AUTH_STATE.authenticated);
+
+  // handlers
+  $("#submitPostButton").click(() => {
+    let text = $("#postText").val();
+    let picture = $("#pictureFile").get(0).files[0];
+
+    if (picture) {
+      createPostWithPicture("anon", picture, text);
+    } else {
+      createPost("anon", text);
+    }
+  });
+
+  $(document).on("change", "#pictureFile", () => {
+    let picture = $("#pictureFile").get(0).files[0];
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      $("#postPicture").attr("src", e.target.result);
+    };
+    reader.readAsDataURL(picture);
+  });
 }
 
 function signupPage() {
@@ -84,12 +109,53 @@ function myProfilePage(currentUser) {
   userProfilePage(currentUser, AUTH_STATE.authenticated);
 }
 
-function viewPostPage(descriptionPart) {
-  makeHeader(descriptionPart, "none");
+function getWords(str, n) {
+    return str.split(/\s+/).slice(0,n).join(" ");
 }
 
-function editPostPage(descriptionPart) {
+function viewPostPage() {
+  // load post content
+  let postId = window.location.hash.substr(1);
+
+  // update content
+  $.post(
+    SERVER_URL + "/post/" + postId,
+    (postData) => {
+      makeHeader(getWords(postData.text, 5), "none");
+      console.log(postData);
+      $("#postUser").text(postData.username);
+      if (postData.picture.length > 0) {
+        $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
+      } else {
+        $("#postPicture").hide();
+      }
+      $("#postText").text(postData.text);
+      $("#editPostButton").attr("value", postData.id);
+      $("#deletePostButton").attr("value", postData.id);
+    }
+  );
+
+  // button handlers
+  $('#editPostButton').click(() => {
+    window.location.href = "editpost.html#" + postId ;
+  });
+
+  $('#deletePostButton').click(() => {
+    deletePost(postId);
+  });
+
+}
+
+function editPostPage(postId, descriptionPart) {
   makeHeader(`Editing Post: ${descriptionPart}`, AUTH_STATE.authenticated);
 }
 
 // util functions
+function handleDeletePost(postId) {
+  deletePost(postId);
+  window.location = "explore.html";
+}
+
+function handleViewPost(postId) {
+  window.location = `viewpost.html#${postId}`
+}

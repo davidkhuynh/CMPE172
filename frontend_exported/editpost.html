@@ -86,7 +86,7 @@
           } else {
               editPost("anon", postId, text);
           }
-          window.location = "index.html";
+          handleViewPost(postId);
       });
 
       $(document).on("change", "#pictureFile", () => {

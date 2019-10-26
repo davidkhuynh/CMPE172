@@ -47,45 +47,44 @@ function viewUserProfile(user) {
   $.post(SERVER_URL + "/user/" + user, function (user_data) {
     console.log(user_data);
     let profile_html_to_append = '';
-
-profile_html_to_append +=   '<div class="col-xs-12 column-1 col-xl-6 offset-xl-3">' +
-                              '<div class="subgrid">' +
-                                '<div class="row">' +
-                                  '<div class="col-xs-4">' +
-                                    '<div class="responsive-picture">' +
-                                      '<picture><img alt="Placeholder Picture" src="img/picture.svg">' +
-                                      '</picture>' +
-                                    '</div>' +
-                                  '</div>' +
-                                  '<div class="col-xs-8 custom-380-col-xs-6">' +
-                                    '<h4>' + user_data.username + '</h4>' +
-                                  '</div>' +
-                                  '<div class="col-xs-4"><a class="link-button btn follow" href="" title="" id="followButton">Follow</a>' +
-                                  '</div>' +
-                                  '<div class="col-xs-4"><a class="link-button btn follow" href="editProfile.html" title="" id="editProfileButton">Edit Profile</a>' +
-                                  '</div>' +
-                                '</div>' +
-                                '<div class="row">' +
-                                  '<div class="col-xs-12"></div>' +
-                                '</div>' +
-                                '<div class="row">' +
-                                  '<div class="col-xs-6">' +
-                                    '<h4>FOLLOWERS</h4>' +
-                                  '</div>' +
-                                  '<div class="col-xs-6">' +
-                                    '<h4>FOLLOWING</h4>' +
-                                  '</div>' +
-                                  '<div class="col-xs-6">' +
-                                    '<h4 id="followerCount">#</h4>' +
-                                  '</div>' +
-                                  '<div class="col-xs-6">' +
-                                    '<h4 id="followingCount">#</h4>' +
-                                  '</div>' +
-                                '</div>' +
-                              '</div>' +
-                            '</div>'
+    profile_html_to_append += `'<div class="col-xs-12 column-1 col-xl-6 offset-xl-3">
+                              '<div class="subgrid">
+                                '<div class="row">
+                                  '<div class="col-xs-4">
+                                    '<div class="responsive-picture">
+                                      '<picture><img alt="Placeholder Picture" src="img/picture.svg">
+                                      '</picture>
+                                    '</div>
+                                  '</div>
+                                  '<div class="col-xs-8 custom-380-col-xs-6">
+                                    '<h4> user_data.username + '</h4>
+                                  '</div>
+                                  '<div class="col-xs-4"><a class="link-button btn follow" href="" title="" id="followButton">Follow</a>
+                                  '</div>
+                                  '<div class="col-xs-4"><a class="link-button btn follow" href="editProfile.html" title="" id="editProfileButton">Edit Profile</a>
+                                  '</div>
+                                '</div>
+                                '<div class="row">
+                                  '<div class="col-xs-12"></div>
+                                '</div>
+                                '<div class="row">
+                                  '<div class="col-xs-6">
+                                    '<h4>FOLLOWERS</h4>
+                                  '</div>
+                                  '<div class="col-xs-6">
+                                    '<h4>FOLLOWING</h4>
+                                  '</div>
+                                  '<div class="col-xs-6">
+                                    '<h4 id="followerCount">#</h4>
+                                  '</div>
+                                  '<div class="col-xs-6">
+                                    '<h4 id="followingCount">#</h4>
+                                  '</div>
+                                '</div>
+                              '</div>
+                            '</div>'`;
                 $(".userProfileInformation").html(profile_html_to_append);
-                viewFeed(user);
+                loadExplorePosts(user);
             });
 
     }
@@ -118,7 +117,11 @@ function createPost(user, text) {
       {
         currentUser: user,
         text: text,
-      })
+      },
+      (postData) => {
+        handleViewPost(postData.id);
+      }
+      )
   );
 }
 
@@ -130,8 +133,11 @@ function createPostWithPicture(user, picture, text) {
     {
       currentUser: user,
       text: text
-    });
-  window.location = "index.html";
+    },
+    (postData) => {
+      handleViewPost(postData.id);
+    }
+    );
 }
 
 function editPost(user, postId, text) {
@@ -144,7 +150,7 @@ function editPost(user, postId, text) {
   );
 }
 
-function postWithFile(url, file, fileField, otherFields) {
+function postWithFile(url, file, fileField, otherFields, callback=() => {}) {
   let fd = new FormData();
   fd.append(fileField, file);
   let data = [];
@@ -157,7 +163,8 @@ function postWithFile(url, file, fileField, otherFields) {
         type: "POST",
         processData: false,
         contentType: false,
-        data: fd
+        data: fd,
+        success: callback
       }
     )
   );
@@ -177,77 +184,85 @@ function deletePost(postId) {
   window.location = "index.html";
 }
 
-//for index.html
-function viewFeed(user) {
+// options: {insertDelete: true, insertView: true}
+function postNode(postId, username, picture, text, options) {
+  let userPart =
+      `<div class="subgrid">
+        <div class="row subgrid-row-2">
+          <div class="col-xs-3 offset-xs-1 col-md-2">
+            <div class="responsive-picture picture-2">
+              <picture>
+                <img alt="Placeholder Picture" src="img/picture.svg">
+              </picture>
+            </div>
+          </div>
+          <div class="col-xs-3">
+            <a class="link-text text-link-1 profileUsername"> ${username} </a>
+          </div>
+          <div class="col-xs-2"><a class="link-button btn viewbtn" title="">Follow</a>
+          </div>
+        </div> 
+      </div>`;
 
-  //user = testUser;
+  let deleteButton =
+    `<a onclick="handleDeletePost('${postId}')" class="link-button btn viewbtn deletePostButton" value=" ${postId} + " title="">Delete Post</a>`;
+
+  let viewButton =
+    `<a onclick="handleViewPost('${postId}')" class="link-button btn viewbtn viewPostButton" name=" ${username} + " value=" ${postId} + " title="">View Post</a>`;
+
+  let actionsPart = "";
+
+  if (options.insertDelete) {
+    actionsPart += deleteButton;
+  }
+  if (options.insertDelete) {
+    actionsPart += viewButton;
+  }
+
+  let postPart =
+      `<div class="subgrid">
+        <div class="row subgrid-row-1">
+          <div class="col-xs-10 push-xs-0 offset-xs-1">
+            <div class="responsive-picture picture-1">
+              <picture>
+                <img alt="Placeholder Picture" src=" ${IMAGE_HOST_URL + picture}">
+              </picture>
+            </div>
+          </div>
+        </div>
+        <div class="row subgrid-row-2">
+          <div class="col-xs-12 col-xl-12">
+            <p class="paragraph paragraph-2"> ${text} </p>
+          </div>
+          <div class="col-xs-8 push-xs-2">
+            ${actionsPart}
+          </div>
+        </div>
+      </div>`;
 
 
-  $.post(SERVER_URL + "/feed",
-    {
-      currentUser: user,
-    }, function (data) {
+  return `<div class="col-xs-12 offset-xl-1 col-xl-10 column-3"> 
+        ${userPart} 
+        ${postPart}
+      </div>
+     `;
+}
+
+
+//for explore.html
+function loadExplorePosts() {
+  $.post(SERVER_URL + "/explore",
+    {},
+    function (data) {
       console.log(data);
       let html_to_append = '';
 
       $.each(data, function (i, item) {
-
-        html_to_append += '<div class="col-xs-12 offset-xl-1 col-xl-10 column-3">' +
-          '<div class="subgrid">' +
-          '<div class="row subgrid-row-2">' +
-          '<div class="col-xs-3 offset-xs-1 col-md-2">' +
-          '<div class="responsive-picture picture-2">' +
-          '<picture><img alt="Placeholder Picture" src="img/picture.svg">' +
-          '</picture>' +
-          '</div>' +
-          '</div>' +
-          '<div class="col-xs-3">' +
-          '<a class="link-text text-link-1 profileUsername">' + item.username + '</a>' +
-          '</div>' +
-          '<div class="col-xs-2"><a class="link-button btn viewbtn" title="">Follow</a>' +
-          '</div>' +
-          '</div>' +
-          '</div>' +
-          '<div class="subgrid">' +
-          '<div class="row subgrid-row-1">' +
-          '<div class="col-xs-10 push-xs-0 offset-xs-1">' +
-          '<div class="responsive-picture picture-1">' +
-          '<picture><img alt="Placeholder Picture" src="' + IMAGE_HOST_URL + item.picture + '">' +
-          '</picture>' +
-          '</div>' +
-          '</div>' +
-          '</div>' +
-          '<div class="row subgrid-row-2">' +
-          '<div class="col-xs-12 col-xl-12">' +
-          '<p class="paragraph paragraph-2">' + item.text + '</p>' +
-          '</div>' +
-          '<div class="col-xs-8 push-xs-2"><a class="link-button btn viewbtn deletePostButton" value="' + item.id + '" title="">Delete Post</a><a class="link-button btn viewbtn viewPostButton" name="' + item.username + '" value="' + item.id + '" title="">View Post</a>' +
-          '</div>' +
-          '</div>' +
-          '</div>' +
-          '</div>'
+        html_to_append += postNode(item.id, item.username, item.picture, item.text, { insertDelete: true, insertView: true });
       });
+
       $(".postRow").html(html_to_append);
-      //$('.profileUsername').click(function() {
-      //    alert($(this).text());
-      //});
-      $('.profileUsername').click(function () {
-        window.location = "profilepage.html#" + $(this).text();
-      });
-
-      $('.viewPostButton').click(function () {
-        console.log($(this)[0].getAttribute("value"));
-        window.location = "viewpost.html#" + $(this)[0].getAttribute("name") + '&' + $(this)[0].getAttribute("value");
-      });
-
-      $('.deletePostButton').click(function () {
-        console.log($(this)[0].getAttribute("value"));
-        deletePost($(this)[0].getAttribute("value"));
-      });
-
     });
-
-
 }
 
 function redirect() {
@@ -295,7 +310,7 @@ function following(user) {
 /* index.html
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/routeFunctions.js"></script>
-  <script> viewFeed("db_test2") </script>
+  <script> loadExplorePosts("db_test2") </script>
   <script> getCurrentUser() </script>
 */
 
@@ -308,7 +323,7 @@ function following(user) {
         let createUserButton = document.getElementById("createUserButton");
 
         createUserButton.onclick = function(){
-      
+
 
           signUpUser(document.getElementById('createUserName').value, document.getElementById('createEmail').value, document.getElementById('createPassword').value, (err, response) => {
               if (err) {
@@ -316,7 +331,7 @@ function following(user) {
               }
           });
 
- 
+
         };
     });
   </script>
@@ -324,7 +339,7 @@ function following(user) {
       <!-- Bootstrap's JavaScript dependencies -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    
+
     <!-- Cognito User Pool related code -->
     <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script>
     <script type="text/javascript" src="js/authentication.js"></script>
@@ -353,12 +368,12 @@ function following(user) {
 /* viewpost.html
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/routeFunctions.js"></script>
-  <script> 
+  <script>
     let queryString = window.location.hash.substring(1);
     let splitString = queryString.split("&");
     let user = splitString[0];
     let id = splitString[1];
-    
+
     viewPost(user,id);
   </script>
 */
@@ -366,92 +381,92 @@ function following(user) {
 /* profilepage.html
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/routeFunctions.js"></script>
-  <script> 
+  <script>
   let userProfile = window.location.hash.substring(1);
-  viewUserProfile(userProfile); 
+  viewUserProfile(userProfile);
   </script>
 */
 
 
 /* signup.html do not use, still trying to figure out how to upload pictures
-  <script>
-      $( document ).ready(function() {
+<script>
+    $( document ).ready(function() {
 
-        let createUserButton = document.getElementById("createUserButton");
-        createUserButton.onclick = function(){
+      let createUserButton = document.getElementById("createUserButton");
+      createUserButton.onclick = function(){
 
-          //let fd = new FormData();
-          //let files = $('#createProfilePicture')[0].files[0];
-          //fd.append('file', files);
+        //let fd = new FormData();
+        //let files = $('#createProfilePicture')[0].files[0];
+        //fd.append('file', files);
 
-          //console.log(fd);
-          //createUser(document.getElementById('createUserName').value, document.getElementById('createBirthday').value,document.getElementById('createFirstName').value, document.getElementById('createLastName').value, document.getElementById('createBio').value);
-          //createUser("dan", "1996-12-11", "tsk", "toe", "til");
-        }
-    });
-  </script>
+        //console.log(fd);
+        //createUser(document.getElementById('createUserName').value, document.getElementById('createBirthday').value,document.getElementById('createFirstName').value, document.getElementById('createLastName').value, document.getElementById('createBio').value);
+        //createUser("dan", "1996-12-11", "tsk", "toe", "til");
+      }
+  });
+</script>
 */
 
 /* confirmation.html
-  <script src="js/jquery.min.js"></script>
-  <script src="js/outofview.js"></script>
-  <script src="js/tether.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/outofview.js"></script>
+<script src="js/tether.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 
-  <script>
+<script>
 
-        $( document ).ready(function() {
+      $( document ).ready(function() {
 
-        let confirmationButton = document.getElementById("confirmationButton");
-        confirmationButton.onclick = function(){
-              getUser(document.getElementById("confirmUser").value).confirmRegistration(document.getElementById("confirmCode").value, true,  (err, response) => {if (err) {
-                console.log(err);
-              }});
-           
-        };
+      let confirmationButton = document.getElementById("confirmationButton");
+      confirmationButton.onclick = function(){
+            getUser(document.getElementById("confirmUser").value).confirmRegistration(document.getElementById("confirmCode").value, true,  (err, response) => {if (err) {
+              console.log(err);
+            }});
 
-    });
+      };
 
-  </script>
+  });
 
-        <!-- Bootstrap's JavaScript dependencies -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    
-    <!-- Cognito User Pool related code -->
-    <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script>
-    <script type="text/javascript" src="js/authentication.js"></script>
-    <script type="text/javascript" src="js/user-interface.js"></script>
+</script>
+
+      <!-- Bootstrap's JavaScript dependencies -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+  <!-- Cognito User Pool related code -->
+  <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script>
+  <script type="text/javascript" src="js/authentication.js"></script>
+  <script type="text/javascript" src="js/user-interface.js"></script>
 
 */
 
 /*
-    <!-- Cognito User Pool related code -->
-    <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script>
-    <script type="text/javascript" src="js/authentication.js"></script>
-    <script type="text/javascript" src="js/user-interface.js"></script>
+  <!-- Cognito User Pool related code -->
+  <script type="text/javascript" src="js/amazon-cognito-identity.min.js"></script>
+  <script type="text/javascript" src="js/authentication.js"></script>
+  <script type="text/javascript" src="js/user-interface.js"></script>
 
-    <script>
+  <script>
 
-        $( document ).ready(function() {
+      $( document ).ready(function() {
 
-        let loginButton = document.getElementById("loginButton");
-        loginButton.onclick = function(){
-              console.log(
-                signInUser(
-                  document.getElementById("loginUser").value, 
-                  document.getElementById("loginPassword").value,   
-                  (err, response) => 
-                  {
-                    if (err) {
-                      console.log(err);
-                    }
+      let loginButton = document.getElementById("loginButton");
+      loginButton.onclick = function(){
+            console.log(
+              signInUser(
+                document.getElementById("loginUser").value,
+                document.getElementById("loginPassword").value,
+                (err, response) =>
+                {
+                  if (err) {
+                    console.log(err);
                   }
-                )
-              );
-        };
+                }
+              )
+            );
+      };
 
-    });
+  });
 
-  </script>
+</script>
 */
