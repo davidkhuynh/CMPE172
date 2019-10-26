@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="">
   <meta name="keywords" content="">
-  <meta name="generator" content="Responsive Bootstrap Builder 2.5.308 - Trial Version">
-  <title>Rocket - Home</title>
   <link rel="stylesheet" href="css/bootstrap4.min.css">
   <link rel="stylesheet" href="css/wireframe-theme.min.css">
   <script>document.createElement( "picture" );</script>
@@ -17,17 +15,10 @@
 </head>
 
 <body class="grid-1">
-  <div class="row nav-row">
-    <div class="col-xs-12 col-xl-12 column-2 navbar-sticky-top navbar">
-      <div class="container-fluid nav-container navbar-sticky-top">
-        <a class="link-text nav-link" href="index.html" title="Download">HOME</a>
-        <a class="link-text nav-link" href="signup.html" title="Signup">SIGNUP</a>
-        <a class="link-text nav-link" href="confirmation.html" title="Signup">CONFIRM</a>
-        <a class="link-text nav-link" href="login.html" title="Signup">LOGIN</a>
-        <a class="link-text nav-link" href="profilepage.html" title="Profile">YOUR PROFILE</a>
-        <a class="link-text nav-link" href="gallery.html" title="Profile">EXPLORE</a>
+  <div id="navArea" class="row nav-row">
+      <div id="navOuter">
+          <!-- loaded in ui.js -->
       </div>
-    </div>
   </div>
   <div class="row subscribe">
     <div class="col-xs-12 column-1 col-xl-6 offset-xl-3">
@@ -113,8 +104,9 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="js/authentication.js"></script>
   <script src="js/routeFunctions.js"></script>
+  <script src="js/ui.js"></script>
+  <script> indexPage() </script>
   <script> viewFeed("anon") </script>
-  <script> getCurrentUser() </script>
 </body>
 
 </html>
