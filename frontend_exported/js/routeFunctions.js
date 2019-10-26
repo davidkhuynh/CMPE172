@@ -181,7 +181,6 @@ function editPostWithPicture(user, postId, picture, text) {
 function deletePost(postId) {
   console.log(postId);
   $.post(SERVER_URL + "/delete_post/" + postId);
-  window.location = "index.html";
 }
 
 // options: {insertDelete: true, insertView: true}
