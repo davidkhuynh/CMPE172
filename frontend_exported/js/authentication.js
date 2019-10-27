@@ -9,8 +9,6 @@ const GLOBALS = {
   },
 };
 
-// cookie code
-
 // globals
 const AUTH_STATE = {
   none: "none",
@@ -33,7 +31,7 @@ const wrapCallback = (callback) => {
 
 const Authentication = {
   __getCurrentUser: () => {
-    return JSON.parse(localStorage.getItem("currentUser"));
+    Cookies.get("currentUser");
   },
 
   __setCurrentUser: (username) => {
@@ -42,7 +40,9 @@ const Authentication = {
       Pool: __userPool
     };
     let currentUser = new AmazonCognitoIdentity.CognitoUser(userData);
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    console.log("currentUser in set: ");
+    console.log(currentUser);
+    Cookies.set("currentUser", currentUser);
   },
 
   authAjax: (url, ajaxData, processUsernameCallback, afterResponseCallback) => {
@@ -135,7 +135,7 @@ const Authentication = {
     let authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
     Authentication.__setCurrentUser(username);
     console.log("currentUser: ");
-    console.log(currentUser);
+    console.log(Authentication.__getCurrentUser());
     let currentUser = Authentication.__getCurrentUser();
     currentUser.authenticateUser(authenticationDetails, wrapCallback(callback));
   },
@@ -149,8 +149,8 @@ const Authentication = {
       }
     }
 
-    // clear cache ourselves because amazon didnt do it...
-    localStorage.clear();
+    // clear current user
+    Cookies.remove("currentUser");
   }
 };
 
