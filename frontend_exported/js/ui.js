@@ -17,12 +17,6 @@ function makeHead(pageTitle) {
   $(document).prop("title", `${pageTitle} | Fumblr`);
 }
 
-const AUTH_STATE = {
-  none: "none",
-  notConfirmed: "notConfirmed",
-  authenticated: "authenticated"
-};
-
 function makeNav(authState) {
   // set up navbar
   $("#navArea").append("").attr("id", "navOuter").addClass("row nav-row");
@@ -37,7 +31,6 @@ function makeNav(authState) {
   if (authState === AUTH_STATE.none) {
     $("#nav").append(`<a class="link-text nav-link" href="signup.html" title="Signup">SIGNUP</a>`);
     $("#nav").append(`<a class="link-text nav-link" href="login.html" title="Login">LOGIN</a>`);
-  } else if (authState === AUTH_STATE.notConfirmed) {
     $("#nav").append(`<a class="link-text nav-link" href="confirmation.html" title="Confirm">CONFIRM</a>`);
   } else {
     $("#nav").append(`<a class="link-text nav-link" href="profilepage.html" title="Profile">YOUR PROFILE</a>`);
@@ -48,7 +41,6 @@ function makeNav(authState) {
   }
 }
 
-
 function makeHeader(pageTitle, authState) {
   makeHead(pageTitle);
   makeNav(authState);
@@ -56,20 +48,68 @@ function makeHeader(pageTitle, authState) {
 
 // page content
 function indexPage() {
-  makeHeader("Feed", AUTH_STATE.none);
+  let authState = Authentication.getAuthState();
+  makeHeader("Feed", authState);
 }
 
 function explorePage() {
-  makeHeader("Explore", AUTH_STATE.none);
+  let authState = Authentication.getAuthState();
+  makeHeader("Explore", authState);
   loadExplorePosts();
 }
 
 function loginPage() {
   makeHeader("Login", AUTH_STATE.none);
+
+  // handlers
+  $("#loginButton").click(() => {
+    let username = $("#loginUser").val();
+    let password = $("#loginPassword").val();
+    Authentication.signInUser(username, password, (err, response) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log(response);
+      //window.location = "explore.html";
+    });
+  });
 }
 
 function confirmationPage() {
-  makeHeader("Confirm", AUTH_STATE.notConfirmed);
+  makeHeader("Confirm", AUTH_STATE.none);
+
+  // handlers
+  $("#confirmationButton").click(() => {
+    let username = $("#confirmUser").val();
+    let confirmCode = $("#confirmCode").val();
+
+    Authentication.confirmUser(username, confirmCode, (err, response) => {
+      if (err) {
+        console.log("confirmation error: ");
+        console.log(err);
+        return;
+      }
+      window.location = "login.html";
+    });
+  });
+
+  $("#resendConfirmationButton").click(() => {
+    let username = $("#confirmUser").val();
+    console.log(username);
+    if (!username) {
+      console.log("please type your username in the input field");
+      return;
+    }
+
+    Authentication.resendConfirmationCode(username, (err, response) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log("resent confirmation code");
+      console.log(response);
+    });
+  });
 }
 
 function uploadPostPage() {
@@ -98,7 +138,37 @@ function uploadPostPage() {
 }
 
 function signupPage() {
-  makeHeader("Confirm", AUTH_STATE.none);
+  makeHeader("Signup", AUTH_STATE.none);
+
+  // handlers
+  $("#createUserButton").click(() => {
+    let username = $("#createUserName").val();
+    let email = $("#createEmail").val();
+    let password = $("#createPassword").val();
+    let birthday = $("#createBirthday").val();
+    let firstName = $("#createFirstName").val();
+    let lastName = $("#createLastName").val();
+    let bio = $("#createBio").val();
+    let profilePicture = $("#profilePicture").get(0).files[0];
+
+    Authentication.signUpUser(
+      username,
+      email,
+      password,
+      (err, response) => {
+        if (err) {
+          console.log(err);
+        }
+        else {
+          if (profilePicture) {
+            createUserWithProfilePicture(username, birthday, firstName, lastName, bio, profilePicture);
+          } else {
+            createUser(username, birthday, firstName, lastName, bio);
+          }
+          window.location = "confirmation.html";
+        }
+      });
+  });
 }
 
 function userProfilePage(user, authState) {
