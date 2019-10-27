@@ -1,14 +1,12 @@
 // dynamically create UI elements in js
 // header
 function makeHead(pageTitle) {
-  $("html").append("head");
   $("head").append(`
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="description" content="">
       <meta name="keywords" content="">
-      <link rel="stylesheet" href="css/bootstrap4.min.css">
-      <link rel="stylesheet" href="css/wireframe-theme.min.css">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">      <link rel="stylesheet" href="css/wireframe-theme.min.css">
       <script>document.createElement( "picture" );</script>
       <script class="picturefill" async="async" src="js/picturefill.min.js"></script>
       <link rel="stylesheet" href="css/main.css">
@@ -40,6 +38,7 @@ function makeNav(authState) {
     $("#nav").append(`<a class="link-text nav-link" href="" title="Logout">LOGOUT</a>`);
   }
 }
+
 
 function makeHeader(pageTitle, authState) {
   makeHead(pageTitle);

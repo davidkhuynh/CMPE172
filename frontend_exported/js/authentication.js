@@ -9,6 +9,8 @@ const GLOBALS = {
   },
 };
 
+// cookie code
+
 // globals
 const AUTH_STATE = {
   none: "none",
@@ -150,6 +152,5 @@ const Authentication = {
     // clear cache ourselves because amazon didnt do it...
     localStorage.clear();
   }
-
 };
 
