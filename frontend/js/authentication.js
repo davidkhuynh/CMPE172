@@ -44,22 +44,26 @@ const Authentication = {
     Authentication.signOutUser();
   },
 
-  authAjax: (url, ajaxData, afterResponseCallback) => {
+  authAjax: (url, ajaxData, successCallback, failureCallback) => {
     Authentication.refreshSession();
     ajaxData.accessToken = Authentication.__getCurrentToken();
     $.post(url, ajaxData)
       .done((responseData) => {
-        afterResponseCallback(responseData);
-      });
+        successCallback(responseData);
+      })
+      .fail((errorData) => {
+        failureCallback(errorData.responseJSON);
+      }
+    );
   },
 
-  authAjaxWithFile: (url, file, fileField, otherFields, processUsernameCallback, afterResponseCallback) => {
+  authAjaxWithFile: (url, file, fileField, otherFields, successCallback, failureCallback) => {
     let fd = new FormData();
     fd.append(fileField, file);
     let data = [];
     data.push(otherFields);
     fd.append("data", JSON.stringify(data));
-    Authentication.authAjax(url, data, processUsernameCallback, afterResponseCallback);
+    Authentication.authAjax(url, data, successCallback, failureCallback);
   },
 
 

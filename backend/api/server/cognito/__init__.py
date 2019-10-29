@@ -1,4 +1,3 @@
-import json
 import time
 import urllib.request
 from jose import jwk, jwt
@@ -7,8 +6,11 @@ from jose.utils import base64url_decode
 import server
 from server.cognito import cognito_config
 
-def token_valid(token: str):
+def validate_token(token: str):
     return __decode_token(token)
+
+def __construct_error(message: str):
+    return {"error": message}
 
 def __decode_token(token: str):
     keys = server.cognito_keys["keys"]
@@ -17,15 +19,14 @@ def __decode_token(token: str):
     try:
         headers = jwt.get_unverified_headers(token)
     except:
-        print("No JWT token specified or invalid")
-        return None
+        return __construct_error("No JWT token specified or invalid")
 
     kid = headers['kid']
     # search for the kid in the downloaded public keys
     matching_key = next(k for k in keys if k["kid"] == kid)
     if not matching_key:
-        print('Public key not found in jwks.json')
-        return None
+        return __construct_error('Public key not found in jwks.json')
+
     # construct the public key
     public_key = jwk.construct(matching_key)
     # get the last two sections of the token,
@@ -35,19 +36,19 @@ def __decode_token(token: str):
     decoded_signature = base64url_decode(encoded_signature.encode('utf-8'))
     # verify the signature
     if not public_key.verify(message.encode("utf8"), decoded_signature):
-        print('Signature verification failed')
-        return None
+        return __construct_error('Signature verification failed')
+
     print('Signature successfully verified')
     # since we passed the verification, we can now safely
     # use the unverified claims
     claims = jwt.get_unverified_claims(token)
     # additionally we can verify the token expiration
     if time.time() > claims['exp']:
-        print('Token is expired')
-        return None
+        return __construct_error('Token is expired')
+
     # and the Audience  (use claims['client_id'] if verifying an access token)
     if claims['client_id'] != cognito_config.APP_CLIENT_ID:
-        print('Token was not issued for this audience')
-        return None
+        return __construct_error('Token was not issued for this audience')
+
     # now we can use the claims
     return claims
