@@ -5,11 +5,6 @@ const GLOBALS = {
   },
 };
 
-// globals
-const AUTH_STATE = {
-  none: "none",
-  authenticated: "authenticated"
-};
 let __userPool = new AmazonCognitoIdentity.CognitoUserPool(GLOBALS.poolData);
 
 const Authentication = {
@@ -17,12 +12,14 @@ const Authentication = {
     return localStorage.getItem("currentToken");
   },
 
-  __clearToken: () => {
+  __cleanup: () => {
     localStorage.removeItem("currentToken");
+    localStorage.removeItem("currentUsername");
   },
 
   __setCurrentUser: (cognitoUser) => {
     localStorage.setItem("currentToken", cognitoUser.signInUserSession.accessToken.jwtToken);
+    localStorage.setItem("currentUsername", cognitoUser.getUsername());
   },
 
   refreshSession() {
@@ -67,8 +64,17 @@ const Authentication = {
   },
 
 
-  getAuthState: () => {
-    return Authentication.__getCurrentToken() != null ? AUTH_STATE.authenticated : AUTH_STATE.none;
+  isAuthenticated: () => {
+    Authentication.refreshSession();
+    return Authentication.__getCurrentToken() != null;
+  },
+
+
+  getCurrentUsername: () => {
+    if (!Authentication.isAuthenticated()) {
+      return null;
+    }
+    return localStorage.getItem("currentUsername");
   },
 
 
@@ -142,8 +148,7 @@ const Authentication = {
     if (cognitoUser != null) {
       cognitoUser.signOut();
     }
-    // clear current user
-    Authentication.__clearToken();
+    Authentication.__cleanup();
   }
 };
 

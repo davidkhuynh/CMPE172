@@ -15,18 +15,18 @@ function makeHead(pageTitle) {
   $(document).prop("title", `${pageTitle} | Fumblr`);
 }
 
-function makeNav(authState) {
+function makeNav(isAuthenticated) {
   // set up navbar
   $("#navArea").append("").attr("id", "navOuter").addClass("row nav-row");
   $("#navOuter").append(`<div id="nav" class="col-xs-12 col-xl-12 column-2 navbar-sticky-top navbar">`);
 
   // append navbar functions
-  if (authState === AUTH_STATE.authenticated) {
+  if (isAuthenticated) {
     $("#nav").append(` <a class="link-text nav-link" href="feed.html" title="Feed">FEED</a>`);
   }
 
   $("#nav").append(`<a class="link-text nav-link" href="explore.html" title="Explore">EXPLORE</a>`);
-  if (authState === AUTH_STATE.none) {
+  if (!isAuthenticated) {
     $("#nav").append(`<a class="link-text nav-link" href="signup.html" title="Signup">SIGNUP</a>`);
     $("#nav").append(`<a class="link-text nav-link" href="login.html" title="Login">LOGIN</a>`);
     $("#nav").append(`<a class="link-text nav-link" href="confirmation.html" title="Confirm">CONFIRM</a>`);
@@ -34,34 +34,38 @@ function makeNav(authState) {
     $("#nav").append(`<a class="link-text nav-link" href="profilepage.html" title="Profile">YOUR PROFILE</a>`);
   }
 
-  if (authState === AUTH_STATE.notConfirmed || authState === AUTH_STATE.authenticated) {
-    $("#nav").append(`<a class="link-text nav-link" href="" title="Logout">LOGOUT</a>`);
+  if (isAuthenticated) {
+    $("#nav").append(`<a id="logoutButton" class="link-text nav-link" href="" title="Logout">LOGOUT</a>`);
+    $("#logoutButton").click(() => {
+      Authentication.signOutUser();
+      window.location = "index.html";
+    });
   }
 }
 
 
-function makeHeader(pageTitle, authState) {
+function makeHeader(pageTitle, isAuthenticated=false) {
   makeHead(pageTitle);
-  makeNav(authState);
+  makeNav(isAuthenticated);
 }
 
 // page content
 function indexPage() {
   Authentication.refreshSession();
-  let authState = Authentication.getAuthState();
-  makeHeader("Feed", authState);
+  let isAuthenticated = Authentication.isAuthenticated();
+  makeHeader("Feed", isAuthenticated);
 }
 
 function explorePage() {
   Authentication.refreshSession();
-  let authState = Authentication.getAuthState();
-  makeHeader("Explore", authState);
+  let isAuthenticated = Authentication.isAuthenticated();
+  makeHeader("Explore", isAuthenticated);
   loadExplorePosts();
 }
 
 function loginPage() {
   Authentication.refreshSession();
-  makeHeader("Login", AUTH_STATE.none);
+  makeHeader("Login");
 
   // handlers
   $("#loginButton").click(() => {
@@ -71,15 +75,14 @@ function loginPage() {
       if (err) {
         return;
       }
-      console.log(response);
-      //window.location = "explore.html";
+      window.location = "explore.html";
     });
   });
 }
 
 function confirmationPage() {
   Authentication.refreshSession();
-  makeHeader("Confirm", AUTH_STATE.none);
+  makeHeader("Confirm");
 
   // handlers
   $("#confirmationButton").click(() => {
@@ -116,7 +119,11 @@ function confirmationPage() {
 
 function uploadPostPage() {
   Authentication.refreshSession();
-  makeHeader("Upload Post", AUTH_STATE.authenticated);
+  let isAuthenticated = Authentication.isAuthenticated();
+  if (!isAuthenticated) {
+    handleUnauthorized("Log in before uploading a post!");
+  }
+  makeHeader("Upload Post", isAuthenticated);
 
   // handlers
   $("#submitPostButton").click(() => {
@@ -142,7 +149,7 @@ function uploadPostPage() {
 
 function signupPage() {
   Authentication.refreshSession();
-  makeHeader("Signup", AUTH_STATE.none);
+  makeHeader("Signup");
 
   // handlers
   $("#createUserButton").click(() => {
@@ -175,14 +182,20 @@ function signupPage() {
   });
 }
 
-function userProfilePage(user, authState) {
+function userProfilePage(user) {
   Authentication.refreshSession();
-  makeHeader(`${user}'s Profile`, authState);
+  let isAuthenticated = Authentication.isAuthenticated();
+  makeHeader(`${user}'s Profile`, isAuthenticated);
 }
 
-function myProfilePage(currentUser) {
-  Authentication.refreshSession();
-  userProfilePage(currentUser, AUTH_STATE.authenticated);
+function myProfilePage() {
+  let isAuthenticated = Authentication.isAuthenticated();
+  if (isAuthenticated) {
+    let currentUsername = Authentication.getCurrentUsername();
+    userProfilePage(currentUsername, isAuthenticated);
+    return;
+  }
+  handleUnauthorized("Log in before viewing your own profile page!");
 }
 
 function getWords(str, n) {
@@ -208,8 +221,20 @@ function viewPostPage() {
         $("#postPicture").hide();
       }
       $("#postText").text(postData.text);
-      $("#editPostButton").attr("value", postData.id);
-      $("#deletePostButton").attr("value", postData.id);
+      if (postData.username === Authentication.getCurrentUsername()) {
+        $("#postAdmin").append(`
+          <div class="col-xs-4 offset-xs-2 col-xl-3 offset-xl-3">
+            <a class="link-button btn subscribe" id="editPostButton" title="">EDIT</a>
+          </div>
+          `);
+        $("#postAdmin").append(`
+          <div class="col-xs-4 col-xl-3">
+            <a class="link-button btn subscribe" id="deletePostButton" title="">DELETE</a>
+          </div>
+          `);
+        $("#editPostButton").attr("value", postData.id);
+        $("#deletePostButton").attr("value", postData.id);
+      }
     }
   );
 
@@ -225,8 +250,12 @@ function viewPostPage() {
 }
 
 function editPostPage(postId, descriptionPart) {
-  Authentication.refreshSession();
-  makeHeader(`Editing Post: ${descriptionPart}`, AUTH_STATE.authenticated);
+  let isAuthenticated = Authentication.isAuthenticated();
+  if (!isAuthenticated) {
+    handleUnauthorized("Log in before editing post!");
+  }
+  // todo: check if post belongs to user before coming to edit page
+  makeHeader(`Editing Post: ${descriptionPart}`, isAuthenticated);
 }
 
 // util functions
@@ -237,4 +266,9 @@ function handleDeletePost(postId) {
 
 function handleViewPost(postId) {
   window.location = `viewpost.html#${postId}`
+}
+
+function handleUnauthorized(message) {
+  console.log(message); // todo: error banner
+  window.location = "index.html";
 }
