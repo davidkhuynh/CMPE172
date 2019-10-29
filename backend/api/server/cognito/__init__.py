@@ -14,13 +14,18 @@ def __decode_token(token: str):
     keys = server.cognito_keys["keys"]
 
     # get the kid from the headers prior to verification
-    headers = jwt.get_unverified_headers(token)
+    try:
+        headers = jwt.get_unverified_headers(token)
+    except:
+        print("No JWT token specified or invalid")
+        return None
+
     kid = headers['kid']
     # search for the kid in the downloaded public keys
     matching_key = next(k for k in keys if k["kid"] == kid)
     if not matching_key:
         print('Public key not found in jwks.json')
-        return False
+        return None
     # construct the public key
     public_key = jwk.construct(matching_key)
     # get the last two sections of the token,
@@ -31,7 +36,7 @@ def __decode_token(token: str):
     # verify the signature
     if not public_key.verify(message.encode("utf8"), decoded_signature):
         print('Signature verification failed')
-        return False
+        return None
     print('Signature successfully verified')
     # since we passed the verification, we can now safely
     # use the unverified claims
@@ -39,12 +44,10 @@ def __decode_token(token: str):
     # additionally we can verify the token expiration
     if time.time() > claims['exp']:
         print('Token is expired')
-        return False
+        return None
     # and the Audience  (use claims['client_id'] if verifying an access token)
     if claims['client_id'] != cognito_config.APP_CLIENT_ID:
         print('Token was not issued for this audience')
-        return False
+        return None
     # now we can use the claims
-    print(claims)
-    #return claims
-    return True
+    return claims

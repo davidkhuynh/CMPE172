@@ -47,17 +47,20 @@ function makeHeader(pageTitle, authState) {
 
 // page content
 function indexPage() {
+  Authentication.refreshSession();
   let authState = Authentication.getAuthState();
   makeHeader("Feed", authState);
 }
 
 function explorePage() {
+  Authentication.refreshSession();
   let authState = Authentication.getAuthState();
   makeHeader("Explore", authState);
   loadExplorePosts();
 }
 
 function loginPage() {
+  Authentication.refreshSession();
   makeHeader("Login", AUTH_STATE.none);
 
   // handlers
@@ -66,7 +69,6 @@ function loginPage() {
     let password = $("#loginPassword").val();
     Authentication.signInUser(username, password, (err, response) => {
       if (err) {
-        console.log(err);
         return;
       }
       console.log(response);
@@ -76,6 +78,7 @@ function loginPage() {
 }
 
 function confirmationPage() {
+  Authentication.refreshSession();
   makeHeader("Confirm", AUTH_STATE.none);
 
   // handlers
@@ -112,6 +115,7 @@ function confirmationPage() {
 }
 
 function uploadPostPage() {
+  Authentication.refreshSession();
   makeHeader("Upload Post", AUTH_STATE.authenticated);
 
   // handlers
@@ -137,6 +141,7 @@ function uploadPostPage() {
 }
 
 function signupPage() {
+  Authentication.refreshSession();
   makeHeader("Signup", AUTH_STATE.none);
 
   // handlers
@@ -171,18 +176,22 @@ function signupPage() {
 }
 
 function userProfilePage(user, authState) {
+  Authentication.refreshSession();
   makeHeader(`${user}'s Profile`, authState);
 }
 
 function myProfilePage(currentUser) {
+  Authentication.refreshSession();
   userProfilePage(currentUser, AUTH_STATE.authenticated);
 }
 
 function getWords(str, n) {
-    return str.split(/\s+/).slice(0,n).join(" ");
+  return str.split(/\s+/).slice(0,n).join(" ");
 }
 
 function viewPostPage() {
+  Authentication.refreshSession();
+
   // load post content
   let postId = window.location.hash.substr(1);
 
@@ -216,6 +225,7 @@ function viewPostPage() {
 }
 
 function editPostPage(postId, descriptionPart) {
+  Authentication.refreshSession();
   makeHeader(`Editing Post: ${descriptionPart}`, AUTH_STATE.authenticated);
 }
 
