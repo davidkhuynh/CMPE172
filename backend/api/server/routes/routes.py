@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from flask import request
 
-from server import app, db
+from server import app, db, cognito
 from server.data import users, posts
 from server.utils import pic_utils, db_utils
 from server.utils.http_utils import success, failure, get_request_data
@@ -11,15 +11,12 @@ from server.utils.http_utils import success, failure, get_request_data
 ### home routes
 from server.utils.pic_utils import UploadState
 
-@app.route("/get_current_user", methods=["GET", "POST"])
-def get_current_user():
-    return "anon"
-
-@app.route("/create_post", methods=["GET", "POST"])
+@app.route("/create_post", methods=["POST"])
+@cognito.auth_required
 def create_post():
     """
         request body:
-            currentUser, text
+            text
 
         files:
             pictureFile
@@ -39,21 +36,22 @@ def create_post():
     picture_filename = upload_info.filename
 
     # update db with new post
-    new_post = db.posts.create_post(request_data["currentUser"], picture_filename, request_data["text"])
+    new_post = db.posts.create_post(cognito.current_user, picture_filename, request_data["text"])
 
     return success(new_post)
 
 
-@app.route("/post/<post_id>", methods=["GET", "POST"])
+@app.route("/post/<post_id>", methods=["GET"])
 def post(post_id: str):
     """
         1. get post from db and format to json to return
     """
-    queried_post = posts.get_post(post_id)
+    queried_post = db.posts.get_post(post_id)
     return success(queried_post) if queried_post else failure("post id %s does not exist" % post_id)
 
 
-@app.route("/edit_post/<post_id>", methods=["GET", "POST"])
+@app.route("/edit_post/<post_id>", methods=["POST"])
+@cognito.auth_required
 def edit_post(post_id: str):
     """
         request body:
@@ -68,10 +66,9 @@ def edit_post(post_id: str):
     """
     # check if user owns post
     request_data = get_request_data(request)
-    current_user = request_data["currentUser"]
     queried_post = db.posts.get_post(post_id)
-    if not queried_post or current_user != queried_post["username"]:
-        return failure(f"{current_user} does not own this post")
+    if not queried_post or cognito.current_user != queried_post["username"]:
+        return failure(f"{cognito.current_user} does not own this post")
 
     # if picture is updated, update picture
     upload_info = pic_utils.upload_post_picture(request, str(uuid4())) # todo check duplicates (highly unlikely)
@@ -85,45 +82,38 @@ def edit_post(post_id: str):
 
     return success(edited_post)
 
-@app.route("/delete_post/<post_id>", methods=["GET", "POST"])
+@app.route("/delete_post/<post_id>", methods=["POST"])
+@cognito.auth_required
 def delete_post(post_id: str):
     """
-    request body:
-        currentUser
     :param post_id:
     :return:
     """
 
-    '''
-    request_data = get_request_data(request)
-    current_user = request_data["currentUser"]
-    queried_post = posts.get_post(post_id)
-    if not queried_post or current_user != queried_post["username"]:
-        return failure(f"{current_user} does not own this post, cannot delete")
-    '''
+    queried_post = db.posts.get_post(post_id)
+    if not queried_post or cognito.current_user != queried_post["username"]:
+        return failure(f"{cognito.current_user} does not own this post, cannot delete")
 
     db.posts.delete_post(post_id)
     return success({})
 
 
-@app.route("/explore", methods=["GET", "POST"])
+@app.route("/explore", methods=["GET"])
 def explore():
     """
-        1. list n most recent posts
+        1. list n most recent posts (todo: random)
     """
     request_data = get_request_data(request)
     queried_posts = db_utils.grab_range_from_db(request_data, db.posts.all_posts)
     return success(queried_posts)
 
 
-@app.route("/feed", methods=["GET", "POST"])
-@app.route("/feed/<sort_by>", methods=["GET", "POST"])
-@app.route("/feed/<sort_by>/<int:first>", methods=["GET", "POST"])
+@app.route("/feed", methods=["GET"])
+@app.route("/feed/<sort_by>", methods=["GET"])
+@app.route("/feed/<sort_by>/<int:first>", methods=["GET"])
+@cognito.auth_required
 def feed(sort_by: str="mostRecent", first: int=0):
     """
-        request body:
-            currentUser
-
         1. list n most recent posts from people user follows
     """
     request_data = get_request_data(request)
@@ -135,7 +125,7 @@ def feed(sort_by: str="mostRecent", first: int=0):
     return success(queried_posts)
 
 
-@app.route("/search/<query>", methods=["GET", "POST"])
+@app.route("/search/<query>", methods=["GET"])
 def search(query: str):
     """
         request body:
@@ -155,7 +145,7 @@ def search(query: str):
 
 
 ### user routes
-@app.route("/user/<username>", methods=["GET", "POST"])
+@app.route("/user/<username>", methods=["GET"])
 def user(username: str):
     """
         request body:
@@ -168,7 +158,7 @@ def user(username: str):
     return success(queried_user) if queried_user else failure("user %s does not exist" % username)
 
 
-@app.route("/user_posts/<username>", methods=["GET", "POST"])
+@app.route("/user_posts/<username>", methods=["GET"])
 def user_posts(username: str):
     """
         request body:
@@ -182,7 +172,7 @@ def user_posts(username: str):
     return success(queried_posts)
 
 
-@app.route("/create_user", methods=["GET", "POST"])
+@app.route("/create_user", methods=["POST"])
 def create_user():
     """
         request body:
@@ -208,14 +198,14 @@ def create_user():
         bio=request_data["bio"]
     )
     new_user = db.users.create_user(user_params)
-
     return success(new_user)
 
-@app.route("/edit_profile", methods=["GET", "POST"])
+@app.route("/edit_profile", methods=["POST"])
+@cognito.auth_required
 def edit_profile():
     """
         request body:
-            currentUser, firstName, lastName, bio
+            firstName, lastName, bio
 
         files:
             profilePicture
@@ -242,35 +232,29 @@ def edit_profile():
     return success(edited_user)
 
 
-@app.route("/delete_user/", methods=["GET", "POST"])
-def delete_user():
-    """
-        request body: currentUser
-    """
-    request_data = get_request_data(request)
-    current_user = request_data["currentUser"]
-
+@app.route("/delete_current_user/", methods=["POST"])
+@cognito.auth_required
+def delete_current_user():
     # delete profile pic from s3
-    pic_utils.delete_profile_picture(current_user)
+    pic_utils.delete_profile_picture(cognito.current_user)
 
     # update db
-    db.users.delete_user(current_user)
+    db.users.delete_user(cognito.current_user)
 
     return success({})
 
 
-@app.route("/follow/<user_to_follow>", methods=["GET", "POST"])
+@app.route("/follow/<user_to_follow>", methods=["GET"])
+@cognito.auth_required
 def follow(user_to_follow: str):
     """
-        request body:
-            currentUser
     """
     request_data = get_request_data(request)
     current_user = request_data["currentUser"]
     return success(db.users.follow(current_user, user_to_follow))
 
 
-@app.route("/following/<username>", methods=["GET", "POST"])
+@app.route("/following/<username>", methods=["GET"])
 def following(username: str):
     """
         request body:
@@ -284,7 +268,7 @@ def following(username: str):
     return success(queried_followings)
 
 
-@app.route("/followers/<username>", methods=["GET", "POST"])
+@app.route("/followers/<username>", methods=["GET"])
 def followers(username: str):
     """
         request body:
