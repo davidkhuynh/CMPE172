@@ -4,7 +4,9 @@ import json
 from flask import Flask, jsonify
 from flask_cors import CORS
 import server.cognito.cognito_config as cognito_config
-from server.db import users
+from server.data import users
+from server.data.database import Database
+from server.secrets.rds_config import RDS_CONFIG
 
 app = Flask(__name__)
 
@@ -19,11 +21,10 @@ app.config['COGNITO_CHECK_TOKEN_EXPIRATION'] = False,  # disable token expiratio
 app.config['COGNITO_JWT_HEADER_NAME'] = 'X-MyApp-Authorization'
 app.config['COGNITO_JWT_HEADER_PREFIX'] = 'Bearer'
 
-
 # download cognito keys
 def download_keys(keys_url: str):
     print(keys_url)
-    with open(f"{os.getcwd()}/server/cognito/keys.json", "r") as f:
+    with open(f"{os.getcwd()}/server/secrets/keys.json", "r") as f:
         json_data = json.load(f)
     return json_data
     """
@@ -37,10 +38,12 @@ keys_url = f"https://cognito-idp.{app.config['COGNITO_REGION']}.amazonaws.com/{a
 cognito_keys = download_keys(keys_url)
 
 
-CORS(app) # allow all origins for now (future maybe only allow from static site)
+CORS(app, supports_credentials=True) # allow all origins for now (future maybe only allow from static site)
 
+# database
+db = Database(RDS_CONFIG)
 
-from server.routes import test, routes
+from server.routes import test_routes, routes
 
 @app.route("/")
 def api_index():

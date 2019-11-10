@@ -41,17 +41,21 @@ const Authentication = {
     Authentication.signOutUser();
   },
 
-  authAjax: (url, ajaxData, successCallback, failureCallback) => {
+  authAjax: (url, method, ajaxData, successCallback, failureCallback) => {
     Authentication.refreshSession();
-    ajaxData.accessToken = Authentication.__getCurrentToken();
-    $.post(url, ajaxData)
-      .done((responseData) => {
-        successCallback(responseData);
-      })
-      .fail((errorData) => {
-        failureCallback(errorData.responseJSON);
-      }
-    );
+    $.ajax({
+      xhrFields: {
+        withCredentials: true
+      },
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader("Authorization", "Basic " + Authentication.__getCurrentToken());
+        xhr.setRequestHeader("Access-Control-Allow-Credentials", true);
+      },
+      url: url,
+      type: method,
+      data: ajaxData,
+      contentType: "application/json; charset=utf-8",
+    }).done(successCallback).fail(failureCallback);
   },
 
   authAjaxWithFile: (url, file, fileField, otherFields, successCallback, failureCallback) => {

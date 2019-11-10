@@ -3,8 +3,8 @@ from uuid import uuid4
 
 from flask import request
 
-from server import app
-from server.db import users, posts
+from server import app, db
+from server.data import users, posts
 from server.utils import pic_utils, db_utils
 from server.utils.http_utils import success, failure, get_request_data
 
@@ -39,7 +39,7 @@ def create_post():
     picture_filename = upload_info.filename
 
     # update db with new post
-    new_post = posts.create_post(request_data["currentUser"], picture_filename, request_data["text"])
+    new_post = db.posts.create_post(request_data["currentUser"], picture_filename, request_data["text"])
 
     return success(new_post)
 
@@ -69,7 +69,7 @@ def edit_post(post_id: str):
     # check if user owns post
     request_data = get_request_data(request)
     current_user = request_data["currentUser"]
-    queried_post = posts.get_post(post_id)
+    queried_post = db.posts.get_post(post_id)
     if not queried_post or current_user != queried_post["username"]:
         return failure(f"{current_user} does not own this post")
 
@@ -81,7 +81,7 @@ def edit_post(post_id: str):
     picture_filename = upload_info.filename if upload_info.upload_state == UploadState.success else queried_post["picture"]
 
     # update db
-    edited_post = posts.edit_post(post_id, picture_filename, request_data["text"])
+    edited_post = db.posts.edit_post(post_id, picture_filename, request_data["text"])
 
     return success(edited_post)
 
@@ -102,7 +102,7 @@ def delete_post(post_id: str):
         return failure(f"{current_user} does not own this post, cannot delete")
     '''
 
-    posts.delete_post(post_id)
+    db.posts.delete_post(post_id)
     return success({})
 
 
@@ -112,7 +112,7 @@ def explore():
         1. list n most recent posts
     """
     request_data = get_request_data(request)
-    queried_posts = db_utils.grab_range_from_db(request_data, posts.all_posts)
+    queried_posts = db_utils.grab_range_from_db(request_data, db.posts.all_posts)
     return success(queried_posts)
 
 
@@ -130,7 +130,7 @@ def feed(sort_by: str="mostRecent", first: int=0):
 
     # todo: followers etc
     #queried_posts = db_utils.grab_range_from_db(request_data, posts.feed_posts, username=request_data["currentUser"])
-    queried_posts = db_utils.grab_range_from_db(request_data, posts.all_posts)
+    queried_posts = db_utils.grab_range_from_db(request_data, db.posts.all_posts)
 
     return success(queried_posts)
 
@@ -144,8 +144,8 @@ def search(query: str):
         1. search users and posts by tag and text        
     """
     request_data = get_request_data(request)
-    queried_posts = db_utils.grab_range_from_db(request_data, posts.search_posts, search_string=query)
-    queried_users = db_utils.grab_range_from_db(request_data, users.search_users, username=query)
+    queried_posts = db_utils.grab_range_from_db(request_data, db.posts.search_posts, search_string=query)
+    queried_users = db_utils.grab_range_from_db(request_data, db.users.search_users, username=query)
     response_data = {
         "queriedPosts": queried_posts,
         "queriedUsers": queried_users
@@ -164,7 +164,7 @@ def user(username: str):
         1. list user data
     """
 
-    queried_user = users.get_user(username)
+    queried_user = db.users.get_user(username)
     return success(queried_user) if queried_user else failure("user %s does not exist" % username)
 
 
@@ -177,7 +177,7 @@ def user_posts(username: str):
         1. list n of user's posts
     """
     request_data = get_request_data(request)
-    queried_posts = db_utils.grab_range_from_db(request_data, posts.user_posts, username=username)
+    queried_posts = db_utils.grab_range_from_db(request_data, db.posts.user_posts, username=username)
 
     return success(queried_posts)
 
@@ -207,7 +207,7 @@ def create_user():
         last_name=request_data["lastName"],
         bio=request_data["bio"]
     )
-    new_user = users.create_user(user_params)
+    new_user = db.users.create_user(user_params)
 
     return success(new_user)
 
@@ -223,7 +223,7 @@ def edit_profile():
     """
     request_data = get_request_data(request)
     current_username = request_data["currentUser"]
-    current_user = users.get_user(current_username)
+    current_user = db.users.get_user(current_username)
 
     upload_info = pic_utils.upload_profile_picture(request, current_username)
     new_picture = upload_info.filename \
@@ -237,7 +237,7 @@ def edit_profile():
         picture=new_picture,
         bio=request_data["bio"]
     )
-    edited_user = users.edit_user(current_username, user_data)
+    edited_user = db.users.edit_user(current_username, user_data)
 
     return success(edited_user)
 
@@ -254,7 +254,7 @@ def delete_user():
     pic_utils.delete_profile_picture(current_user)
 
     # update db
-    users.delete_user(current_user)
+    db.users.delete_user(current_user)
 
     return success({})
 
@@ -267,7 +267,7 @@ def follow(user_to_follow: str):
     """
     request_data = get_request_data(request)
     current_user = request_data["currentUser"]
-    return success(users.follow(current_user, user_to_follow))
+    return success(db.users.follow(current_user, user_to_follow))
 
 
 @app.route("/following/<username>", methods=["GET", "POST"])
@@ -279,7 +279,7 @@ def following(username: str):
         1. list n of user's follows
     """
     request_data = get_request_data(request)
-    queried_followings = db_utils.grab_range_from_db(request_data, users.following, username=username)
+    queried_followings = db_utils.grab_range_from_db(request_data, db.users.following, username=username)
 
     return success(queried_followings)
 
@@ -293,6 +293,6 @@ def followers(username: str):
         1. list n of user's followers
     """
     request_data = get_request_data(request)
-    queried_followers = db_utils.grab_range_from_db(request_data, users.followers, username=username)
+    queried_followers = db_utils.grab_range_from_db(request_data, db.users.followers, username=username)
 
     return success(queried_followers)
