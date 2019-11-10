@@ -3,23 +3,13 @@ import json
 
 from flask import Flask, jsonify
 from flask_cors import CORS
-import server.cognito.cognito_config as cognito_config
+import server.secrets.cognito_config as cognito_config
+from server.cognito import Cognito
 from server.data import users
 from server.data.database import Database
 from server.secrets.rds_config import RDS_CONFIG
 
 app = Flask(__name__)
-
-# configuration
-# cognito
-app.config['COGNITO_REGION'] = cognito_config.REGION
-app.config['COGNITO_USER_POOL_ID'] = cognito_config.USER_POOL_ID
-
-# optional
-app.config['COGNITO_APP_CLIENT_ID'] = cognito_config.APP_CLIENT_ID,  # client ID you wish to verify user is authenticated agains
-app.config['COGNITO_CHECK_TOKEN_EXPIRATION'] = False,  # disable token expiration checking for testing purpose
-app.config['COGNITO_JWT_HEADER_NAME'] = 'X-MyApp-Authorization'
-app.config['COGNITO_JWT_HEADER_PREFIX'] = 'Bearer'
 
 # download cognito keys
 def download_keys(keys_url: str):
@@ -34,11 +24,14 @@ def download_keys(keys_url: str):
     return keys
     """
 
-keys_url = f"https://cognito-idp.{app.config['COGNITO_REGION']}.amazonaws.com/{app.config['COGNITO_USER_POOL_ID']}/.well-known/jwks.json."
+keys_url = f"https://cognito-idp.{cognito_config.COGNITO_CONFIG.region}.amazonaws.com/{cognito_config.COGNITO_CONFIG.user_pool_id}/.well-known/jwks.json."
 cognito_keys = download_keys(keys_url)
 
 
 CORS(app, supports_credentials=True) # allow all origins for now (future maybe only allow from static site)
+
+# cognito
+cognito = Cognito(cognito_config.COGNITO_CONFIG)
 
 # database
 db = Database(RDS_CONFIG)

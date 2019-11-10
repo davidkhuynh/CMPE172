@@ -41,7 +41,16 @@ const Authentication = {
     Authentication.signOutUser();
   },
 
-  authAjax: (url, method, ajaxData, successCallback, failureCallback) => {
+  /* args:
+   {
+    url:
+    method:
+    data:
+    onSuccess:
+    onFailure:
+   }
+   */
+  authAjax: (arg) => {
     Authentication.refreshSession();
     $.ajax({
       xhrFields: {
@@ -51,20 +60,29 @@ const Authentication = {
         xhr.setRequestHeader("Authorization", "Basic " + Authentication.__getCurrentToken());
         xhr.setRequestHeader("Access-Control-Allow-Credentials", true);
       },
-      url: url,
-      type: method,
-      data: ajaxData,
+      url: arg.url,
+      type: arg.method,
+      data: "data" in arg ? arg.data : {},
       contentType: "application/json; charset=utf-8",
-    }).done(successCallback).fail(failureCallback);
+    }).done(arg.onSuccess).fail(arg.onFailure);
   },
 
-  authAjaxWithFile: (url, file, fileField, otherFields, successCallback, failureCallback) => {
+  /* args:
+    url:
+    method:
+    file:
+    fileField:
+    otherFields:
+    onSuccess:
+    onFailure:
+   */
+  authAjaxWithFile: (arg) => {
     let fd = new FormData();
-    fd.append(fileField, file);
+    fd.append(arg.fileField, arg.file);
     let data = [];
-    data.push(otherFields);
+    data.push(arg.otherFields);
     fd.append("data", JSON.stringify(data));
-    Authentication.authAjax(url, data, successCallback, failureCallback);
+    Authentication.authAjax(url, "POST", data, arg.onSuccess, arg.onFailure);
   },
 
 
