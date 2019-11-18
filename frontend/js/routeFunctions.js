@@ -1,6 +1,5 @@
-let EC2_URL = "http://ec2-34-221-65-162.us-west-2.compute.amazonaws.com:5000";
 let LOCAL_URL = "http://0.0.0.0:5000";
-let EC2_bucket_URL = "http://s3.fumblr.club";
+let EC2_URL = "http://s3.fumblr.club";
 let SERVER_URL = LOCAL_URL;
 let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/"; // this needs a slash at the end
 
@@ -83,11 +82,11 @@ function viewUserProfile(user) {
                                 '</div>
                               '</div>
                             '</div>'`;
-                $(".userProfileInformation").html(profile_html_to_append);
-                loadExplorePosts(user);
-            });
+    $(".userProfileInformation").html(profile_html_to_append);
+    loadExplorePosts(user);
+  });
 
-    }
+}
 
 function editProfile(user, firstName, lastName, bio, profilePicture) {
 
@@ -114,7 +113,7 @@ function createPost(user, text) {
       (postData) => {
         handleViewPost(postData.id);
       }
-      )
+    )
   );
 }
 
@@ -130,7 +129,7 @@ function createPostWithPicture(user, picture, text) {
     (postData) => {
       handleViewPost(postData.id);
     }
-    );
+  );
 }
 
 function editPost(user, postId, text) {
@@ -143,7 +142,8 @@ function editPost(user, postId, text) {
   );
 }
 
-function postWithFile(url, file, fileField, otherFields, callback=() => {}) {
+function postWithFile(url, file, fileField, otherFields, callback = () => {
+}) {
   let fd = new FormData();
   fd.append(fileField, file);
   let data = [];
@@ -179,7 +179,7 @@ function deletePost(postId) {
 // options: {insertDelete: true, insertView: true}
 function postNode(postId, username, picture, text, options) {
   let userPart =
-      `<div class="subgrid">
+    `<div class="subgrid">
         <div class="row subgrid-row-2">
           <div class="col-xs-3 offset-xs-1 col-md-2">
             <div class="responsive-picture picture-2">
@@ -212,7 +212,7 @@ function postNode(postId, username, picture, text, options) {
   }
 
   let postPart =
-      `<div class="subgrid">
+    `<div class="subgrid">
         <div class="row subgrid-row-1">
           <div class="col-xs-10 push-xs-0 offset-xs-1">
             <div class="responsive-picture picture-1">
@@ -243,16 +243,27 @@ function postNode(postId, username, picture, text, options) {
 
 //for explore.html
 function loadExplorePosts() {
-  $.post(SERVER_URL + "/explore",
-    {},
-    function (data) {
+  $.ajax(
+    {
+      url: SERVER_URL + "/explore",
+      type: "GET",
+      contentType: "application/json; charset=utf-8",
+    }
+  ).done(
+    (data) => {
+      console.log("got explore posts")
       console.log(data);
       let html_to_append = '';
 
       $.each(data, function (i, item) {
-        html_to_append += postNode(item.id, item.username, item.picture, item.text, { insertDelete: true, insertView: true });
+        html_to_append += postNode(
+          item.id,
+          item.username,
+          item.picture,
+          item.text,
+          {insertDelete: true, insertView: true}
+        );
       });
-
       $(".postRow").html(html_to_append);
     });
 }

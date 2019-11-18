@@ -104,7 +104,7 @@ def explore():
         1. list n most recent posts (todo: random)
     """
     request_data = get_request_data(request)
-    queried_posts = db_utils.grab_range_from_db(request_data, db.posts.all_posts)
+    queried_posts = db_utils.grab_range_from_db(None, db.posts.all_posts)
     return success(queried_posts)
 
 
