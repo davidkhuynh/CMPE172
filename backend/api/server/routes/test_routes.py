@@ -10,6 +10,10 @@ def test():
         "data": "test"
     }
 
+@app.route("/ajax", methods=["GET"])
+def ajax():
+    return success("ajax successful!")
+
 @app.route("/secret_test", methods=["GET"])
 @cognito.auth_required
 def secret_test():
