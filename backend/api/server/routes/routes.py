@@ -5,13 +5,12 @@ from flask import request
 
 import server.data.users
 from server import app, db, cognito
-from server.data import users, posts
 from server.utils import pic_utils, db_utils
 from server.utils.http_utils import success, failure, get_request_data
-
-### home routes
 from server.utils.pic_utils import UploadState
 
+
+### home routes
 @app.route("/create_post", methods=["POST"])
 @cognito.auth_required
 def create_post():
@@ -189,16 +188,13 @@ def create_user():
 
     upload_info = pic_utils.upload_profile_picture(request, request_data["username"])
 
-    # update secrets
-    user_params = server.data.users.User(
+    user_data = server.data.users.User(
         username=request_data["username"],
         birthday=datetime.datetime.strptime(request_data["birthday"], "%Y-%M-%d").date(),
-        picture=upload_info.filename,
-        first_name=request_data["firstName"],
-        last_name=request_data["lastName"],
+        display_name=request_data["displayName"],
         bio=request_data["bio"]
     )
-    new_user = db.users.create_user(user_params)
+    new_user = db.users.create_user(user_data)
     return success(new_user)
 
 @app.route("/edit_profile", methods=["POST"])
@@ -221,11 +217,8 @@ def edit_profile():
         if upload_info.upload_state == UploadState.success \
         else current_user["picture"]
 
-    # update secrets
     user_data = server.data.users.User(
-        first_name=request_data["firstName"],
-        last_name=request_data["lastName"],
-        picture=new_picture,
+        display_name=request_data["displayName"],
         bio=request_data["bio"]
     )
     edited_user = db.users.edit_user(current_username, user_data)
