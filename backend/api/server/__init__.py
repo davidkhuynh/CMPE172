@@ -42,6 +42,6 @@ from server.routes import test_routes, routes
 
 @app.route("/")
 def api_index():
-    return jsonify([str(rule) for rule in app.url_map.iter_rules()])
+    return jsonify([(str(rule), repr(rule.methods)) for rule in app.url_map.iter_rules()])
 
 
