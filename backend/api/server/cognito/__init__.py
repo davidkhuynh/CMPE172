@@ -6,7 +6,6 @@ from functools import wraps
 from flask import request
 
 import server
-from server.secrets import cognito_config
 from server.utils.http_utils import failure
 from server.utils.log_utils import log_error
 

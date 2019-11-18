@@ -13,7 +13,7 @@ from server.utils.general_utils import flatten
 class User(object):
     username: str
     birthday: datetime.date
-    created_on: datetime.datetime
+    created_on: datetime.datetime=datetime.datetime.now()
     display_name: str=""
     bio: str=""
 

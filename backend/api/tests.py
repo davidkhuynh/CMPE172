@@ -1,9 +1,11 @@
+import datetime
 import subprocess
 import unittest
 import pathlib
 
 from server.data import SQLConfig
 from server.data.database import Database
+from server.data.users import User
 
 TEST_CONFIG = SQLConfig(
     host="localhost",
@@ -23,7 +25,16 @@ class DatabaseTest(unittest.TestCase):
         self.db = Database(TEST_CONFIG)
 
     def test_create_user(self):
-
+        self.db.users.create_user(
+            User(
+                username="test",
+                birthday=datetime.date(
+                    year=1996, month=10, day=10
+                )
+            )
+        )
+        user = self.db.users.get_user("test")
+        assert(user is not None)
 
     def tearDown(self):
         self.db.drop_tables()

@@ -1,7 +1,6 @@
 from server.data import _process_rows
 from server.utils.db_utils import QueryConstraints
 
-
 def _post_from_row(row):
     return {
         "id": row[0],
