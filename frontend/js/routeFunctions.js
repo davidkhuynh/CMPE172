@@ -5,11 +5,7 @@ let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/"; // this needs a sl
 
 function ajax(arg) {
     $.ajax({
-      xhrFields: {
-        withCredentials: true
-      },
       beforeSend: (xhr) => {
-        xhr.setRequestHeader("Access-Control-Allow-Credentials", true);
         xhr.setRequestHeader("Content-Type", "application/json");
       },
       url: arg.url,
