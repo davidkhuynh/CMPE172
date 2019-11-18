@@ -2,7 +2,7 @@ import os
 import boto3
 from botocore.exceptions import ClientError
 
-from server.s3 import s3_config
+from server.secrets import s3_config
 
 
 def upload_picture(picture_file, filename, directory="") -> bool:

@@ -84,7 +84,7 @@ const Authentication = {
     let data = [];
     data.push(arg.otherFields);
     fd.append("data", JSON.stringify(data));
-    Authentication.authAjax(url, "POST", data, arg.onSuccess, arg.onFailure);
+    Authentication.authAjax();
   },
 
 
