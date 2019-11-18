@@ -59,10 +59,12 @@ const Authentication = {
       beforeSend: (xhr) => {
         xhr.setRequestHeader("Authorization", "Basic " + Authentication.__getCurrentToken());
         xhr.setRequestHeader("Access-Control-Allow-Credentials", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
       },
       url: arg.url,
-      type: arg.method,
-      data: "data" in arg ? arg.data : {},
+      type: arg.type,
+      data: JSON.stringify(arg.data),
+      dataType: "json",
       contentType: "application/json; charset=utf-8",
     }).done(arg.onSuccess).fail(arg.onFailure);
   },
