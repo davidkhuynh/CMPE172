@@ -11,8 +11,8 @@ from server.utils.general_utils import flatten
 
 @dataclass
 class User(object):
-    username: str
-    birthday: datetime.date
+    username: str=""
+    birthday: datetime.date=datetime.datetime.now().date()
     created_on: datetime.datetime=datetime.datetime.now()
     display_name: str=""
     bio: str=""
@@ -85,6 +85,9 @@ class Users(object):
         self._conn.commit()
         return True
 
+    def following_default(self, username: str):
+        return self.following(QueryConstraints(), username)
+
     def following(self, constraints: QueryConstraints, username: str):
         with self._conn.cursor() as cur:
             cur.execute(f"SELECT following FROM Follows "
@@ -96,6 +99,9 @@ class Users(object):
 
         return followed_by
 
+    def followers_default(self, username: str):
+        return self.followers(QueryConstraints(), username)
+
     def followers(self, constraints: QueryConstraints, username: str):
         with self._conn.cursor() as cur:
             cur.execute(f"SELECT * FROM Follows "
@@ -106,17 +112,20 @@ class Users(object):
             followers = flatten(cur.fetchall())
         return followers
 
+    def search_users_default(self, search_str: str):
+        return self.search_users(QueryConstraints(), search_str)
+
     def search_users(self, constraints: QueryConstraints, search_string: str):
         with self._conn.cursor() as cur:
             cur.execute(f"SELECT * FROM Users"
-                        f" WHERE username LIKE '%%s%' "
-                        f"ORDER BY username {constraints.sort_by} "
-                        f"LIMIT {constraints.total} "
-                        f"OFFSET {constraints.first};",
+                        f" WHERE username LIKE CONCAT('%%', %s, '%%')"
+                        f" ORDER BY username {constraints.sort_by}"
+                        f" LIMIT {constraints.total}"
+                        f" OFFSET {constraints.first};",
                         (search_string,))
             rows = cur.fetchall()
 
-        users = _user_from_row(rows)
+        users = _users_from_rows(rows)
         return users
 
     def delete_user(self, username: str):
