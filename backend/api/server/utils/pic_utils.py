@@ -21,6 +21,12 @@ def upload_post_picture(request: request, filename: str):
 
 
 def upload_profile_picture(request: request, username: str) -> UploadInfo:
+    """
+    filename of profile picture will be the same as the username
+    :param request:
+    :param username:
+    :return:
+    """
     return __validate_and_upload_picture(request, "profilePicture", username, "profile_pics")
 
 

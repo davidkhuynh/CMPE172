@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from flask import request
 
+import server.data.users
 from server import app, db, cognito
 from server.data import users, posts
 from server.utils import pic_utils, db_utils
@@ -35,7 +36,7 @@ def create_post():
     request_data = get_request_data(request)
     picture_filename = upload_info.filename
 
-    # update db with new post
+    # update secrets with new post
     new_post = db.posts.create_post(cognito.current_user, picture_filename, request_data["text"])
 
     return success(new_post)
@@ -44,7 +45,7 @@ def create_post():
 @app.route("/post/<post_id>", methods=["GET"])
 def post(post_id: str):
     """
-        1. get post from db and format to json to return
+        1. get post from secrets and format to json to return
     """
     queried_post = db.posts.get_post(post_id)
     return success(queried_post) if queried_post else failure("post id %s does not exist" % post_id)
@@ -77,7 +78,7 @@ def edit_post(post_id: str):
 
     picture_filename = upload_info.filename if upload_info.upload_state == UploadState.success else queried_post["picture"]
 
-    # update db
+    # update secrets
     edited_post = db.posts.edit_post(post_id, picture_filename, request_data["text"])
 
     return success(edited_post)
@@ -188,8 +189,8 @@ def create_user():
 
     upload_info = pic_utils.upload_profile_picture(request, request_data["username"])
 
-    # update db
-    user_params = db_utils.User(
+    # update secrets
+    user_params = server.data.users.User(
         username=request_data["username"],
         birthday=datetime.datetime.strptime(request_data["birthday"], "%Y-%M-%d").date(),
         picture=upload_info.filename,
@@ -220,8 +221,8 @@ def edit_profile():
         if upload_info.upload_state == UploadState.success \
         else current_user["picture"]
 
-    # update db
-    user_data = db_utils.User(
+    # update secrets
+    user_data = server.data.users.User(
         first_name=request_data["firstName"],
         last_name=request_data["lastName"],
         picture=new_picture,
@@ -238,7 +239,7 @@ def delete_current_user():
     # delete profile pic from s3
     pic_utils.delete_profile_picture(cognito.current_user)
 
-    # update db
+    # update secrets
     db.users.delete_user(cognito.current_user)
 
     return success({})

@@ -8,8 +8,10 @@ from server.cognito import Cognito
 from server.data import users
 from server.data.database import Database
 from server.secrets.rds_config import RDS_CONFIG
+from server.utils import http_utils
 
 app = Flask(__name__)
+app.json_encoder = http_utils.CustomJSONEncoder
 
 # download cognito keys
 def download_keys(keys_url: str):

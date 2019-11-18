@@ -1,20 +1,31 @@
+import datetime
+from datetime import date
+
+from dataclasses import dataclass
 from pymysql import Connection
 
 from server.data import _process_rows
-from server.utils.db_utils import QueryConstraints, User
+from server.utils.db_utils import QueryConstraints
 from server.utils.general_utils import flatten
 
 
-def _user_from_row(row):
-    return {
-        "username": row[0],
-        "birthday": row[1],
-        "firstName": row[2],
-        "lastName": row[3],
-        "bio": row[4],
-        "createdOn": row[5]
-    } if row else {}
+@dataclass
+class User(object):
+    username: str
+    birthday: datetime.date
+    created_on: datetime.datetime
+    display_name: str=""
+    bio: str=""
 
+
+def _user_from_row(row):
+    return User(
+        username=row[0],
+        birthday=row[1],
+        display_name=row[2],
+        bio=row[3],
+        created_on=row[4]
+    ) if row else None
 
 def _users_from_rows(rows):
     return _process_rows(rows, _user_from_row)
@@ -36,12 +47,11 @@ class Users(object):
         with self._conn.cursor() as cur:
             cur.execute(
                 "INSERT INTO Users "
-                "(username, birthday, firstName, lastName, bio) "
-                "VALUES (%s, %s, %s, %s, %s);",
+                "(username, birthday, displayName, bio) "
+                "VALUES (%s, %s, %s, %s);",
                 (user_data.username,
                  user_data.birthday,
-                 user_data.first_name,
-                 user_data.last_name,
+                 user_data.display_name,
                  user_data.bio))
         self._conn.commit()
 
@@ -50,12 +60,10 @@ class Users(object):
     def edit_user(self, username: str, user_data: User):
         with self._conn.cursor() as cur:
             cur.execute("UPDATE Users "
-                        "SET firstName=%s, "
-                        "lastName=%s, "
+                        "SET displayName=%s, "
                         "bio=%s "
                         "WHERE username=%s;",
-                        (user_data.first_name,
-                         user_data.last_name,
+                        (user_data.display_name,
                          user_data.bio,
                          username))
         self._conn.commit()
@@ -115,3 +123,5 @@ class Users(object):
         with self._conn.cursor() as cur:
             cur.execute("DELETE FROM Users WHERE username=%s", (username,))
         self._conn.commit()
+
+

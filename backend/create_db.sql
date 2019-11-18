@@ -1,4 +1,4 @@
--- create db
+-- create secrets
 CREATE DATABASE IF NOT EXISTS fumblr CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE fumblr;
 
@@ -6,8 +6,7 @@ USE fumblr;
 CREATE TABLE IF NOT EXISTS Users (
     username VARCHAR(64) NOT NULL UNIQUE,
     birthday DATE NOT NULL,
-    firstName VARCHAR(64),
-    lastName VARCHAR(64),
+    displayName VARCHAR(256),
     bio VARCHAR(4096),
     createdOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

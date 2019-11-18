@@ -48,7 +48,7 @@ class Posts(object):
         return posts
 
     def create_post(self, username: str, picture: str, text: str):
-        # add post to db
+        # add post to secrets
         with self._conn.cursor() as cur:
             cur.execute("INSERT INTO Posts "
                         "(username, picture, text) "

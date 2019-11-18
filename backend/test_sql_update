@@ -1,0 +1,2 @@
+#!/bin/bash
+mysql -u fumblr_admin -p"fumblr_admin" < create_db.sql

@@ -8,6 +8,7 @@ from server.data.users import Users
 
 class Database:
     users: Users
+    posts: Posts
     _conn: Connection
     TABLES = ("Blocks", "Bookmarks", "Follows", "PostLikes", "PostTags", "Posts", "Users")
 

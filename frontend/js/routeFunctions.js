@@ -25,7 +25,7 @@ function createUserWithProfilePicture(username, birthday, firstName, lastName, b
 function createUser(username, birthday, firstName, lastName, bio, email, password) {
   signUpUser(username, email, password, (err, result) => {
     if (err) {
-      console.log("error adding user to backend db...");
+      console.log("error adding user to backend secrets...");
       console.log(err);
       return;
     }
