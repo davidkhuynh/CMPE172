@@ -20,7 +20,7 @@ function getCurrentUser() {
   console.log($.post(SERVER_URL + "/get_current_user"));
 }
 
-function createUserWithProfilePicture(username, birthday, firstName, lastName, bio, profilePicture, email, password) {
+function createUserWithProfilePicture(username, birthday, displayName, bio, profilePicture, email, password) {
   postWithFile(
     SERVER_URL + "/create_user",
     profilePicture,
@@ -28,13 +28,12 @@ function createUserWithProfilePicture(username, birthday, firstName, lastName, b
     {
       username: username,
       birthday: birthday,
-      firstName: firstName,
-      lastName: lastName,
+      displayName: displayName,
       bio: bio,
     });
 }
 
-function createUser(username, birthday, firstName, lastName, bio, email, password) {
+function createUser(username, birthday, displayName, bio, email, password) {
   signUpUser(username, email, password, (err, result) => {
     if (err) {
       console.log("error adding user to backend secrets...");
@@ -46,8 +45,7 @@ function createUser(username, birthday, firstName, lastName, bio, email, passwor
         {
           username: username,
           birthday: birthday,
-          firstName: firstName,
-          lastName: lastName,
+          displayName: displayName,
           bio: bio,
         })
     );
@@ -101,14 +99,13 @@ function viewUserProfile(user) {
 
 }
 
-function editProfile(user, firstName, lastName, bio, profilePicture) {
+function editProfile(user, displayName, bio, profilePicture) {
 
   console.log(
     $.post(SERVER_URL + "/edit_profile",
       {
         currentUser: user,
-        firstName: firstName,
-        lastName: lastName,
+        displayName: displayName,
         bio: bio
         //profilePicture
       })

@@ -39,8 +39,7 @@
     <div class="col-xs-12 push-xs-0 col-md-8 push-md-2 pull-md-0 push-xl-3 pull-xl-0 col-xl-6">
       <form class="form-container">
         <div class="container-fluid container-2"><input value="" type="text" class="form-input" id="editFirstName">
-          <h4 class="heading-2">First Name</h4><input value="" type="text" class="form-input" id="editLastName">
-          <h4 class="heading-2">LAST NAME</h4><input value="" type="text" class="form-input" id="editBio">
+          <h4 class="heading-2">Display Name</h4><input value="" type="text" class="form-input" id="editDisplayName">
           <h4 class="heading-2">BIO</h4>
         </div>
       </form>
@@ -63,7 +62,7 @@
 
         var editProfileButton = document.getElementById("editProfileButton");
         editProfileButton.onclick = function(){
-          editProfile("davidkhuynh", document.getElementById('editFirstName').value, document.getElementById('editLastName').value, document.getElementById('editBio').value);
+          editProfile("davidkhuynh", document.getElementById('editDisplayName').value, document.getElementById('editBio').value);
           alert("success! check db, select * from Users");
         }
 

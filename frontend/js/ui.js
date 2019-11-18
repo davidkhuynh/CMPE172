@@ -157,8 +157,7 @@ function signupPage() {
     let email = $("#createEmail").val();
     let password = $("#createPassword").val();
     let birthday = $("#createBirthday").val();
-    let firstName = $("#createFirstName").val();
-    let lastName = $("#createLastName").val();
+    let displayName = $("#createDisplayName").val();
     let bio = $("#createBio").val();
     let profilePicture = $("#profilePicture").get(0).files[0];
 
@@ -172,9 +171,9 @@ function signupPage() {
         }
         else {
           if (profilePicture) {
-            createUserWithProfilePicture(username, birthday, firstName, lastName, bio, profilePicture);
+            createUserWithProfilePicture(username, birthday, displayName, bio, profilePicture);
           } else {
-            createUser(username, birthday, firstName, lastName, bio);
+            createUser(username, birthday, displayName, bio);
           }
           window.location = "confirmation.html";
         }
