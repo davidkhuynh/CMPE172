@@ -4,7 +4,7 @@ let SERVER_URL = LOCAL_URL;
 let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/"; // this needs a slash at the end
 
 function ajax(arg) {
-    $.ajax({
+    return $.ajax({
       beforeSend: (xhr) => {
         xhr.setRequestHeader("Content-Type", "application/json");
       },

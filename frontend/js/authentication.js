@@ -52,7 +52,7 @@ const Authentication = {
    */
   authAjax: (arg) => {
     Authentication.refreshSession();
-    $.ajax({
+    return $.ajax({
       xhrFields: {
         withCredentials: true
       },
