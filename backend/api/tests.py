@@ -32,6 +32,7 @@ class DatabaseTest(unittest.TestCase):
             )
         )
 
+    # user tests
     def test_create_user(self):
         user = self._create_test_user()
         assert(user is not None)
@@ -56,6 +57,36 @@ class DatabaseTest(unittest.TestCase):
         assert(any(searched_users))
         searched_users_with_gibberish_query = self.db.users.search_users_default("asdfa")
         assert(not any(searched_users_with_gibberish_query))
+
+    # post tests
+    def test_create_post(self):
+        user = self._create_test_user()
+        post = self.db.posts.create_post(user.username, "my test post")
+        assert(post.text)
+        assert(post.text == "my test post")
+        assert(post.username == user.username)
+
+    def test_edit_post(self):
+        user = self._create_test_user()
+        post = self.db.posts.create_post(user.username, "my test post")
+        edited_post = self.db.posts.edit_post(post.id, "edited text")
+        assert(post.id == edited_post.id)
+        assert(post.text != edited_post.text)
+
+    def test_user_posts(self):
+        user = self._create_test_user()
+        post = self.db.posts.create_post(user.username, "my test post")
+        post2 = self.db.posts.create_post(user.username, "second test post")
+        user_posts = self.db.posts.user_posts_default(user.username)
+        assert(len(user_posts) == 2)
+        assert(any(post for post in user_posts if post.text == "my test post"))
+        assert(any(post for post in user_posts if post.text == "second test post"))
+
+    def test_search_posts(self):
+        user = self._create_test_user()
+        post = self.db.posts.create_post(user.username, "my test post")
+        searched_posts = self.db.posts.search_posts_default("test")
+        assert(any(searched_posts))
 
     def tearDown(self):
         self.db.drop_tables()

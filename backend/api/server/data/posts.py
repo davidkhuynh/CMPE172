@@ -1,16 +1,28 @@
+import datetime
+
+from dataclasses import dataclass
+
 from server.data import _process_rows
 from server.utils.db_utils import QueryConstraints
 
-def _post_from_row(row):
-    return {
-        "id": row[0],
-        "username": row[1],
-        "picture": row[2],
-        "text": row[3],
-        "postedOn": row[4],
-        "editedOn": row[5]
-    } if row else {}
+@dataclass
+class Post(object):
+    id: str
+    username: str
+    picture: str
+    text: str
+    posted_on: datetime.datetime
+    edited_on: datetime.datetime
 
+def _post_from_row(row):
+    return Post(
+        id=row[0],
+        username=row[1],
+        picture=row[2],
+        text=row[3],
+        posted_on=row[4],
+        edited_on=row[5]
+    )
 
 def _posts_from_rows(rows):
     return _process_rows(rows, _post_from_row)
@@ -26,13 +38,16 @@ class Posts(object):
 
         return _post_from_row(row)
 
-    def edit_post(self, post_id: str, picture, text):
+    def edit_post(self, post_id: str, text: str, picture: str=None):
         with self._conn.cursor() as cur:
             cur.execute("UPDATE Posts SET text=%s, picture=%s WHERE id=%s;",
                         (text, picture, post_id))
         self._conn.commit()
 
         return self.get_post(post_id)
+
+    def user_posts_default(self, username: str):
+        return self.user_posts(QueryConstraints(), username)
 
     def user_posts(self, constraints: QueryConstraints, username: str):
         with self._conn.cursor() as cur:
@@ -46,8 +61,7 @@ class Posts(object):
 
         return posts
 
-    def create_post(self, username: str, picture: str, text: str):
-        # add post to secrets
+    def create_post(self, username: str, text: str, picture: str=None):
         with self._conn.cursor() as cur:
             cur.execute("INSERT INTO Posts "
                         "(username, picture, text) "
@@ -56,12 +70,15 @@ class Posts(object):
         self._conn.commit()
 
         # created post is the latest post
-        return self._get_latest_post_from_user(self._conn, username)
+        return self._get_latest_post_from_user(username)
+
+    def search_posts_default(self, search_string: str):
+        return self.search_posts(QueryConstraints(), search_string)
 
     def search_posts(self, constraints: QueryConstraints, search_string: str):
         with self._conn.cursor() as cur:
             cur.execute(f"SELECT * FROM Posts"
-                        f" WHERE text LIKE '%%s%' "
+                        f" WHERE text LIKE CONCAT('%%', %s, '%%')"
                         f"ORDER BY postedOn {constraints.sort_by} "
                         f"LIMIT {constraints.total} "
                         f"OFFSET {constraints.first};",

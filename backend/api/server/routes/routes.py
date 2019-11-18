@@ -37,7 +37,7 @@ def create_post():
     picture_filename = upload_info.filename
 
     # update secrets with new post
-    new_post = db.posts.create_post(cognito.current_user, picture_filename, request_data["text"])
+    new_post = db.posts.create_post(cognito.current_user, request_data["text"], picture_filename)
 
     return success(new_post)
 
@@ -79,7 +79,7 @@ def edit_post(post_id: str):
     picture_filename = upload_info.filename if upload_info.upload_state == UploadState.success else queried_post["picture"]
 
     # update secrets
-    edited_post = db.posts.edit_post(post_id, picture_filename, request_data["text"])
+    edited_post = db.posts.edit_post(post_id, request_data["text"], picture_filename)
 
     return success(edited_post)
 

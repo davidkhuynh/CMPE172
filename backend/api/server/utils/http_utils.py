@@ -5,6 +5,7 @@ from json import JSONEncoder
 from flask import jsonify
 from werkzeug.datastructures import ImmutableMultiDict
 
+from server.data.posts import Post
 from server.data.users import User
 
 
@@ -38,6 +39,15 @@ class CustomJSONEncoder(JSONEncoder):
                 "displayName" : obj.display_name,
                 "bio": obj.bio,
                 "createdOn": obj.created_on
+            }
+        if isinstance(obj, Post):
+            return {
+                "id": obj.id,
+                "username": obj.username,
+                "picture": obj.picture,
+                "text": obj.text,
+                "postedOn": obj.posted_on,
+                "editedOn": obj.edited_on
             }
         else:
             return super().default(obj)
