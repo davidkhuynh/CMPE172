@@ -6,7 +6,7 @@ from flask import request
 import server.data.users
 from server import app, db, cognito
 from server.utils import pic_utils, db_utils
-from server.utils.http_utils import success, failure, get_request_data
+from server.utils.http_utils import success, failure
 from server.utils.pic_utils import UploadState
 
 
@@ -32,11 +32,10 @@ def create_post():
     if upload_info.upload_state == UploadState.failure:
         failure("failed to upload image")
 
-    request_data = get_request_data(request)
     picture_filename = upload_info.filename
 
     # update secrets with new post
-    new_post = db.posts.create_post(cognito.current_user, request_data["text"], picture_filename)
+    new_post = db.posts.create_post(cognito.current_user, request.json["text"], picture_filename)
 
     return success(new_post)
 
@@ -55,7 +54,7 @@ def post(post_id: str):
 def edit_post(post_id: str):
     """
         request body:
-            currentUser, text
+            text
 
         files:
             pictureFile
@@ -65,7 +64,6 @@ def edit_post(post_id: str):
         3. update request.data in post (see create_post)
     """
     # check if user owns post
-    request_data = get_request_data(request)
     queried_post = db.posts.get_post(post_id)
     if not queried_post or cognito.current_user != queried_post["username"]:
         return failure(f"{cognito.current_user} does not own this post")
@@ -78,7 +76,7 @@ def edit_post(post_id: str):
     picture_filename = upload_info.filename if upload_info.upload_state == UploadState.success else queried_post["picture"]
 
     # update secrets
-    edited_post = db.posts.edit_post(post_id, request_data["text"], picture_filename)
+    edited_post = db.posts.edit_post(post_id, request.json["text"], picture_filename)
 
     return success(edited_post)
 
@@ -103,7 +101,6 @@ def explore():
     """
         1. list n most recent posts (todo: random)
     """
-    request_data = get_request_data(request)
     queried_posts = db_utils.grab_range_from_db(None, db.posts.all_posts)
     return success(queried_posts)
 
@@ -116,11 +113,9 @@ def feed(sort_by: str="mostRecent", first: int=0):
     """
         1. list n most recent posts from people user follows
     """
-    request_data = get_request_data(request)
-
     # todo: followers etc
-    #queried_posts = db_utils.grab_range_from_db(request_data, posts.feed_posts, username=request_data["currentUser"])
-    queried_posts = db_utils.grab_range_from_db(request_data, db.posts.all_posts)
+    #queried_posts = db_utils.grab_range_from_db(request.json, posts.feed_posts, username=request.json["currentUser"])
+    queried_posts = db_utils.grab_range_from_db(request.json, db.posts.all_posts)
 
     return success(queried_posts)
 
@@ -133,9 +128,8 @@ def search(query: str):
 
         1. search users and posts by tag and text        
     """
-    request_data = get_request_data(request)
-    queried_posts = db_utils.grab_range_from_db(request_data, db.posts.search_posts, search_string=query)
-    queried_users = db_utils.grab_range_from_db(request_data, db.users.search_users, username=query)
+    queried_posts = db_utils.grab_range_from_db(request.json, db.posts.search_posts, search_string=query)
+    queried_users = db_utils.grab_range_from_db(request.json, db.users.search_users, username=query)
     response_data = {
         "queriedPosts": queried_posts,
         "queriedUsers": queried_users
@@ -166,8 +160,7 @@ def user_posts(username: str):
 
         1. list n of user's posts
     """
-    request_data = get_request_data(request)
-    queried_posts = db_utils.grab_range_from_db(request_data, db.posts.user_posts, username=username)
+    queried_posts = db_utils.grab_range_from_db(request.json, db.posts.user_posts, username=username)
 
     return success(queried_posts)
 
@@ -176,26 +169,24 @@ def user_posts(username: str):
 def create_user():
     """
         request body:
-            username, birthday, firstName, lastName, bio
+            username, birthday, displayName, bio
 
         files:
             profilePicture
 
     """
-    request_data = get_request_data(request)
-    if "username" not in request_data or "birthday" not in request_data:
+    if "username" not in request.json or "birthday" not in request.json:
         return failure("username and birthday required to create a new user")
 
-    upload_info = pic_utils.upload_profile_picture(request, request_data["username"])
-
     user_data = server.data.users.User(
-        username=request_data["username"],
-        birthday=datetime.datetime.strptime(request_data["birthday"], "%Y-%M-%d").date(),
-        display_name=request_data["displayName"],
-        bio=request_data["bio"]
+        username=request.json["username"],
+        birthday=datetime.datetime.strptime(request.json["birthday"], "%Y-%M-%d").date(),
+        display_name=request.json["displayName"],
+        bio=request.json["bio"]
     )
     new_user = db.users.create_user(user_data)
     return success(new_user)
+
 
 @app.route("/edit_profile", methods=["POST"])
 @cognito.auth_required
@@ -208,20 +199,11 @@ def edit_profile():
             profilePicture
 
     """
-    request_data = get_request_data(request)
-    current_username = request_data["currentUser"]
-    current_user = db.users.get_user(current_username)
-
-    upload_info = pic_utils.upload_profile_picture(request, current_username)
-    new_picture = upload_info.filename \
-        if upload_info.upload_state == UploadState.success \
-        else current_user["picture"]
-
     user_data = server.data.users.User(
-        display_name=request_data["displayName"],
-        bio=request_data["bio"]
+        display_name=request.json["displayName"],
+        bio=request.json["bio"]
     )
-    edited_user = db.users.edit_user(current_username, user_data)
+    edited_user = db.users.edit_user(cognito.curent_user, user_data)
 
     return success(edited_user)
 
@@ -243,9 +225,7 @@ def delete_current_user():
 def follow(user_to_follow: str):
     """
     """
-    request_data = get_request_data(request)
-    current_user = request_data["currentUser"]
-    return success(db.users.follow(current_user, user_to_follow))
+    return success(db.users.follow(cognito.current_user, user_to_follow))
 
 
 @app.route("/following/<username>", methods=["GET"])
@@ -256,8 +236,7 @@ def following(username: str):
 
         1. list n of user's follows
     """
-    request_data = get_request_data(request)
-    queried_followings = db_utils.grab_range_from_db(request_data, db.users.following, username=username)
+    queried_followings = db_utils.grab_range_from_db(request.json, db.users.following, username=username)
 
     return success(queried_followings)
 
@@ -270,7 +249,6 @@ def followers(username: str):
 
         1. list n of user's followers
     """
-    request_data = get_request_data(request)
-    queried_followers = db_utils.grab_range_from_db(request_data, db.users.followers, username=username)
+    queried_followers = db_utils.grab_range_from_db(request.json, db.users.followers, username=username)
 
     return success(queried_followers)

@@ -3,6 +3,23 @@ let EC2_URL = "http://s3.fumblr.club";
 let SERVER_URL = LOCAL_URL;
 let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/"; // this needs a slash at the end
 
+function ajax(arg) {
+    $.ajax({
+      xhrFields: {
+        withCredentials: true
+      },
+      beforeSend: (xhr) => {
+        xhr.setRequestHeader("Access-Control-Allow-Credentials", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+      },
+      url: arg.url,
+      type: arg.type,
+      data: JSON.stringify(arg.data),
+      dataType: "json",
+      contentType: "application/json; charset=utf-8",
+    }).done(arg.onSuccess).fail(arg.onFailure);
+}
+
 function getCurrentUser() {
   console.log($.post(SERVER_URL + "/get_current_user"));
 }
