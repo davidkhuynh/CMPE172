@@ -6,7 +6,6 @@ from flask import request
 import server.data.users
 from server import app, db, cognito
 from server.utils import pic_utils, db_utils
-from server.utils.db_utils import QueryConstraints
 from server.utils.http_utils import success, failure
 from server.utils.pic_utils import UploadState
 
@@ -39,10 +38,17 @@ def create_post():
 @app.route("/update_post_picture/<post_id>", methods=["POST"])
 @cognito.auth_required
 def update_post_picture(post_id: str):
+    """
+    file: pictureFile
+    :param post_id:
+    :return:
+    """
     # todo check duplicates (highly unlikely)
     upload_info = pic_utils.upload_post_picture(request, str(uuid4()))
     if upload_info.upload_state == UploadState.failure:
         failure("failed to upload image")
+    if upload_info.upload_state == UploadState.no_upload:
+        failure("no picture uploaded")
     db.posts.update_post_picture(post_id, upload_info.filename)
     success(f"uploaded post image for {post_id}")
 
@@ -102,7 +108,6 @@ def feed(sort_by: str="mostRecent", first: int=0):
         1. list n most recent posts from people user follows
     """
     # todo: followers etc
-    #queried_posts = db_utils.grab_range_from_db(request.json, posts.feed_posts, username=request.json["currentUser"])
     queried_posts = db_utils.grab_range_from_db(request.json, db.posts.all_posts)
 
     return success(queried_posts)
@@ -179,10 +184,18 @@ def create_user():
 @cognito.auth_required
 def upload_user_pic():
     """
-        file: pic
+        file: profilePicture
     :return:
     """
-    return "upload user pic"
+    upload_info = pic_utils.upload_profile_picture(request, cognito.current_user)
+    if upload_info.upload_state == UploadState.success:
+        db.users.update_profile_picture(cognito.current_user)
+        return success(f"updated profile picture for {cognito.current_user}")
+
+    if upload_info.upload_state == UploadState.no_upload:
+        return failure("no picture uploaded")
+
+    return failure ("picture upload failure")
 
 
 @app.route("/edit_profile", methods=["POST"])
@@ -217,9 +230,13 @@ def delete_current_user():
 @app.route("/follow/<user_to_follow>", methods=["GET"])
 @cognito.auth_required
 def follow(user_to_follow: str):
-    """
-    """
     return success(db.users.follow(cognito.current_user, user_to_follow))
+
+@app.route("/unfollow/<user_to_unfollow>", methods=["GET"])
+@cognito.auth_required
+def unfollow(user_to_unfollow: str):
+    return success(db.users.unfollow(cognito.current_user, user_to_unfollow))
+
 
 
 @app.route("/following/<username>", methods=["GET"])

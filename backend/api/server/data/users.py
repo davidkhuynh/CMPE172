@@ -86,6 +86,19 @@ class Users(object):
                 cur.execute("INSERT INTO Follows (follower, following) VALUES (%s, %s);",
                             (follower, following))
 
+    def unfollow(self, follower: str, following: str):
+        with sql_connection(self._config) as conn:
+            with conn.cursor() as cur:
+                # check if follower is already following user before unfollowing
+                cur.execute("SELECT following FROM Follows WHERE follower=%s AND following=%s;",
+                            (follower, following))
+                if not cur.fetchone():
+                    return False
+
+                # unfollow user
+                cur.execute("DELETE FROM Follows WHERE follower=%s AND following=%s;",
+                            (follower, following))
+
         return True
 
     def following_default(self, username: str):

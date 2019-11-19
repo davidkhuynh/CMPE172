@@ -42,14 +42,22 @@ class DatabaseTest(unittest.TestCase):
         edited_user = self.db.users.edit_user("test", User(display_name="edited display name"))
         assert(user.display_name != edited_user.display_name)
 
-    def test_follow(self):
+    def test_follow_and_unfollow(self):
         user1 = self._create_test_user("test1")
         user2 = self._create_test_user("test2")
+        # follow
         self.db.users.follow(user1.username, user2.username)
         user1_following = self.db.users.following_default(user1.username)
         assert(user2.username in user1_following)
         user2_followers = self.db.users.followers_default(user2.username)
         assert(user1.username in user2_followers)
+        # unfollow
+        self.db.users.unfollow(user1.username, user2.username)
+        user1_following = self.db.users.following_default(user1.username)
+        assert(user2.username not in user1_following)
+        user2_followers = self.db.users.followers_default(user2.username)
+        assert(user1.username not in user2_followers)
+
 
     def test_search_users(self):
         user = self._create_test_user()
