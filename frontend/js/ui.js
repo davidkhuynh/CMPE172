@@ -153,9 +153,13 @@ function signupPage() {
 
   // handlers
   $("#createUserButton").click(() => {
+
+    console.log($("#createPassword").val());
+    console.log($("#createEmail").val());
     let username = $("#createUserName").val();
     let email = $("#createEmail").val();
     let password = $("#createPassword").val();
+    console.log(password);
     let birthday = $("#createBirthday").val();
     let displayName = $("#createDisplayName").val();
     let bio = $("#createBio").val();
@@ -175,7 +179,7 @@ function signupPage() {
           } else {
             createUser(username, birthday, displayName, bio);
           }
-          window.location = "confirmation.html";
+          //window.location = "confirmation.html";
         }
       });
   });

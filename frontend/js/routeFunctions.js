@@ -34,21 +34,39 @@ function createUserWithProfilePicture(username, birthday, displayName, bio, prof
 }
 
 function createUser(username, birthday, displayName, bio, email, password) {
-  signUpUser(username, email, password, (err, result) => {
+
+  console.log(password,email);
+  Authentication.signUpUser(username, email, password, (err, result) => {
+
+    console.log(username, email, password);
     if (err) {
       console.log("error adding user to backend secrets...");
       console.log(err);
       return;
     }
     console.log(
-      $.post(SERVER_URL + "/create_user",
-        {
-          username: username,
-          birthday: birthday,
-          displayName: displayName,
-          bio: bio,
-        })
+
+      Authentication.authAjax({
+      url: SERVER_URL + "/create_user",
+      type: "POST",
+      data: {"username": username, 
+             "birthday": birthday,
+             "displayName": displayName,
+             "bio": bio,
+             },
+        onSuccess: (response) => {
+          console.log(response);
+        },
+        onFailure: (errorData) => {
+          console.log(errorData);
+
+        }
+      })
+
     );
+
+    
+
   });
 }
 
