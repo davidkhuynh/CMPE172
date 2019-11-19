@@ -26,7 +26,8 @@ CREATE TABLE IF NOT EXISTS Posts (
 
 -- generate unique ID for post id
 DELIMITER //
-CREATE TRIGGER IF NOT EXISTS set_post_id
+DROP TRIGGER IF EXISTS `set_post_id` //
+CREATE TRIGGER `set_post_id`
 BEFORE INSERT 
 ON Posts FOR EACH ROW
 BEGIN
@@ -56,7 +57,7 @@ CREATE TABLE IF NOT EXISTS PostLikes (
 
 CREATE TABLE IF NOT EXISTS PostTags (
     postId VARCHAR(64) NOT NULL,
-    tag VARCHAR(256) NOT NULL,
+    tag VARCHAR(64) NOT NULL,
 
     PRIMARY KEY (postId, tag)
 );

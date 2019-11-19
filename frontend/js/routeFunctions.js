@@ -64,8 +64,6 @@ const RouteFunctions = {
       );
     });
   }
-
-
 };
 
   function viewUserProfile(user) {

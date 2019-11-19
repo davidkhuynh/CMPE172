@@ -40,6 +40,8 @@ def create_post():
     return success(new_post)
 
 
+
+
 @app.route("/post/<post_id>", methods=["GET"])
 def post(post_id: str):
     """
@@ -79,6 +81,7 @@ def edit_post(post_id: str):
     edited_post = db.posts.edit_post(post_id, request.json["text"], picture_filename)
 
     return success(edited_post)
+
 
 @app.route("/delete_post/<post_id>", methods=["POST"])
 @cognito.auth_required
@@ -188,15 +191,22 @@ def create_user():
     return success(new_user)
 
 
+@app.route("/upload_user_pic", methods=["POST"])
+@cognito.auth_required
+def upload_user_pic():
+    """
+        file: pic
+    :return:
+    """
+    return "upload user pic"
+
+
 @app.route("/edit_profile", methods=["POST"])
 @cognito.auth_required
 def edit_profile():
     """
         request body:
             firstName, lastName, bio
-
-        files:
-            profilePicture
 
     """
     user_data = server.data.users.User(
