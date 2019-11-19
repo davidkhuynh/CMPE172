@@ -1,4 +1,6 @@
-from flask import request
+import os
+
+from flask import request, send_file
 
 from server import app, cognito
 from server.utils.http_utils import success, failure
@@ -27,3 +29,8 @@ def secret_post_test():
     post_data = request.json["secretData"]
     return success(f"here's the secret post data: {post_data}")
 
+@app.route("/file_upload_test", methods=["POST"])
+def file_upload_test():
+    file = request.files["file"]
+    filename, filetype = os.path.splitext(file.filename)
+    return send_file(file, mimetype=f"image/{filetype}")
