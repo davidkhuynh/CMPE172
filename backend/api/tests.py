@@ -89,8 +89,7 @@ class DatabaseTest(unittest.TestCase):
         assert(any(searched_posts))
 
     def tearDown(self):
-        self.db.truncate_tables()
-
+        self.db.drop_tables()
 
 if __name__ == "__main__":
     unittest.main()

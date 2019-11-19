@@ -1,3 +1,6 @@
+from contextlib import contextmanager
+
+import pymysql
 from dataclasses import dataclass
 
 from server.utils.log_utils import log_info, log_error
@@ -30,4 +33,17 @@ def _db_failure(message: str, return_object: object = None):
 
 def _process_rows(rows, func):
     return [func(row) for row in rows]
+
+
+@contextmanager
+def sql_connection(config: SQLConfig):
+    connection = pymysql.connect(host=config.host, user=config.username,
+                                 passwd=config.password, db=config.db_name,
+                                 connect_timeout=5)
+    try:
+        yield connection
+    finally:
+        connection.commit()
+        connection.close()
+
 

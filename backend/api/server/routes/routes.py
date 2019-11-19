@@ -6,42 +6,12 @@ from flask import request
 import server.data.users
 from server import app, db, cognito
 from server.utils import pic_utils, db_utils
+from server.utils.db_utils import QueryConstraints
 from server.utils.http_utils import success, failure
 from server.utils.pic_utils import UploadState
 
 
 ### home routes
-@app.route("/create_post", methods=["POST"])
-@cognito.auth_required
-def create_post():
-    """
-        request body:
-            text
-
-        files:
-            pictureFile
-
-
-        1. upload image to s3
-        2. add new post to request.database
-    """
-
-
-    # upload picture if it exists
-    upload_info = pic_utils.upload_post_picture(request, str(uuid4())) # todo check duplicates (highly unlikely)
-    if upload_info.upload_state == UploadState.failure:
-        failure("failed to upload image")
-
-    picture_filename = upload_info.filename
-
-    # update secrets with new post
-    new_post = db.posts.create_post(cognito.current_user, request.json["text"], picture_filename)
-
-    return success(new_post)
-
-
-
-
 @app.route("/post/<post_id>", methods=["GET"])
 def post(post_id: str):
     """
@@ -50,6 +20,32 @@ def post(post_id: str):
     queried_post = db.posts.get_post(post_id)
     return success(queried_post) if queried_post else failure("post id %s does not exist" % post_id)
 
+@app.route("/create_post", methods=["POST"])
+@cognito.auth_required
+def create_post():
+    """
+        request body:
+            text
+
+        1. upload image to s3
+        2. add new post to request.database
+    """
+
+    # update secrets with new post
+    new_post = db.posts.create_post(cognito.current_user, request.json["text"])
+    return success(new_post)
+
+
+@app.route("/update_post_picture/<post_id>", methods=["POST"])
+@cognito.auth_required
+def update_post_picture(post_id: str):
+    # todo check duplicates (highly unlikely)
+    upload_info = pic_utils.upload_post_picture(request, str(uuid4()))
+    if upload_info.upload_state == UploadState.failure:
+        failure("failed to upload image")
+    db.posts.update_post_picture(post_id, upload_info.filename)
+    success(f"uploaded post image for {post_id}")
+
 
 @app.route("/edit_post/<post_id>", methods=["POST"])
 @cognito.auth_required
@@ -57,9 +53,6 @@ def edit_post(post_id: str):
     """
         request body:
             text
-
-        files:
-            pictureFile
 
         1. check if user owns post
         2. get post 
@@ -70,16 +63,8 @@ def edit_post(post_id: str):
     if not queried_post or cognito.current_user != queried_post["username"]:
         return failure(f"{cognito.current_user} does not own this post")
 
-    # if picture is updated, update picture
-    upload_info = pic_utils.upload_post_picture(request, str(uuid4())) # todo check duplicates (highly unlikely)
-    if upload_info.upload_state == UploadState.failure:
-        failure("failed to upload image")
-
-    picture_filename = upload_info.filename if upload_info.upload_state == UploadState.success else queried_post["picture"]
-
     # update secrets
-    edited_post = db.posts.edit_post(post_id, request.json["text"], picture_filename)
-
+    edited_post = db.posts.edit_post(post_id, request.json["text"])
     return success(edited_post)
 
 
@@ -240,24 +225,18 @@ def follow(user_to_follow: str):
 @app.route("/following/<username>", methods=["GET"])
 def following(username: str):
     """
-        request body:
-            <none>
-
         1. list n of user's follows
     """
-    queried_followings = db_utils.grab_range_from_db(request.json, db.users.following, username=username)
 
+    queried_followings = db_utils.grab_range_from_db(None, db.users.following, username=username)
     return success(queried_followings)
 
 
 @app.route("/followers/<username>", methods=["GET"])
 def followers(username: str):
     """
-        request body:
-            <none>
-
         1. list n of user's followers
     """
-    queried_followers = db_utils.grab_range_from_db(request.json, db.users.followers, username=username)
+    queried_followers = db_utils.grab_range_from_db(None, db.users.followers, username=username)
 
     return success(queried_followers)

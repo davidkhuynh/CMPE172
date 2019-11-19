@@ -10,7 +10,7 @@ function ajax(arg) {
     },
     url: arg.url,
     type: arg.type,
-    data: JSON.stringify(arg.data),
+    data: "data" in arg ? JSON.stringify(arg.data) : "",
     dataType: "json",
     contentType: "application/json; charset=utf-8",
   }).done(arg.onSuccess).fail(arg.onFailure);
@@ -82,7 +82,7 @@ const RouteFunctions = {
 
   followers: (username) => {
     ajax({
-      url: SERVER_URL + "/following/" + username,
+      url: "http://0.0.0.0:5000/followers/david123456789",
       type: "GET",
       onSuccess: (response) => {
         // update all of the fields
