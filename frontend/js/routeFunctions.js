@@ -4,16 +4,16 @@ let SERVER_URL = LOCAL_URL;
 let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/"; // this needs a slash at the end
 
 function ajax(arg) {
-    return $.ajax({
-      beforeSend: (xhr) => {
-        xhr.setRequestHeader("Content-Type", "application/json");
-      },
-      url: arg.url,
-      type: arg.type,
-      data: JSON.stringify(arg.data),
-      dataType: "json",
-      contentType: "application/json; charset=utf-8",
-    }).done(arg.onSuccess).fail(arg.onFailure);
+  return $.ajax({
+    beforeSend: (xhr) => {
+      xhr.setRequestHeader("Content-Type", "application/json");
+    },
+    url: arg.url,
+    type: arg.type,
+    data: JSON.stringify(arg.data),
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+  }).done(arg.onSuccess).fail(arg.onFailure);
 }
 
 function getCurrentUser() {
@@ -33,44 +33,42 @@ function createUserWithProfilePicture(username, birthday, displayName, bio, prof
     });
 }
 
-function createUser(username, birthday, displayName, bio, email, password) {
+const RouteFunctions = {
+  createUser: (username, birthday, displayName, bio, email, password) => {
+    Authentication.signUpUser(username, email, password, (err, result) => {
 
-  console.log(password,email);
-  Authentication.signUpUser(username, email, password, (err, result) => {
+      console.log(username, email, password);
+      if (err) {
+        console.log("error adding user to backend secrets...");
+        console.log(err);
+        return;
+      }
+      console.log(
+        Authentication.authAjax({
+          url: SERVER_URL + "/create_user",
+          type: "POST",
+          data: {
+            "username": username,
+            "birthday": birthday,
+            "displayName": displayName,
+            "bio": bio,
+          },
+          onSuccess: (response) => {
+            console.log(response);
+          },
+          onFailure: (errorData) => {
+            console.log(errorData);
 
-    console.log(username, email, password);
-    if (err) {
-      console.log("error adding user to backend secrets...");
-      console.log(err);
-      return;
-    }
-    console.log(
+          }
+        })
+      );
+    });
+  }
 
-      Authentication.authAjax({
-      url: SERVER_URL + "/create_user",
-      type: "POST",
-      data: {"username": username, 
-             "birthday": birthday,
-             "displayName": displayName,
-             "bio": bio,
-             },
-        onSuccess: (response) => {
-          console.log(response);
-        },
-        onFailure: (errorData) => {
-          console.log(errorData);
 
-        }
-      })
+};
 
-    );
-
-    
-
-  });
-}
-
-function viewUserProfile(user) {
+  function viewUserProfile(user) {
 
   $.post(SERVER_URL + "/user/" + user, function (user_data) {
     console.log(user_data);

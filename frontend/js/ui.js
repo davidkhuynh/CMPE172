@@ -154,34 +154,15 @@ function signupPage() {
   // handlers
   $("#createUserButton").click(() => {
 
-    console.log($("#createPassword").val());
-    console.log($("#createEmail").val());
     let username = $("#createUserName").val();
     let email = $("#createEmail").val();
     let password = $("#createPassword").val();
-    console.log(password);
     let birthday = $("#createBirthday").val();
     let displayName = $("#createDisplayName").val();
     let bio = $("#createBio").val();
     let profilePicture = $("#profilePicture").get(0).files[0];
 
-    Authentication.signUpUser(
-      username,
-      email,
-      password,
-      (err, response) => {
-        if (err) {
-          console.log(err);
-        }
-        else {
-          if (profilePicture) {
-            createUserWithProfilePicture(username, birthday, displayName, bio, profilePicture);
-          } else {
-            createUser(username, birthday, displayName, bio);
-          }
-          //window.location = "confirmation.html";
-        }
-      });
+    RouteFunctions.createUser(username, birthday, displayName, bio, email, password);
   });
 }
 
