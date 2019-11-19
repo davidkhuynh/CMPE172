@@ -31,7 +31,11 @@ function makeNav(isAuthenticated) {
     $("#nav").append(`<a class="link-text nav-link" href="login.html" title="Login">LOGIN</a>`);
     $("#nav").append(`<a class="link-text nav-link" href="confirmation.html" title="Confirm">CONFIRM</a>`);
   } else {
-    $("#nav").append(`<a class="link-text nav-link" href="profilepage.html" title="Profile">YOUR PROFILE</a>`);
+    var appendNav = '';
+    appendNav += `<a class="link-text nav-link" href="profilepage.html#`;
+    appendNav += Authentication.getCurrentUsername();
+    appendNav += `" title="Profile">YOUR PROFILE</a>`;
+    $("#nav").append(appendNav);
   }
 
   if (isAuthenticated) {
@@ -54,6 +58,7 @@ function indexPage() {
   Authentication.refreshSession();
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader("Feed", isAuthenticated);
+  loadExplorePosts();
 }
 
 function explorePage() {
