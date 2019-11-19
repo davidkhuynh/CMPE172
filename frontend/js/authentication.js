@@ -69,22 +69,37 @@ const Authentication = {
     }).done(arg.onSuccess).fail(arg.onFailure);
   },
 
-  /* args:
-    url:
-    method:
-    file:
-    fileField:
-    otherFields:
-    onSuccess:
-    onFailure:
+  /*
+    args
+    {
+      url:
+      fileField:
+      onSuccess:
+      onFailure:
+    }
    */
-  authAjaxWithFile: (arg) => {
-    let fd = new FormData();
-    fd.append(arg.fileField, arg.file);
-    let data = [];
-    data.push(arg.otherFields);
-    fd.append("data", JSON.stringify(data));
-    Authentication.authAjax();
+  authFileUpload: (arg) => {
+    let form = arg.fileField[0]; // fileField is like $("#fileField") for example
+    let formData = new FormData(form);
+
+    Authentication.refreshSession();
+
+    return $.ajax({
+        xhrFields: {
+          withCredentials: true
+        },
+        beforeSend: (xhr) => {
+          xhr.setRequestHeader("Authorization", "Basic " + Authentication.__getCurrentToken());
+          xhr.setRequestHeader("Access-Control-Allow-Credentials", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+        },
+        url: arg.url,
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false
+      }
+    ).done(arg.onSuccess).fail(arg.onFailure);
   },
 
 

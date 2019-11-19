@@ -210,7 +210,7 @@ def edit_profile():
         display_name=request.json["displayName"],
         bio=request.json["bio"]
     )
-    edited_user = db.users.edit_user(cognito.curent_user, user_data)
+    edited_user = db.users.edit_user(cognito.current_user, user_data)
 
     return success(edited_user)
 
@@ -232,11 +232,11 @@ def delete_current_user():
 def follow(user_to_follow: str):
     return success(db.users.follow(cognito.current_user, user_to_follow))
 
+
 @app.route("/unfollow/<user_to_unfollow>", methods=["GET"])
 @cognito.auth_required
 def unfollow(user_to_unfollow: str):
     return success(db.users.unfollow(cognito.current_user, user_to_unfollow))
-
 
 
 @app.route("/following/<username>", methods=["GET"])
