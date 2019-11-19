@@ -9,17 +9,11 @@
 
 
 <body class="grid-1">
-<div class="row nav-row">
-  <div class="col-xs-12 col-xl-12 column-2 navbar-sticky-top navbar">
-    <div class="container-fluid nav-container navbar-sticky-top">
-      <a class="link-text nav-link" href="index.html" title="Download">HOME</a>
-      <a class="link-text nav-link" href="signup.html" title="Signup">SIGNUP</a>
-      <a class="link-text nav-link" href="confirm.html" title="Signup">CONFIRM</a>
-      <a class="link-text nav-link" href="profilepage.html" title="Profile">YOUR PROFILE</a>
-      <a class="link-text nav-link" href="gallery.html" title="Profile">EXPLORE</a>
+<div id="navArea" class="row nav-row">
+    <div id="navOuter">
+    <!-- loaded in ui.js -->
     </div>
   </div>
-</div>
 <div class="row subscribe userProfileInformation">
   <div class="col-xs-12 column-1 col-xl-6 offset-xl-3">
     <div class="subgrid">
@@ -31,30 +25,34 @@
           </div>
         </div>
         <div class="col-xs-8 custom-380-col-xs-6">
-          <h4 id="userProfileName">Jeremiah</h4>
-        </div>
-        <div class="col-xs-4"><a class="link-button btn follow" href="" title="" id="followButton">Follow</a>
-        </div>
-        <div class="col-xs-4"><a class="link-button btn follow" href="editProfile.html" title=""
-                                 id="editProfileButton">Edit Profile</a>
+          <h4 id="userProfileName"></h4>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12"></div>
       </div>
       <div class="row">
+        <div class="col-xs-6"><a class="link-button btn follow" href="" title="" id="followButton">Follow</a>
+        </div>
+        <div class="col-xs-6"><a class="link-button btn follow" href="editProfile.html" title=""
+                                 id="editProfileButton">Edit Profile</a>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-xs-6">
           <h4>FOLLOWERS</h4>
-        </div>
-        <div class="col-xs-6">
-          <h4>FOLLOWING</h4>
         </div>
         <div class="col-xs-6">
           <h4 id="followerCount">#</h4>
         </div>
         <div class="col-xs-6">
+          <h4>FOLLOWING</h4>
+        </div>
+        <div class="col-xs-6">
           <h4 id="followingCount">#</h4>
         </div>
+      </div>
+
       </div>
     </div>
   </div>

@@ -171,6 +171,7 @@ function profilePage(user) {
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader(`${user}'s Profile`, isAuthenticated);
   RouteFunctions.loadUserPage(user);
+  RouteFunctions.followers(user);
 }
 
 function myProfilePage() {

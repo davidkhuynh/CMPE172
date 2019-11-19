@@ -71,12 +71,29 @@ const RouteFunctions = {
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
+        $("#userProfileName").html(response.displayName);
+
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  },
+
+  followers: (username) => {
+    ajax({
+      url: SERVER_URL + "/following/" + username,
+      type: "GET",
+      onSuccess: (response) => {
+        // update all of the fields
+        console.log(response);
       },
       onFailure: (errorData) => {
         console.log(errorData)
       }
     });
   }
+
 };
 
   function viewUserProfile(user) {
