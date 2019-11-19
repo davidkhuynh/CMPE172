@@ -36,7 +36,6 @@ function createUserWithProfilePicture(username, birthday, displayName, bio, prof
 const RouteFunctions = {
   createUser: (username, birthday, displayName, bio, email, password) => {
     Authentication.signUpUser(username, email, password, (err, result) => {
-
       console.log(username, email, password);
       if (err) {
         console.log("error adding user to backend secrets...");
@@ -62,6 +61,19 @@ const RouteFunctions = {
           }
         })
       );
+    });
+  },
+
+  loadUserPage: (username) => {
+    ajax({
+      url: SERVER_URL + "/user/" + username,
+      type: "GET",
+      onSuccess: (response) => {
+        // update all of the fields
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
     });
   }
 };

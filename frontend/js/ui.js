@@ -170,6 +170,7 @@ function userProfilePage(user) {
   Authentication.refreshSession();
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader(`${user}'s Profile`, isAuthenticated);
+  RouteFunctions.loadUserPage(user);
 }
 
 function myProfilePage() {
