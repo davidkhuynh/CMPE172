@@ -73,6 +73,7 @@ const RouteFunctions = {
         console.log(response);
         $("#profileDisplayName").html(response.displayName);
         $("#profileUserName").html("@" + response.username);
+        $("#profileBio").html(response.bio);
 
       },
       onFailure: (errorData) => {
