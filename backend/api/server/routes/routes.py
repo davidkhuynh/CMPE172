@@ -210,7 +210,7 @@ def edit_profile():
         display_name=request.json["displayName"],
         bio=request.json["bio"]
     )
-    edited_user = db.users.edit_user(cognito.curent_user, user_data)
+    edited_user = db.users.edit_user(cognito.current_user, user_data)
 
     return success(edited_user)
 
