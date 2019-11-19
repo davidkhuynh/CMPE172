@@ -172,6 +172,14 @@ function profilePage(user) {
   makeHeader(`${user}'s Profile`, isAuthenticated);
   RouteFunctions.loadUserPage(user);
   RouteFunctions.followers(user);
+  RouteFunctions.following(user);
+  $('#followButton').click(() => {
+     RouteFunctions.follow(user);
+  });
+
+  $('#unfollowButton').click(() => {
+    RouteFunctions.unfollow(user);
+  });
 }
 
 function myProfilePage() {

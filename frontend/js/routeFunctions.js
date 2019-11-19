@@ -71,8 +71,37 @@ const RouteFunctions = {
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
-        $("#userProfileName").html(response.displayName);
+        $("#profileDisplayName").html(response.displayName);
+        $("#profileUserName").html("@" + response.username);
 
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  },
+
+  unfollow: (userToUnFollow) => {
+    Authentication.authAjax({
+      url: SERVER_URL + "/follow/" + userToUnfollow,
+      type: "GET",
+      onSuccess: (response) => {
+        // update all of the fields
+        console.log(response);
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  },
+
+  follow: (userToFollow) => {
+    Authentication.authAjax({
+      url: SERVER_URL + "/follow/" + userToFollow,
+      type: "GET",
+      onSuccess: (response) => {
+        // update all of the fields
+        console.log(response);
       },
       onFailure: (errorData) => {
         console.log(errorData)
@@ -82,8 +111,87 @@ const RouteFunctions = {
 
   followers: (username) => {
     ajax({
-      url: "http://0.0.0.0:5000/followers/david123456789",
+      url: SERVER_URL + "/followers/" + username,
       type: "GET",
+      onSuccess: (response) => {
+        $("#followerCount").html(response.length);
+
+        console.log(response);
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  },
+
+  following: (username) => {
+    ajax({
+      url: SERVER_URL + "/following/" + username,
+      type: "GET",
+      onSuccess: (response) => {
+        $("#followingCount").html(response.length);
+        console.log(response);
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  },  
+
+  editProfile: (username, displayName, bio, profilePicture) => {
+    ajax({
+      url: SERVER_URL + "/edit_profile/" + username,
+      type: "GET",
+      data: {
+        "currentUser": username,
+        "displayName": displayName,
+        "bio": bio,
+      },
+      onSuccess: (response) => {
+        // update all of the fields
+        console.log(response);
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  },
+
+  createPost: (text) => {
+    Authentication.authAjax({
+      url: SERVER_URL + "/create_post",
+      type: "POST",
+      data: {
+        "text": text,
+      },
+      onSuccess: (response) => {
+        // update all of the fields
+        console.log(response);
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  },
+
+  deletePost: (postId) => {
+    ajax({
+      url: SERVER_URL + "/delete_post/" + postId,
+      type: "POST",
+      onSuccess: (response) => {
+        // update all of the fields
+        console.log(response);
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  },
+
+  search: (query) => {
+    ajax({
+      url: SERVER_URL + "/search/" + query,
+      type: "POST",
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
