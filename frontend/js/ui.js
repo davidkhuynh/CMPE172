@@ -173,6 +173,11 @@ function profilePage(user) {
   RouteFunctions.loadUserPage(user);
   RouteFunctions.followers(user);
   RouteFunctions.following(user);
+
+  if (user == Authentication.getCurrentUsername()) {
+    document.getElementById("followButton").style.visibility = "hidden";
+  }
+
   $('#followButton').click(() => {
      RouteFunctions.follow(user);
   });
@@ -180,6 +185,9 @@ function profilePage(user) {
   $('#unfollowButton').click(() => {
     RouteFunctions.unfollow(user);
   });
+
+  loadExplorePosts();
+
 }
 
 function myProfilePage() {
@@ -191,6 +199,24 @@ function myProfilePage() {
   }
   handleUnauthorized("Log in before viewing your own profile page!");
 }
+
+
+function editProfilePage(displayName, bio) {
+  let isAuthenticated = Authentication.isAuthenticated();
+  if (!isAuthenticated) {
+    handleUnauthorized("Log in before editing your profile!");
+  }
+  // todo: check if post belongs to user before coming to edit page
+  makeHeader(`Editing Profile`, isAuthenticated);
+
+  $('#editProfileButton').click(() => {
+
+  RouteFunctions.editProfile(document.getElementById('editDisplayName').value, document.getElementById('editBio').value);
+  })
+
+}
+
+
 
 function getWords(str, n) {
   return str.split(/\s+/).slice(0,n).join(" ");
