@@ -166,7 +166,7 @@ function signupPage() {
   });
 }
 
-function userProfilePage(user) {
+function profilePage(user) {
   Authentication.refreshSession();
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader(`${user}'s Profile`, isAuthenticated);

@@ -70,6 +70,7 @@ const RouteFunctions = {
       type: "GET",
       onSuccess: (response) => {
         // update all of the fields
+        console.log(response);
       },
       onFailure: (errorData) => {
         console.log(errorData)
