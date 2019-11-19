@@ -81,12 +81,11 @@ const RouteFunctions = {
     });
   },
 
-  unfollow: (userToUnFollow) => {
+  unfollow: (username) => {
     Authentication.authAjax({
-      url: SERVER_URL + "/follow/" + userToUnfollow,
+      url: SERVER_URL + "/unfollow/" + username,
       type: "GET",
       onSuccess: (response) => {
-        // update all of the fields
         console.log(response);
       },
       onFailure: (errorData) => {
@@ -138,12 +137,11 @@ const RouteFunctions = {
     });
   },  
 
-  editProfile: (username, displayName, bio, profilePicture) => {
-    ajax({
-      url: SERVER_URL + "/edit_profile/" + username,
-      type: "GET",
+  editProfile: (displayName, bio, profilePicture) => {
+    Authentication.authAjax({
+      url: SERVER_URL + "/edit_profile",
+      type: "POST",
       data: {
-        "currentUser": username,
         "displayName": displayName,
         "bio": bio,
       },
@@ -153,6 +151,8 @@ const RouteFunctions = {
       },
       onFailure: (errorData) => {
         console.log(errorData)
+        console.log(displayName);
+        console.log(bio);
       }
     });
   },
