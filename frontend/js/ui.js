@@ -179,9 +179,16 @@ function profilePage(user) {
   RouteFunctions.followers(user);
   RouteFunctions.following(user);
 
-  if (user == Authentication.getCurrentUsername()) {
+  if (user == Authentication.getCurrentUsername()) 
+  {
     document.getElementById("followButton").style.visibility = "hidden";
   }
+
+  else 
+  {
+    document.getElementById("editProfileButton").style.visibility = "hidden";
+  }
+
 
   $('#followButton').click(() => {
      RouteFunctions.follow(user);
@@ -232,36 +239,8 @@ function viewPostPage() {
 
   // load post content
   let postId = window.location.hash.substr(1);
-
+  RouteFunctions.viewPost(postId);
   // update content
-  $.post(
-    SERVER_URL + "/post/" + postId,
-    (postData) => {
-      makeHeader(getWords(postData.text, 5), "none");
-      console.log(postData);
-      $("#postUser").text(postData.username);
-      if (postData.picture.length > 0) {
-        $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
-      } else {
-        $("#postPicture").hide();
-      }
-      $("#postText").text(postData.text);
-      if (postData.username === Authentication.getCurrentUsername()) {
-        $("#postAdmin").append(`
-          <div class="col-xs-4 offset-xs-2 col-xl-3 offset-xl-3">
-            <a class="link-button btn subscribe" id="editPostButton" title="">EDIT</a>
-          </div>
-          `);
-        $("#postAdmin").append(`
-          <div class="col-xs-4 col-xl-3">
-            <a class="link-button btn subscribe" id="deletePostButton" title="">DELETE</a>
-          </div>
-          `);
-        $("#editPostButton").attr("value", postData.id);
-        $("#deletePostButton").attr("value", postData.id);
-      }
-    }
-  );
 
   // button handlers
   $('#editPostButton').click(() => {
