@@ -161,7 +161,7 @@ const RouteFunctions = {
     });
   },
 
-  createPost: (text) => {
+  createPost: (text, callback) => {
     Authentication.authAjax({
       url: SERVER_URL + "/create_post",
       type: "POST",
@@ -171,9 +171,11 @@ const RouteFunctions = {
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
+        callback(null, response);
       },
       onFailure: (errorData) => {
         console.log(errorData)
+        callback(errorData, null);
       }
     });
   },

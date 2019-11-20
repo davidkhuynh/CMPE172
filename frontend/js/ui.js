@@ -136,9 +136,18 @@ function uploadPostPage() {
     let picture = $("#pictureFile").get(0).files[0];
 
     if (picture) {
-      createPostWithPicture("anon", picture, text);
+      RouteFunctions.createPostWithPicture(picture, text);
     } else {
-      createPost("anon", text);
+      RouteFunctions.createPost(text, (err, response) => {
+        if (err){
+          console.log(err);
+        }
+
+        else {
+          window.location = "explore.html";
+        }
+
+      });
     }
   });
 
@@ -289,7 +298,7 @@ function editPostPage(postId, descriptionPart) {
   console.log(postId);
   $('#submitPostButton').click(() => {
     console.log(postId, document.getElementById('postText').value);
-    editPost(postId, document.getElementById('postText').value);
+    RouteFunctions.editPost(postId, document.getElementById('postText').value);
   });
 }
 
