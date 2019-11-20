@@ -17,16 +17,9 @@
 </head>
 
 <body class="grid-1">
-  <div class="row nav-row">
-    <div class="col-xs-12 col-xl-12 column-2 navbar-sticky-top">
-      <div class="container-fluid nav-container navbar-sticky-top">
-        <a class="link-text nav-link" href="index.html" title="Download">HOME</a>
-        <a class="link-text nav-link" href="signup.html" title="Signup">SIGNUP</a>
-        <a class="link-text nav-link" href="confirmation.html" title="Signup">CONFIRM</a>
-        <a class="link-text nav-link" href="login.html" title="Signup">LOGIN</a>
-        <a class="link-text nav-link" href="profilepage.html" title="Profile">YOUR PROFILE</a>
-        <a class="link-text nav-link" href="gallery.html" title="Profile">EXPLORE</a>
-      </div>
+  <div id="navArea" class="row nav-row">
+    <div id="navOuter">
+      <!-- loaded in ui.js -->
     </div>
   </div>
   <div class="row subscribe">
@@ -50,55 +43,25 @@
   </div>
   <div class="row row-1">
     <div class="col-xs-4"></div>
-    <div class="col-xs-4"><a class="link-button btn form submit" href="#" title="Subscribe" id="submitPostButton">SUBMIT</a>
+    <div class="col-xs-4"><a class="link-button btn form submit" title="Subscribe" id="submitPostButton">SUBMIT</a>
     </div>
     <div class="col-xs-4"></div>
   </div>
-  <script src="js/jquery.min.js"></script>
+  <!-- external libs -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
   <script src="js/outofview.js"></script>
   <script src="js/tether.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
-  <script src="js/jquery.min.js"></script>
-  <script src="js/outofview.js"></script>
-  <script src="js/tether.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="js/amazon-cognito-identity.min.js"></script>
+
+
+  <!-- my libs -->
+  <script src="js/authentication.js"></script>
   <script src="js/routeFunctions.js"></script>
-  <script>
-      const postId = window.location.hash.substring(1);
+  <script src="js/ui.js"></script>
+  <script> editPostPage() </script>
 
-      // load current content
-      $.post(
-          SERVER_URL + "/post/" + postId,
-          (postData) => {
-              $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
-              $("#postText").val(postData.text);
-          }
-      );
-
-      // button/input handlers
-      $("#submitPostButton").click(() => {
-          let text = $("#postText").val();
-          let picture = $("#pictureFile").get(0).files[0];
-
-          if (picture) {
-              editPostWithPicture("anon", postId, picture, text);
-          } else {
-              editPost("anon", postId, text);
-          }
-          handleViewPost(postId);
-      });
-
-      $(document).on("change", "#pictureFile", () => {
-          let picture = $("#pictureFile").get(0).files[0];
-          let reader = new FileReader();
-          reader.onload = (e) => {
-              $("#postPicture").attr("src", e.target.result);
-          };
-          reader.readAsDataURL(picture);
-      });
-
-  </script>
 </body>
 
 </html>

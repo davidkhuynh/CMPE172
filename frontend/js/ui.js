@@ -223,7 +223,19 @@ function editProfilePage(displayName, bio) {
 
   $('#editProfileButton').click(() => {
 
-  RouteFunctions.editProfile(document.getElementById('editDisplayName').value, document.getElementById('editBio').value);
+  RouteFunctions.editProfile(document.getElementById('editDisplayName').value, document.getElementById('editBio').value, (err, response) => {
+      if (err)
+      {
+        console.log(err);
+      }
+      else 
+      {
+        let profileLocation = "profilepage.html#" + Authentication.getCurrentUsername();
+        window.location =  profileLocation;
+      }
+  });
+
+
   })
 
 }
@@ -260,6 +272,12 @@ function editPostPage(postId, descriptionPart) {
   }
   // todo: check if post belongs to user before coming to edit page
   makeHeader(`Editing Post: ${descriptionPart}`, isAuthenticated);
+  postId = window.location.hash.substr(1);
+  console.log(postId);
+  $('#submitPostButton').click(() => {
+    console.log(postId, document.getElementById('postText').value);
+    editPost(postId, document.getElementById('postText').value);
+  });
 }
 
 // util functions
@@ -270,6 +288,10 @@ function handleDeletePost(postId) {
 
 function handleViewPost(postId) {
   window.location = `viewpost.html#${postId}`
+}
+
+function handleEditPost(postId){
+  window.location = `editpost.html#${postId}`;
 }
 
 function handleUnauthorized(message) {

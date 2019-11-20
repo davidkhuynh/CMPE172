@@ -138,7 +138,7 @@ const RouteFunctions = {
     });
   },  
 
-  editProfile: (displayName, bio, profilePicture) => {
+  editProfile: (displayName, bio, callback) => {
     Authentication.authAjax({
       url: SERVER_URL + "/edit_profile",
       type: "POST",
@@ -149,11 +149,14 @@ const RouteFunctions = {
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
+        callback(null, response);
       },
       onFailure: (errorData) => {
         console.log(errorData)
         console.log(displayName);
         console.log(bio);
+        callback(errorData, null);
+
       }
     });
   },
@@ -161,6 +164,23 @@ const RouteFunctions = {
   createPost: (text) => {
     Authentication.authAjax({
       url: SERVER_URL + "/create_post",
+      type: "POST",
+      data: {
+        "text": text,
+      },
+      onSuccess: (response) => {
+        // update all of the fields
+        console.log(response);
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  },
+
+  editPost: (postId, text) => {
+    Authentication.authAjax({
+      url: SERVER_URL + "/edit_post/" + postId,
       type: "POST",
       data: {
         "text": text,
@@ -332,11 +352,10 @@ function createPostWithPicture(user, picture, text) {
   );
 }
 
-function editPost(user, postId, text) {
+function editPost(postId, text) {
   console.log(
     $.post(SERVER_URL + "/edit_post/" + postId,
       {
-        currentUser: user,
         text: text,
       })
   );
@@ -402,6 +421,9 @@ function postNode(postId, username, picture, text, options) {
   let viewButton =
     `<a onclick="handleViewPost('${postId}')" class="link-button btn viewbtn viewPostButton" name=" ${username} + " value=" ${postId} + " title="">View Post</a>`;
 
+  let editButton =
+  `<a onclick="handleEditPost('${postId}')" class="link-button btn viewbtn editPostButton" name=" ${username} + " value=" ${postId} + " title="">Edit Post</a>`;
+
   let actionsPart = "";
 
   if (options.insertDelete) {
@@ -409,6 +431,10 @@ function postNode(postId, username, picture, text, options) {
   }
   if (options.insertDelete) {
     actionsPart += viewButton;
+  }
+
+  if (options.insertDelete) {
+    actionsPart += editButton;
   }
 
   let postPart =
