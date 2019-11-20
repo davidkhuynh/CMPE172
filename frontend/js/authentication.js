@@ -79,11 +79,12 @@ const Authentication = {
     }
    */
   authFileUpload: (arg) => {
-    let form = arg.fileField[0]; // fileField is like $("#fileField") for example
+    let form = $("#uploadForm")[0]; // uploadForm is like $("#uploadForm") for example
     let formData = new FormData(form);
 
     Authentication.refreshSession();
 
+    event.preventDefault();
     return $.ajax({
         xhrFields: {
           withCredentials: true
@@ -91,13 +92,13 @@ const Authentication = {
         beforeSend: (xhr) => {
           xhr.setRequestHeader("Authorization", "Basic " + Authentication.__getCurrentToken());
           xhr.setRequestHeader("Access-Control-Allow-Credentials", true);
-          xhr.setRequestHeader("Content-Type", "application/json");
         },
         url: arg.url,
         type: "POST",
         data: formData,
         processData: false,
-        contentType: false
+        contentType: false,
+        dataType: "json"
       }
     ).done(arg.onSuccess).fail(arg.onFailure);
   },

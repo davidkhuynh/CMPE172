@@ -1,6 +1,6 @@
 import os
 
-from flask import request, send_file
+from flask import request, send_file, jsonify
 
 from server import app, cognito
 from server.utils.http_utils import success, failure
@@ -32,5 +32,7 @@ def secret_post_test():
 @app.route("/file_upload_test", methods=["POST"])
 def file_upload_test():
     file = request.files["file"]
-    filename, filetype = os.path.splitext(file.filename)
-    return send_file(file, mimetype=f"image/{filetype}")
+    file_blob = file.read()
+    file_size = len(file_blob)
+    return jsonify(name=file.filename, size=file_size)
+
