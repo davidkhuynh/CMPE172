@@ -195,7 +195,7 @@ const RouteFunctions = {
     });
   },
 
-  viewPost: (postId) => {
+  viewPost: (postId, callback) => {
     ajax({
       url: SERVER_URL + "/post/" + postId,
       type: "GET",
@@ -205,11 +205,7 @@ const RouteFunctions = {
         makeHeader(getWords(postData.text, 5), "none");
 
         $("#postUser").text(postData.username);
-        if (postData.picture.length > 0) {
-          $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
-        } else {
-          $("#postPicture").hide();
-        }
+        $("#postUser").attr("href", "profilepage.html#" + postData.username);
         $("#postText").text(postData.text);
         if (postData.username === Authentication.getCurrentUsername()) {
           $("#postAdmin").append(`
@@ -224,10 +220,18 @@ const RouteFunctions = {
             `);
           $("#editPostButton").attr("value", postData.id);
           $("#deletePostButton").attr("value", postData.id);
+          callback(null, postData);
+
+          if (postData.picture.length > 0) {
+            $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
+          } else {
+            $("#postPicture").hide();
+          }
         }
       },
       onFailure: (errorData) => {
         console.log(errorData)
+        callback(errorData, null)
       }
     });    
   },
@@ -408,7 +412,7 @@ function postNode(postId, username, picture, text, options) {
             </div>
           </div>
           <div class="col-xs-3">
-            <a class="link-text text-link-1 profileUsername"> ${username} </a>
+            <a class="link-text text-link-1 profileUsername" href="profilepage.html#${username}"> ${username} </a>
           </div>
           <div class="col-xs-2"><a class="link-button btn viewbtn" title="">Follow</a>
           </div>

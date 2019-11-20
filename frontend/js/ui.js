@@ -251,17 +251,30 @@ function viewPostPage() {
 
   // load post content
   let postId = window.location.hash.substr(1);
-  RouteFunctions.viewPost(postId);
+  RouteFunctions.viewPost(postId, (err, response) => {
+
+
+      if (err){
+        console.log(err);
+      }
+
+      else {
+          // button handlers
+        $('#editPostButton').click(() => {
+          window.location.href = "editpost.html#" + postId ;
+        });
+
+        $('#deletePostButton').click(() => {
+          deletePost(postId);
+        });
+      }
+    }
+
+
+    );
   // update content
 
-  // button handlers
-  $('#editPostButton').click(() => {
-    window.location.href = "editpost.html#" + postId ;
-  });
 
-  $('#deletePostButton').click(() => {
-    deletePost(postId);
-  });
 
 }
 
