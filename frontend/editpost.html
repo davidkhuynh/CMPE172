@@ -30,12 +30,12 @@
   </div>
   <div class="row">
     <div class="col-xs-8 push-xs-2">
-      <form class="form-container">
+      <form id="uploadForm" enctype="multipart/form-data" method="post">
         <div class="container-fluid container-2">
           <div class="responsive-picture picture-1" id="postPicturePreview">
             <picture><img alt="Placeholder Picture" id="postPicture" src="img/picture.svg">
             </picture>
-          </div><input value="" type="file" class="file-1" id="pictureFile">
+          </div><input value="" type="file" class="file-1" name="pictureFile">
           <span class="text-element form-input-caption">Description</span><input value="" name="text-name" type="text" class="form-input" id="postText">
         </div>
       </form>
