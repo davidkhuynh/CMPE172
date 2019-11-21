@@ -5,6 +5,7 @@ from flask import request
 
 import server.data.users
 from server import app, db, cognito
+from server.data.posts import Post
 from server.utils import pic_utils, db_utils
 from server.utils.http_utils import success, failure
 from server.utils.pic_utils import UploadState
@@ -16,7 +17,7 @@ def post(post_id: str):
     """
         1. get post from secrets and format to json to return
     """
-    queried_post = db.posts.get_post(post_id)
+    queried_post: Post = db.posts.get_post(post_id)
     return success(queried_post) if queried_post else failure("post id %s does not exist" % post_id)
 
 @app.route("/create_post", methods=["POST"])
@@ -82,8 +83,8 @@ def delete_post(post_id: str):
     :return:
     """
 
-    queried_post = db.posts.get_post(post_id)
-    if not queried_post or cognito.current_user != queried_post["username"]:
+    queried_post: Post = db.posts.get_post(post_id)
+    if not queried_post or cognito.current_user != queried_post.username:
         return failure(f"{cognito.current_user} does not own this post, cannot delete")
 
     db.posts.delete_post(post_id)
