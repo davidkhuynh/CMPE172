@@ -201,24 +201,26 @@ function profilePage(user) {
 
     isFollowing(Authentication.getCurrentUsername(), user, (err, response) => {
 
-      if (err)
-      {
-        document.getElementById("followButton").style.visibility = "visible";
-        document.getElementById("followedButton").style.visibility = "hidden";
+    if (err)
+    {
+      console.log("Is not following");
+      document.getElementById("followButton").style.visibility = "visible";
+      document.getElementById("followedButton").style.visibility = "hidden";
 
-      }
+    }
 
-      else
-      {
-        document.getElementById("followedButton").style.visibility = "visible";
-        document.getElementById("followButton").style.visibility = "hidden";
+    else if (response)
+    {
+      console.log("Is following");
+      document.getElementById("followedButton").style.visibility = "visible";
+      document.getElementById("followButton").style.visibility = "hidden";
 
 
-      }
+    }
 
-    });
+  });
+
   }
-
 
   $('#followButton').click(() => {
     RouteFunctions.follow(user);

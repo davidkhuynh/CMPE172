@@ -543,11 +543,8 @@ function loadExplorePosts(username) {
       $.each(data, function (i, item) {
 
         let insertViewEditDelete = {insertDelete: false, insertView: true};
-        console.log(item.username);
-        console.log(username);
         if (item.username == username)
         {
-          console.log("username confirmed");
           insertViewEditDelete = {insertDelete: true, insertView: true};
 
 
@@ -574,7 +571,6 @@ function loadFollowers(username) {
     }
   ).done(
     (data) => {
-      console.log(data);
       let html_to_append = '';
 
       $.each(data, function (i, item) {
@@ -594,7 +590,6 @@ function loadFollowing(username) {
     }
   ).done(
     (data) => {
-      console.log(data);
       let html_to_append = '';
 
       $.each(data, function (i, item) {
@@ -615,24 +610,42 @@ function isFollowing(username, following, callback) {
     }
   ).done(
     (data) => {
-      if (data.length == 0) {
-        callback(data, null);
+
+      let isAFollower = false;
+
+      if (data.length == 0) 
+      {
+          callback(data, null);
       }
 
       let html_to_append = '';
 
-      $.each(data, function (i, item) {
+      $.each(data, function (i, item) 
+      {
 
-        if (item == following) {
-          console.log("yes");
-          callback(null, data);
-        }
+          if (item == following) 
+          {
+            console.log("HERE");
+            console.log(item);
+            console.log(following);
+            isAFollower = true;
+          }
 
-        else {
-          console.log("not following");
-          callback(data, null);
-        }
       });
+
+      console.log(isAFollower);
+      if (isAFollower === false)
+      {
+          console.log("Is not not following");
+          callback(data, null);
+
+      }
+
+      else if (isAFollower === true)
+      {
+          console.log("Is is following");
+          callback(null, data);
+      }
     });
 }
 
