@@ -219,6 +219,18 @@ const RouteFunctions = {
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
+        Authentication.authFileUpload({
+          url: SERVER_URL + "/update_post_picture/" + postId,
+          uploadForm: $("#uploadForm"),
+          onSuccess: (response) => {
+            console.log("image upload success!");
+            console.log(response);
+          },
+          onFailure: (errorData) => {
+            console.log("image upload failure....");
+            console.log(errorData);
+          }
+        })
       },
       onFailure: (errorData) => {
         console.log(errorData)
@@ -253,8 +265,10 @@ const RouteFunctions = {
           $("#deletePostButton").attr("value", postData.id);
           callback(null, postData);
 
-          if (postData.picture.length > 0) {
-            $("#postPicture").attr("src", IMAGE_HOST_URL + postData.picture);
+          if (postData.picture) {
+            let pictureURL = IMAGE_HOST_URL + postData.picture;
+            console.log(pictureURL);
+            $("#postPicture").attr("src", pictureURL);
           } else {
             $("#postPicture").hide();
           }
@@ -396,27 +410,6 @@ function editPost(postId, text) {
   );
 }
 
-function postWithFile(url, file, fileField, otherFields, callback = () => {
-}) {
-  let fd = new FormData();
-  fd.append(fileField, file);
-  let data = [];
-  data.push(otherFields);
-  fd.append("data", JSON.stringify(data));
-  console.log(
-    $.ajax(
-      {
-        url: url,
-        type: "POST",
-        processData: false,
-        contentType: false,
-        data: fd,
-        success: callback
-      }
-    )
-  );
-}
-
 function editPostWithPicture(user, postId, picture, text) {
   postWithFile(`${SERVER_URL}/edit_post/${postId}`, picture, "pictureFile",
     {
@@ -432,13 +425,15 @@ function deletePost(postId) {
 
 // options: {insertDelete: true, insertView: true}
 function postNode(postId, username, picture, text, options) {
+  console.log("picture");
+  console.log(picture);
   let userPart =
     `<div class="subgrid">
         <div class="row subgrid-row-2">
           <div class="col-xs-3 offset-xs-1 col-md-2">
             <div class="responsive-picture picture-2">
               <picture>
-                <img alt="Placeholder Picture" src="img/picture.svg">
+                <img alt="${text}" src="${picture}">
               </picture>
             </div>
           </div>

@@ -47,11 +47,11 @@ def update_post_picture(post_id: str):
     # todo check duplicates (highly unlikely)
     upload_info = pic_utils.upload_post_picture(request, str(uuid4()))
     if upload_info.upload_state == UploadState.failure:
-        failure("failed to upload image")
+        return failure("failed to upload image")
     if upload_info.upload_state == UploadState.no_upload:
-        failure("no picture uploaded")
+        return failure("no picture uploaded")
     db.posts.update_post_picture(post_id, upload_info.filename)
-    success(f"uploaded post image for {post_id}")
+    return success(f"uploaded post image for {post_id}")
 
 
 @app.route("/edit_post/<post_id>", methods=["POST"])
