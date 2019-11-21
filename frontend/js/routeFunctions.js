@@ -114,7 +114,7 @@ const RouteFunctions = {
       url: SERVER_URL + "/followers/" + username,
       type: "GET",
       onSuccess: (response) => {
-        $("#followerCount").html(response.length);
+        $("#follower").html(response);
 
         console.log(response);
       },
@@ -125,6 +125,35 @@ const RouteFunctions = {
   },
 
   following: (username) => {
+    ajax({
+      url: SERVER_URL + "/following/" + username,
+      type: "GET",
+      onSuccess: (response) => {
+        $("#following").html(response);
+        console.log(response);
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  }, 
+
+  followerCount: (username) => {
+    ajax({
+      url: SERVER_URL + "/followers/" + username,
+      type: "GET",
+      onSuccess: (response) => {
+        $("#followerCount").html(response.length);
+
+        console.log(response);
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  },
+
+  followingCount: (username) => {
     ajax({
       url: SERVER_URL + "/following/" + username,
       type: "GET",
@@ -472,6 +501,39 @@ function postNode(postId, username, picture, text, options) {
      `;
 }
 
+function followNode(username) {
+  let userPart =
+    `<div class="subgrid">
+        <div class="row subgrid-row-2">
+          <div class="col-xs-12 offset-xs-1 col-md-2 col-lg-12">
+            <div class="responsive-picture picture-2">
+
+            </div>
+          </div>
+          <div class="col-xs-6 col-lg-12">
+            <a class="link-text text-link-1 profileUsername" href="profilepage.html#${username}"> ${username} </a>
+          </div>
+
+        </div> 
+      </div>`;
+
+  let deleteButton =
+    `<a class="link-button btn viewbtn deletePostButton" value="  + " title="">Delete Post</a>`;
+
+  let viewButton =
+    `<a class="link-button btn viewbtn viewPostButton" name=" ${username} + " value=" + " title="">View Post</a>`;
+
+  let actionsPart = "";
+
+
+
+
+  return `<div class="col-xs-12 offset-xl-1 col-xl-10 column-3"> 
+        ${userPart} 
+      </div>
+     `;
+}
+
 
 //for explore.html
 function loadExplorePosts() {
@@ -498,6 +560,78 @@ function loadExplorePosts() {
       });
       $(".postRow").html(html_to_append);
     });
+}
+
+function loadFollowers(username) {
+  $.ajax(
+    {
+      url: SERVER_URL + "/followers/" + username,
+      type: "GET",
+    }
+  ).done(
+    (data) => {
+      console.log(data);
+      let html_to_append = '';
+
+      $.each(data, function (i, item) {
+        html_to_append += followNode(
+          item,
+        );
+      });
+      $(".postRow").html(html_to_append);
+    });
+}
+
+function loadFollowing(username) {
+  $.ajax(
+    {
+      url: SERVER_URL + "/following/" + username,
+      type: "GET",
+    }
+  ).done(
+    (data) => {
+      console.log(data);
+      let html_to_append = '';
+
+      $.each(data, function (i, item) {
+        html_to_append += followNode(
+          item,
+        );
+      });
+      $(".postRow").html(html_to_append);
+    });
+}
+
+function isFollowing(username, following, callback) {
+
+  $.ajax(
+    {
+      url: SERVER_URL + "/following/" + username,
+      type: "GET",
+    }
+  ).done(
+    (data) => {
+      if (data.length == 0)
+      {
+        callback(data, null);
+      }
+
+      let html_to_append = '';
+
+      $.each(data, function (i, item) {
+
+        if (item == following) {
+          console.log("yes");
+          callback(null, data);
+        }
+
+        else 
+        {
+          console.log("not following");
+          callback(data, null);
+        }
+      });
+    });  
 }
 
 function redirect() {

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="la">
+
+<div id="navArea" class="row nav-row">
+  <div id="navOuter">
+    <!-- loaded in ui.js -->
+  </div>
+</div>
+
+
+<body class="grid-1">
+<div id="navArea" class="row nav-row">
+    <div id="navOuter">
+    <!-- loaded in ui.js -->
+    </div>
+  </div>
+<div class="row subscribe userProfileInformation">
+  <div class="col-xs-12 column-1 col-xl-12 offset-xl-3">
+    <div class="subgrid">
+      <div class="row">
+
+        <div class="col-xs-3 offset-1 custom-380-col-xs-3">
+
+          <h4 id="followingButton"> FOLLOWERS </h4>
+          <h4 id="following"></h4>
+
+        </div>
+      </div>
+
+  </div>
+</div>
+
+<div class="row subscribe postRow">
+  
+</div>
+
+<!-- external libs -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="js/outofview.js"></script>
+<script src="js/tether.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/amazon-cognito-identity.min.js"></script>
+
+
+<!-- my libs -->
+<script src="js/authentication.js"></script>
+<script src="js/routeFunctions.js"></script>
+<script src="js/ui.js"></script>
+<script>
+  let userProfile = window.location.hash.substring(1);
+  followingPage(userProfile);
+</script>
+</body>
+
+</html>

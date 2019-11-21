@@ -185,26 +185,56 @@ function profilePage(user) {
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader(`${user}'s Profile`, isAuthenticated);
   RouteFunctions.loadUserPage(user);
-  RouteFunctions.followers(user);
-  RouteFunctions.following(user);
+  RouteFunctions.followerCount(user);
+  RouteFunctions.followingCount(user);
 
   if (user == Authentication.getCurrentUsername()) 
   {
     document.getElementById("followButton").style.visibility = "hidden";
+    document.getElementById("followedButton").style.visibility = "hidden";
   }
 
   else 
   {
     document.getElementById("editProfileButton").style.visibility = "hidden";
+    console.log("ok");
+
+    isFollowing(Authentication.getCurrentUsername(), user, (err, response) => {
+
+      if (err)
+      {
+        document.getElementById("followButton").style.visibility = "visible";
+      }
+
+      else
+      {
+        document.getElementById("followedButton").style.visibility = "visible";
+
+      }
+
+    });
   }
 
 
   $('#followButton').click(() => {
-     RouteFunctions.follow(user);
+    RouteFunctions.follow(user);
+    document.getElementById("followedButton").style.visibility = "visible";
+    document.getElementById("followButton").style.visibility = "hidden";
   });
 
-  $('#unfollowButton').click(() => {
+  $('#followedButton').click(() => {
     RouteFunctions.unfollow(user);
+    document.getElementById("followedButton").style.visibility = "hidden";
+    document.getElementById("followButton").style.visibility = "visible";
+
+  });
+
+  $('#followersButton').click(() => {
+    window.location.href = "followers.html#" + user ;
+  });
+
+  $('#followingButton').click(() => {
+    window.location.href = "following.html#" + user ;
   });
 
   loadExplorePosts();
@@ -247,6 +277,40 @@ function editProfilePage(displayName, bio) {
 
   })
 
+}
+
+function followerPage(user) {
+  Authentication.refreshSession();
+  let isAuthenticated = Authentication.isAuthenticated();
+  makeHeader(`${user}'s Profile`, isAuthenticated);
+
+  loadFollowers(user);
+
+
+
+
+}
+
+function followingPage(user) {
+  Authentication.refreshSession();
+  let isAuthenticated = Authentication.isAuthenticated();
+  makeHeader(`${user}'s Profile`, isAuthenticated);
+
+  loadFollowing(user);
+
+
+
+
+}
+
+function myProfilePage() {
+  let isAuthenticated = Authentication.isAuthenticated();
+  if (isAuthenticated) {
+    let currentUsername = Authentication.getCurrentUsername();
+    userProfilePage(currentUsername, isAuthenticated);
+    return;
+  }
+  handleUnauthorized("Log in before viewing your own profile page!");
 }
 
 
