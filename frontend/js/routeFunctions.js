@@ -268,7 +268,7 @@ const RouteFunctions = {
   },
 
   deletePost: (postId) => {
-    ajax({
+    Authentication.authAjax({
       url: SERVER_URL + "/delete_post/" + postId,
       type: "POST",
       onSuccess: (response) => {
@@ -445,8 +445,6 @@ function postNode(postId, username, picture, text, options) {
           <div class="col-xs-3">
             <a class="link-text text-link-1 profileUsername" href="profilepage.html#${username}"> ${username} </a>
           </div>
-          <div class="col-xs-2"><a class="link-button btn viewbtn" title="">Follow</a>
-          </div>
         </div> 
       </div>`;
 
@@ -464,7 +462,7 @@ function postNode(postId, username, picture, text, options) {
   if (options.insertDelete) {
     actionsPart += deleteButton;
   }
-  if (options.insertDelete) {
+  if (options.insertView) {
     actionsPart += viewButton;
   }
 
@@ -534,7 +532,7 @@ function followNode(username) {
 
 
 //for explore.html
-function loadExplorePosts() {
+function loadExplorePosts(username) {
   $.ajax(
     {
       url: SERVER_URL + "/explore",
@@ -548,12 +546,25 @@ function loadExplorePosts() {
       let html_to_append = '';
 
       $.each(data, function (i, item) {
+
+        let insertViewEditDelete = {insertDelete: false, insertView: true};
+        console.log(item.username);
+        console.log(username);
+        if (item.username == username)
+        {
+          console.log("username confirmed");
+          insertViewEditDelete = {insertDelete: true, insertView: true};
+
+
+        }
+
+
         html_to_append += postNode(
           item.id,
           item.username,
           item.picture,
           item.text,
-          {insertDelete: true, insertView: true}
+          insertViewEditDelete
         );
       });
       $(".postRow").html(html_to_append);

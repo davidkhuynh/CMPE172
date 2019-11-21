@@ -58,14 +58,14 @@ function indexPage() {
   Authentication.refreshSession();
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader("Feed", isAuthenticated);
-  loadExplorePosts();
+  loadExplorePosts(Authentication.getCurrentUsername());
 }
 
 function explorePage() {
   Authentication.refreshSession();
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader("Explore", isAuthenticated);
-  loadExplorePosts();
+  loadExplorePosts(Authentication.getCurrentUsername());
 }
 
 function loginPage() {
@@ -204,11 +204,15 @@ function profilePage(user) {
       if (err)
       {
         document.getElementById("followButton").style.visibility = "visible";
+        document.getElementById("followedButton").style.visibility = "hidden";
+
       }
 
       else
       {
         document.getElementById("followedButton").style.visibility = "visible";
+        document.getElementById("followButton").style.visibility = "hidden";
+
 
       }
 
@@ -237,7 +241,7 @@ function profilePage(user) {
     window.location.href = "following.html#" + user ;
   });
 
-  loadExplorePosts();
+  loadExplorePosts(Authentication.getCurrentUsername());
 
 }
 
