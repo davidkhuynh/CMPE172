@@ -66,7 +66,7 @@ def edit_post(post_id: str):
     """
     # check if user owns post
     queried_post = db.posts.get_post(post_id)
-    if not queried_post or cognito.current_user != queried_post["username"]:
+    if not queried_post or cognito.current_user != queried_post.username:
         return failure(f"{cognito.current_user} does not own this post")
 
     # update secrets

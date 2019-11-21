@@ -457,7 +457,7 @@ function postNode(postId, username, picture, text, options) {
     `<a onclick="handleViewPost('${postId}')" class="link-button btn viewbtn viewPostButton" name=" ${username} + " value=" ${postId} + " title="">View Post</a>`;
 
   let editButton =
-  `<a onclick="handleEditPost('${postId}')" class="link-button btn viewbtn editPostButton" name=" ${username} + " value=" ${postId} + " title="">Edit Post</a>`;
+    `<a onclick="handleEditPost('${postId}')" class="link-button btn viewbtn editPostButton" name=" ${username} + " value=" ${postId} + " title="">Edit Post</a>`;
 
   let actionsPart = "";
 
@@ -524,8 +524,6 @@ function followNode(username) {
     `<a class="link-button btn viewbtn viewPostButton" name=" ${username} + " value=" + " title="">View Post</a>`;
 
   let actionsPart = "";
-
-
 
 
   return `<div class="col-xs-12 offset-xl-1 col-xl-10 column-3"> 
@@ -611,8 +609,7 @@ function isFollowing(username, following, callback) {
     }
   ).done(
     (data) => {
-      if (data.length == 0)
-      {
+      if (data.length == 0) {
         callback(data, null);
       }
 
@@ -625,13 +622,12 @@ function isFollowing(username, following, callback) {
           callback(null, data);
         }
 
-        else 
-        {
+        else {
           console.log("not following");
           callback(data, null);
         }
       });
-    });  
+    });
 }
 
 function redirect() {

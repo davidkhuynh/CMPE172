@@ -122,7 +122,7 @@ class Users(object):
     def followers(self, constraints: QueryConstraints, username: str):
         with sql_connection(self._config) as conn:
             with conn.cursor() as cur:
-                cur.execute(f"SELECT * FROM Follows "
+                cur.execute(f"SELECT follower FROM Follows "
                             f"WHERE following=%s "
                             f"LIMIT {constraints.total} "
                             f"OFFSET {constraints.first};",
