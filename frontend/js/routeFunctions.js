@@ -1,6 +1,6 @@
 let LOCAL_URL = "http://0.0.0.0:5000";
-let EC2_URL = "http://s3.fumblr.club";
-let SERVER_URL = LOCAL_URL;
+let EC2_URL = "http://www.fumblr.club";
+let SERVER_URL = EC2_URL;
 let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/"; // this needs a slash at the end
 
 function ajax(arg) {
@@ -83,7 +83,8 @@ const RouteFunctions = {
         item.picture,
         item.profilePicture,
         item.text,
-        insertViewEditDelete
+        insertViewEditDelete,
+        item.postedOn
       );
     });
 
@@ -374,6 +375,7 @@ const RouteFunctions = {
         $("#postUser").text(postData.username);
         $("#postUser").attr("href", "profilepage.html#" + postData.username);
         $("#postText").text(postData.text);
+        $("#postedOn").text(postData.postedOn);
         $("#profilePicture").attr("src", profilePictureURL);
         //$("#postPicture").attr("src", pictureURL);
         if (postData.picture) {
@@ -471,11 +473,12 @@ function createPost(user, text) {
 }
 
 // options: {insertDelete: true, insertView: true}
-function postNode(postId, username, picture, profilePicture, text, options) {
+function postNode(postId, username, picture, profilePicture, text, options, postedOn) {
   console.log("picture");
   console.log(picture);
   console.log("profile picture");
   console.log(profilePicture);
+  console.log(postedOn);
 
   let profilePictureURL = profilePicture != null ? IMAGE_HOST_URL+profilePicture : "img/user-icon.svg";
   let userPart =
@@ -491,6 +494,9 @@ function postNode(postId, username, picture, profilePicture, text, options) {
           <div class="col-xs-2 col-m-2 col-lg-2 col-xl-2">
             <a class="link-text text-link-1 profileUsername" href="profilepage.html#${username}"> ${username} </a>
           </div>
+          <div class="col-xs-3 col-m-3 col-lg-3 col-xl-3 offset-3">
+            ${postedOn}
+          </div>          
         </div> 
       </div>`;
 
