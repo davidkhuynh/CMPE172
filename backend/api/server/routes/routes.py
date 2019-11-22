@@ -1,4 +1,5 @@
 import datetime
+import random
 from uuid import uuid4
 
 from flask import request
@@ -94,9 +95,10 @@ def delete_post(post_id: str):
 @app.route("/explore", methods=["GET"])
 def explore():
     """
-        1. list n most recent posts (todo: random)
+    1. list random posts
     """
     queried_posts = db_utils.grab_range_from_db(None, db.posts.all_posts)
+    random.shuffle(queried_posts)
     return success(queried_posts)
 
 
@@ -108,8 +110,7 @@ def feed(sort_by: str="mostRecent", first: int=0):
     """
         1. list n most recent posts from people user follows
     """
-    # todo: followers etc
-    queried_posts = db_utils.grab_range_from_db(None, db.posts.all_posts)
+    queried_posts = db_utils.grab_range_from_db(None, db.posts.feed_posts, username=cognito.current_user)
 
     return success(queried_posts)
 

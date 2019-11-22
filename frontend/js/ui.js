@@ -42,7 +42,7 @@ function makeNav(isAuthenticated) {
     $("#nav").append(`<a id="logoutButton" class="link-text nav-link" href="" title="Logout">LOGOUT</a>`);
     $("#logoutButton").click(() => {
       Authentication.signOutUser();
-      window.location = "index.html";
+      window.location = "explore.html";
     });
   }
 }
@@ -61,11 +61,22 @@ function indexPage() {
   loadExplorePosts(Authentication.getCurrentUsername());
 }
 
+function feedPage() {
+  let isAuthenticated = Authentication.isAuthenticated();
+  // non-logged in users don't have a feed
+  if (!isAuthenticated) {
+    window.location = "explore.html";
+    return;
+  }
+  makeHeader("Feed", isAuthenticated);
+  loadFeedPosts();
+}
+
 function explorePage() {
   Authentication.refreshSession();
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader("Explore", isAuthenticated);
-  loadExplorePosts(Authentication.getCurrentUsername());
+  loadExplorePosts();
 }
 
 function loginPage() {
@@ -181,11 +192,10 @@ function signupPage() {
       if (err) {
         console.log("yes");
         document.getElementById("signUpFailed").style.visibility = "visible";
-        return;
       }
 
       else {
-        window.location = "login.html";
+        window.location = "confirm.html";
       }
 
     });
