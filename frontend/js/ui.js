@@ -18,7 +18,7 @@ function makeHead(pageTitle) {
 function makeNav(isAuthenticated) {
   // set up navbar
   $("#navArea").append("").attr("id", "navOuter").addClass("row nav-row");
-  $("#navOuter").append(`<div id="nav" class="col-xs-12 col-xl-12 column-2 navbar-sticky-top navbar">`);
+  $("#navOuter").append(`<div id="nav" class="col-xs-6 col-m-6 col-lg-6 col-xl-6 offset-xs-3 offset-m-3 offset-lg-3 offset-xl-3  column-2 navbar-sticky-top navbar">`);
 
   // append navbar functions
   if (isAuthenticated) {
@@ -368,7 +368,15 @@ function editPostPage(postId, descriptionPart) {
   console.log(postId);
   $('#submitPostButton').click(() => {
     console.log(postId, document.getElementById('postText').value);
-    RouteFunctions.editPost(postId, document.getElementById('postText').value);
+    RouteFunctions.editPost(postId, document.getElementById('postText').value, (err,response) => {
+      if (err) {
+        console.log("unable to upload");
+      }
+
+      else {
+        window.location = "explore.html";
+      }
+    });
   });
 }
 

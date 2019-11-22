@@ -209,7 +209,7 @@ const RouteFunctions = {
     });
   },
 
-  editPost: (postId, text) => {
+  editPost: (postId, text, callback) => {
     Authentication.authAjax({
       url: SERVER_URL + "/edit_post/" + postId,
       type: "POST",
@@ -225,15 +225,20 @@ const RouteFunctions = {
           onSuccess: (response) => {
             console.log("image upload success!");
             console.log(response);
+            callback(null, response);
           },
           onFailure: (errorData) => {
             console.log("image upload failure....");
             console.log(errorData);
+            callback(errorData, null);
           }
         })
+
+        callback(null, response);
       },
       onFailure: (errorData) => {
         console.log(errorData)
+        callback(errorData, null);
       }
     });
   },
@@ -430,14 +435,14 @@ function postNode(postId, username, picture, text, options) {
   let userPart =
     `<div class="subgrid">
         <div class="row subgrid-row-2">
-          <div class="col-xs-3 offset-xs-1 col-md-2">
+          <div class="col-xs-1 col-m-1 col-lg-1 col-xl-1 offset-xs-1 offset-m-1 offset-lg-1 offset-xl-1">
             <div class="responsive-picture picture-2">
               <picture>
                 <img alt="${text}" src="${picture}">
               </picture>
             </div>
           </div>
-          <div class="col-xs-3">
+          <div class="col-xs-2 col-m-2 col-lg-2 col-xl-2">
             <a class="link-text text-link-1 profileUsername" href="profilepage.html#${username}"> ${username} </a>
           </div>
         </div> 
@@ -468,7 +473,7 @@ function postNode(postId, username, picture, text, options) {
   let postPart =
     `<div class="subgrid">
         <div class="row subgrid-row-1">
-          <div class="col-xs-10 push-xs-0 offset-xs-1">
+          <div class="col-xs-11 col-m-11 col-lg-11 col-xl-10 offset-xs-1 offset-m-1 offset-lg-1 offset-xl-1">
             <div class="responsive-picture picture-1">
               <picture>
                 <img alt="Placeholder Picture" src=" ${IMAGE_HOST_URL + picture}">
@@ -480,7 +485,7 @@ function postNode(postId, username, picture, text, options) {
           <div class="col-xs-12 col-xl-12">
             <p class="paragraph paragraph-2"> ${text} </p>
           </div>
-          <div class="col-xs-8 push-xs-2">
+          <div class="col-xs-4 col-m-4 col-lg-4 col-xl-4 offset-xs-1 offset-m-1 offset-lg-1 offset-xl-1">
             ${actionsPart}
           </div>
         </div>
