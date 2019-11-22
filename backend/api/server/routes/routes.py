@@ -28,7 +28,7 @@ def create_post():
         request body:
             text
 
-        1. upload image to s3
+        1. upload image to aws_tools
         2. add new post to request.database
     """
 
@@ -221,7 +221,7 @@ def edit_profile():
 def delete_current_user():
     user = db.users.get_user(cognito.current_user)
 
-    # delete profile pic from s3
+    # delete profile pic from aws_tools
     pic_utils.delete_profile_picture(user.profile_picture)
 
     # update secrets

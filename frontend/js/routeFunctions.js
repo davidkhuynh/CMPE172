@@ -1,6 +1,6 @@
 let LOCAL_URL = "http://0.0.0.0:5000";
 let EC2_URL = "http://www.fumblr.club";
-let SERVER_URL = EC2_URL;
+let SERVER_URL = LOCAL_URL;
 let IMAGE_HOST_URL = "http://d35f612x9d99xv.cloudfront.net/"; // this needs a slash at the end
 
 function ajax(arg) {

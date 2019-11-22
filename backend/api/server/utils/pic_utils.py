@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 from flask import request
-from server import s3
+from server.aws_tools import s3
 from dataclasses import dataclass
 from enum import Enum
 import os

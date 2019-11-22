@@ -1,4 +1,16 @@
+<!-- external libs -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="js/outofview.js"></script>
+<script src="js/tether.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/amazon-cognito-identity.min.js"></script>
+
+
+<!-- my libs -->
 <script src="js/authentication.js"></script>
+<script src="js/routeFunctions.js"></script>
+<script src="js/ui.js"></script>
 <script>
   window.location = Authentication.isAuthenticated() ? "feed.html" : "explore.html";
 </script>
