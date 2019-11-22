@@ -48,7 +48,7 @@ function makeNav(isAuthenticated) {
 }
 
 
-function makeHeader(pageTitle, isAuthenticated=false) {
+function makeHeader(pageTitle, isAuthenticated = false) {
   makeHead(pageTitle);
   makeNav(isAuthenticated);
 }
@@ -141,22 +141,16 @@ function uploadPostPage() {
   // handlers
   $("#submitPostButton").click(() => {
     let text = $("#postText").val();
-    let picture = $("#pictureFile").get(0).files[0];
+    RouteFunctions.createPost(text, (err, response) => {
+      if (err) {
+        console.log(err);
+      }
 
-    if (picture) {
-      RouteFunctions.createPostWithPicture(picture, text);
-    } else {
-      RouteFunctions.createPost(text, (err, response) => {
-        if (err){
-          console.log(err);
-        }
+      else {
+        window.location = "explore.html";
+      }
 
-        else {
-          window.location = "explore.html";
-        }
-
-      });
-    }
+    });
   });
 
   $(document).on("change", "#pictureFile", () => {
@@ -184,7 +178,7 @@ function signupPage() {
     let bio = $("#createBio").val();
 
     RouteFunctions.createUser(username, birthday, displayName, bio, email, password, (err, response) => {
-      if (err){
+      if (err) {
         console.log("yes");
         document.getElementById("signUpFailed").style.visibility = "visible";
         return;
@@ -206,43 +200,39 @@ function profilePage(user) {
   RouteFunctions.followerCount(user);
   RouteFunctions.followingCount(user);
 
-  if (user === Authentication.getCurrentUsername())
-  {
+  if (user === Authentication.getCurrentUsername()) {
     document.getElementById("followButton").style.visibility = "hidden";
     document.getElementById("followedButton").style.visibility = "hidden";
   }
 
-  else
-  {
+  else {
     document.getElementById("editProfileButton").style.visibility = "hidden";
     console.log("ok");
 
     isFollowing(Authentication.getCurrentUsername(), user, (err, response) => {
 
-    if (err)
-    {
-      console.log("Is not following");
-      document.getElementById("followButton").style.visibility = "visible";
-      document.getElementById("followedButton").style.visibility = "hidden";
+      if (err) {
+        console.log("Is not following");
+        document.getElementById("followButton").style.visibility = "visible";
+        document.getElementById("followedButton").style.visibility = "hidden";
 
-    }
+      }
 
-    else if (response)
-    {
-      console.log("Is following");
-      document.getElementById("followedButton").style.visibility = "visible";
-      document.getElementById("followButton").style.visibility = "hidden";
-    }
+      else if (response) {
+        console.log("Is following");
+        document.getElementById("followedButton").style.visibility = "visible";
+        document.getElementById("followButton").style.visibility = "hidden";
+      }
 
-  });
+    });
 
   }
 
   $('#followButton').click(() => {
-    RouteFunctions.follow(user, (err,response) => {
-      if (response === null){
+    RouteFunctions.follow(user, (err, response) => {
+      if (response === null) {
         console.log("yes");
-            window.location.reload();
+        window.location.reload();
       }
     });
     document.getElementById("followedButton").style.visibility = "visible";
@@ -250,10 +240,10 @@ function profilePage(user) {
   });
 
   $('#followedButton').click(() => {
-    RouteFunctions.unfollow(user, (err,response) => {
-      if (response){
+    RouteFunctions.unfollow(user, (err, response) => {
+      if (response) {
         console.log("yes");
-            window.location.reload();
+        window.location.reload();
       }
     });
     document.getElementById("followedButton").style.visibility = "hidden";
@@ -262,21 +252,20 @@ function profilePage(user) {
   });
 
 
-
   $('#followersButton').click(() => {
-    window.location.href = "followers.html#" + user ;
+    window.location.href = "followers.html#" + user;
   });
 
   $('#followingButton').click(() => {
-    window.location.href = "following.html#" + user ;
+    window.location.href = "following.html#" + user;
   });
 
   $('#followerCount').click(() => {
-    window.location.href = "followers.html#" + user ;
+    window.location.href = "followers.html#" + user;
   });
 
   $('#followingCount').click(() => {
-    window.location.href = "following.html#" + user ;
+    window.location.href = "following.html#" + user;
   });
 
   loadExplorePosts(Authentication.getCurrentUsername());
@@ -324,8 +313,6 @@ function followerPage(user) {
   loadFollowers(user);
 
 
-
-
 }
 
 function followingPage(user) {
@@ -334,8 +321,6 @@ function followingPage(user) {
   makeHeader(`${user}'s Profile`, isAuthenticated);
 
   loadFollowing(user);
-
-
 
 
 }
@@ -351,9 +336,8 @@ function myProfilePage() {
 }
 
 
-
 function getWords(str, n) {
-  return str.split(/\s+/).slice(0,n).join(" ");
+  return str.split(/\s+/).slice(0, n).join(" ");
 }
 
 function viewPostPage() {
@@ -364,14 +348,14 @@ function viewPostPage() {
   RouteFunctions.viewPost(postId, (err, response) => {
 
 
-      if (err){
+      if (err) {
         console.log(err);
       }
 
       else {
-          // button handlers
+        // button handlers
         $('#editPostButton').click(() => {
-          window.location.href = "editpost.html#" + postId ;
+          window.location.href = "editpost.html#" + postId;
         });
 
         $('#deletePostButton').click(() => {
@@ -379,11 +363,8 @@ function viewPostPage() {
         });
       }
     }
-
-
-    );
+  );
   // update content
-
 
 
 }
@@ -399,7 +380,7 @@ function editPostPage(postId, descriptionPart) {
   console.log(postId);
   $('#submitPostButton').click(() => {
     console.log(postId, document.getElementById('postText').value);
-    RouteFunctions.editPost(postId, document.getElementById('postText').value, (err,response) => {
+    RouteFunctions.editPost(postId, document.getElementById('postText').value, (err, response) => {
       if (err) {
         console.log("unable to upload");
       }
@@ -421,7 +402,7 @@ function handleViewPost(postId) {
   window.location = `viewpost.html#${postId}`
 }
 
-function handleEditPost(postId){
+function handleEditPost(postId) {
   window.location = `editpost.html#${postId}`;
 }
 

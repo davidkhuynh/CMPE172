@@ -21,8 +21,13 @@
           <div class="responsive-picture picture-1" id="postPicturePreview">
             <picture><img alt="Placeholder Picture" src="img/picture.svg" id="postPicture">
             </picture>
-          </div><input value="" type="file" class="file-1" id="pictureFile">
+          </div>
           <span class="text-element form-input-caption">Description</span><input value="" name="text-name" type="text" class="form-input" id="postText">
+        </div>
+      </form>
+      <form id="uploadForm" enctype="multipart/form-data" method="post">
+        <div class="container-fluid container-2">
+          <input value="" type="file" id="fileField" class="file-1" name="pictureFile">
         </div>
       </form>
     </div>
@@ -33,8 +38,6 @@
   	<div class="col-xs-4 col-md-4 col-lg-4 col-xl-4"><a class="link-button btn form submit" href="#" title="Subscribe" id="submitPostButton">SUBMIT</a></div>
     <div class="col-xs-4 col-md-4 col-lg-4 col-xl-4"></div>  
   </div>
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="js/routeFunctions.js"></script>
 
   <!-- external libs -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

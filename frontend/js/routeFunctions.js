@@ -237,7 +237,7 @@ const RouteFunctions = {
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
-        RouteFunctions.__uploadPostImage(response.postId)
+        RouteFunctions.__uploadPostImage(response.id)
           .then(() => {
             callback(null, response);
           });
@@ -307,7 +307,6 @@ const RouteFunctions = {
         }
       },
       onFailure: (errorData) => {
-        console.log(errorData);
         callback(errorData, null)
       }
     });
