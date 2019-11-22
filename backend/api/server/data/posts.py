@@ -14,7 +14,7 @@ class Post(object):
     text: str
     posted_on: datetime.datetime
     edited_on: datetime.datetime
-    profile_picture: str=""
+    profile_picture: str = ""
 
 
 def _post_from_row(row):
@@ -35,6 +35,16 @@ def _posts_from_rows(rows):
 class Posts(object):
     def __init__(self, config: SQLConfig):
         self._config = config
+
+    def _attach_profile_picture(self, posts):
+        with sql_connection(self._config) as conn:
+            with conn.cursor() as cur:
+                for post in posts:
+                    cur.execute("SELECT profilePicture FROM Users WHERE username=%s",
+                                (post.username,))
+                    row = cur.fetchone()
+                    post.profile_picture = row[0]
+        return posts
 
     def get_post(self, post_id: str):
         with sql_connection(self._config) as conn:
@@ -78,7 +88,7 @@ class Posts(object):
                             (username,))
                 posts = _posts_from_rows(cur)
 
-        return posts
+        return self._attach_profile_picture(posts)
 
     def create_post(self, username: str, text: str, picture: str = None):
         with sql_connection(self._config) as conn:
@@ -106,7 +116,7 @@ class Posts(object):
 
                 posts = _posts_from_rows(cur)
 
-        return posts
+        return self._attach_profile_picture(posts)
 
     def all_posts(self, constraints: QueryConstraints):
         with sql_connection(self._config) as conn:
@@ -118,7 +128,7 @@ class Posts(object):
 
                 posts = _posts_from_rows(cur)
 
-        return posts
+        return self._attach_profile_picture(posts)
 
     def feed_posts(self, constraints: QueryConstraints, username: str):
         with sql_connection(self._config) as conn:
@@ -133,7 +143,7 @@ class Posts(object):
 
                 posts = _posts_from_rows(cur)
 
-        return posts
+        return self._attach_profile_picture(posts)
 
     def delete_post(self, post_id: str):
         with sql_connection(self._config) as conn:
