@@ -369,11 +369,24 @@ const RouteFunctions = {
         makeHeader(getWords(postData.text, 5), "none");
 
         let profilePictureURL = postData.profilePicture != null ? IMAGE_HOST_URL+postData.profilePicture : "img/user-icon.svg";
+        let pictureURL = postData.picture != null ? IMAGE_HOST_URL+postData.picture : "img/user-icon.svg";
 
         $("#postUser").text(postData.username);
         $("#postUser").attr("href", "profilepage.html#" + postData.username);
         $("#postText").text(postData.text);
         $("#profilePicture").attr("src", profilePictureURL);
+        //$("#postPicture").attr("src", pictureURL);
+        if (postData.picture) {
+            console.log("yes");
+            let pictureURL = IMAGE_HOST_URL + postData.picture;
+            console.log(pictureURL);
+            $("#postPicture").attr("src", pictureURL);
+          } else {
+            console.log("no");
+            document.getElementById("postPicture").style.display = "none";
+            console.log("yes");
+          }     
+
         if (postData.username === Authentication.getCurrentUsername()) {
           $("#postAdmin").append(`
             <div class="col-xs-4 offset-xs-2 col-xl-3 offset-xl-3">
@@ -389,13 +402,7 @@ const RouteFunctions = {
           $("#deletePostButton").attr("value", postData.id);
           callback(null, postData);
 
-          if (postData.picture) {
-            let pictureURL = IMAGE_HOST_URL + postData.picture;
-            console.log(pictureURL);
-            $("#postPicture").attr("src", pictureURL);
-          } else {
-            $("#postPicture").hide();
-          }
+          
         }
       },
       onFailure: (errorData) => {
