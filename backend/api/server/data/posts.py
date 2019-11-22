@@ -1,4 +1,5 @@
 import datetime
+import itertools
 
 from dataclasses import dataclass
 
@@ -129,9 +130,17 @@ class Posts(object):
                             f"LIMIT {constraints.total} "
                             f"OFFSET {constraints.first};",
                             (search_string,))
+                posts_by_text = _posts_from_rows(cur)
 
-                posts = _posts_from_rows(cur)
+                # get posts by tags
+                cur.execute("SELECT postId from PostTags WHERE tag LIKE CONCAT('%%', %s, '%%');", search_string)
+                post_ids = flatten(cur.fetchall())
+                post_ids_formatted = ','.join('\'{0}\''.format(id) for id in post_ids)
+                post_query = f"SELECT * FROM Posts WHERE id IN ({post_ids_formatted});"
+                cur.execute(post_query)
+                posts_by_tag = _posts_from_rows(cur)
 
+        posts = list(itertools.chain(posts_by_text, posts_by_tag))
         return self._attach_extra_post_data(posts)
 
     def all_posts(self, constraints: QueryConstraints):

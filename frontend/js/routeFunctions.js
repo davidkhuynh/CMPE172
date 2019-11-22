@@ -65,7 +65,6 @@ const RouteFunctions = {
     });
   },
 
-
   __populatePosts: (data) => {
     console.log(data);
     let html_to_append = '';
