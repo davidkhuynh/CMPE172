@@ -31,7 +31,6 @@ const Authentication = {
           Authentication.signOutUser();
           return;
         }
-        console.log(session);
         Authentication.__setCurrentUser(cognitoUser);
       });
       return;

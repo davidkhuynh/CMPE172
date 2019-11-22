@@ -366,18 +366,24 @@ const RouteFunctions = {
       type: "GET",
       onSuccess: (postData) => {
         // update all of the fields
+        console.log("postData");
         console.log(postData);
         makeHeader(getWords(postData.text, 5), "none");
 
         let profilePictureURL = postData.profilePicture != null ? IMAGE_HOST_URL+postData.profilePicture : "img/user-icon.svg";
         let pictureURL = postData.picture != null ? IMAGE_HOST_URL+postData.picture : "img/user-icon.svg";
 
-        $("#postUser").text(postData.username);
-        $("#postUser").attr("href", "profilepage.html#" + postData.username);
+        $("#postUser")
+          .text(postData.username)
+          .attr("href", "profilepage.html#" + postData.username);
         $("#postText").text(postData.text);
         $("#postedOn").text(postData.postedOn);
         $("#profilePicture").attr("src", profilePictureURL);
-        //$("#postPicture").attr("src", pictureURL);
+
+        $.each(postData.tags, (index, tag) => {
+          $("#postTags").append(`<span class="badge badge-info">${tag}</span>`);
+        });
+
         if (postData.picture) {
             console.log("yes");
             let pictureURL = IMAGE_HOST_URL + postData.picture;

@@ -411,9 +411,6 @@ function viewPostPage() {
       }
     }
   );
-  // update content
-
-
 }
 
 function editPostPage(postId, descriptionPart) {

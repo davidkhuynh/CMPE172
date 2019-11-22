@@ -2,8 +2,10 @@ import datetime
 
 from dataclasses import dataclass
 
+from server.aws_tools.rekognition import get_labels
 from server.data import _process_rows, SQLConfig, sql_connection
 from server.utils.db_utils import QueryConstraints
+from server.utils.general_utils import flatten
 
 
 @dataclass
@@ -15,6 +17,7 @@ class Post(object):
     posted_on: datetime.datetime
     edited_on: datetime.datetime
     profile_picture: str = ""
+    tags: list = ()
 
 
 def _post_from_row(row):
@@ -49,13 +52,19 @@ class Posts(object):
     def get_post(self, post_id: str):
         with sql_connection(self._config) as conn:
             with conn.cursor() as cur:
+                # get main post data
                 cur.execute("SELECT * FROM Posts WHERE id=%s;", (post_id,))
                 row = cur.fetchone()
                 post = _post_from_row(row)
+
+                # get profile pic for associated user
                 cur.execute("SELECT profilePicture FROM Users WHERE username=%s", (post.username,))
                 row = cur.fetchone()
                 post.profile_picture = row[0]
 
+                # get tags for image
+                cur.execute("SELECT tag FROM PostTags WHERE postId=%s", (post_id,))
+                post.tags = flatten(cur.fetchall())
         return post
 
     def edit_post(self, post_id: str, text: str):
@@ -67,8 +76,13 @@ class Posts(object):
         return self.get_post(post_id)
 
     def update_post_picture(self, post_id: str, picture: str):
+        image_labels = get_labels(picture)
         with sql_connection(self._config) as conn:
             with conn.cursor() as cur:
+                # update post tags
+                cur.execute("DELETE FROM PostTags WHERE postId=%s;", (post_id,))
+                cur.executemany("INSERT INTO PostTags(postId, tag) VALUES (%s, %s);", [(post_id, tag) for tag in image_labels])
+                # update posts table
                 cur.execute("UPDATE Posts SET picture=%s WHERE id=%s;",
                             (picture, post_id))
 

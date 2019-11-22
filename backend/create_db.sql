@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS Posts (
     PRIMARY KEY (id)
 );
 
+
 -- generate unique ID for post id
 DELIMITER //
 DROP TRIGGER IF EXISTS `set_post_id` //

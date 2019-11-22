@@ -49,7 +49,8 @@ class CustomJSONEncoder(JSONEncoder):
                 "profilePicture": obj.profile_picture,
                 "text": obj.text,
                 "postedOn": obj.posted_on,
-                "editedOn": obj.edited_on
+                "editedOn": obj.edited_on,
+                "tags": obj.tags
             }
         else:
             return super().default(obj)
