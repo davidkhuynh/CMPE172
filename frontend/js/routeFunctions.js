@@ -427,15 +427,9 @@ const RouteFunctions = {
   },
 
   deletePost: (postId) => {
-    Authentication.authAjax({
+    return Authentication.authAjax({
       url: SERVER_URL + "/delete_post/" + postId,
       type: "POST",
-      onSuccess: (response) => {
-        console.log(response);
-      },
-      onFailure: (errorData) => {
-        console.log(errorData)
-      }
     });
   },
 

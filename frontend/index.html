@@ -1,3 +1,4 @@
+<script src="js/authentication.js"></script>
 <script>
-  window.location = "explore.html";
+  window.location = Authentication.isAuthenticated() ? "feed.html" : "explore.html";
 </script>
