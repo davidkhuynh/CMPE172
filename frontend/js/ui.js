@@ -186,7 +186,6 @@ function signupPage() {
     RouteFunctions.createUser(username, birthday, displayName, bio, email, password, (err, response) => {
       if (err){
         console.log("yes");
-        document.getElementById("signUpFailed").append(err.message);
         document.getElementById("signUpFailed").style.visibility = "visible";
         return;
       }

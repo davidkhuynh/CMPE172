@@ -75,8 +75,14 @@ const RouteFunctions = {
         $("#profileDisplayName").html(response.displayName);
         $("#profileUserName").html("@" + response.username);
         $("#profileBio").html(response.bio);
-        $("#profilePicture").attr("src", response.profilePicture);
+        if (response.profilePicture.length === 0){
+          $("#profilePicture").attr("src", response.profilePicture);
 
+        }
+
+        else {
+          $("#profilePicture").attr("src", "img/user-icon.svg");
+        }
       },
       onFailure: (errorData) => {
         console.log(errorData)
@@ -459,7 +465,7 @@ function postNode(postId, username, picture, profilePicture, text, options) {
           <div class="col-xs-1 col-m-1 col-lg-1 col-xl-1 offset-xs-1 offset-m-1 offset-lg-1 offset-xl-1">
             <div class="responsive-picture picture-2">
               <picture>
-                <img alt="${username}" src="${profilePicture != null ? profilePicture : ""}">
+                <img alt="${username}" src="${profilePicture != null ? profilePicture : "img/user-icon.svg"}">
               </picture>
             </div>
           </div>
