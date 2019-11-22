@@ -10,3 +10,5 @@ cognito_config.py
 oregon
 tokyo
 serverpass
+keys.json
+secrets/

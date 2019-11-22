@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="la">
+
+<body class="grid-1">
+<div id="navArea" class="row nav-row">
+    <div id="navOuter">
+    <!-- loaded in ui.js -->
+    </div>
+  </div>
+<div class="row subscribe userProfileInformation">
+  <div class="col-xs-12 column-1 col-xl-6 offset-xl-3">
+    <div class="subgrid">
+      <div class="row">
+        <div class="col-xs-4">
+          <div class="responsive-picture">
+            <picture><img alt="profile picture" src="img/user-icon.svg" id="profilePicture">
+            </picture>
+          </div>
+        </div>
+        <div class="col-xs-3 offset-1 custom-380-col-xs-3">
+          <h4 id="profileDisplayName"></h4>
+          <br>
+          <h4 id="followersButton"> FOLLOWERS </h4>
+          <h4 id="followerCount"></h4>
+
+        </div>
+        <div class="col-xs-3 offset-1 custom-380-col-xs-3">
+          <h4 id="profileUserName"></h4>
+          <br>
+          <h4 id="followingButton"> FOLLOWING </h4>
+          <h4 id="followingCount"></h4>
+
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-6"><a class="link-button btn follow" title="" style="visibility:hidden" id="followButton">Follow</a>
+        </div>
+        <div class="col-xs-6"><a class="link-button btn follow" title="" style="visibility:hidden" id="followedButton">Followed</a>
+        </div>
+
+        <h4 class="col-xs-6 offset-3" id="profileBio"> BIO </h4>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-6"><a class="link-button btn follow" href="editprofile.html" title="" id="editProfileButton">Edit Profile</a>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+<div class="row subscribe postRow">
+  
+</div>
+
+<!-- external libs -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="js/outofview.js"></script>
+<script src="js/tether.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/amazon-cognito-identity.min.js"></script>
+
+
+<!-- my libs -->
+<script src="js/authentication.js"></script>
+<script src="js/routeFunctions.js"></script>
+<script src="js/ui.js"></script>
+<script>
+  let userProfile = window.location.hash.substring(1);
+  profilePage(userProfile);
+</script>
+</body>
+
+</html>

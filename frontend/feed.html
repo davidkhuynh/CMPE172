@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="la">
+
+<body class="grid-1">
+<div id="navArea" class="row nav-row">
+  <div id="navOuter">
+    <!-- loaded in ui.js -->
+  </div>
+</div>
+
+<div class="row subscribe">
+  <div class="col-xs-12 column-1 col-xl-6 offset-xl-3">
+    <h1 style="color: ghostwhite" class="pt-4 pl-3">feed</h1>
+    <div class="subgrid action-subgrid">
+        <div class="row">
+          <div class="col-xs-12 col-md-12 subgrid-column-2 col-xl-12"><a class="link-button btn subscribe" href="uploadpost.html" title="">UPLOAD</a>
+          </div>
+          <div class="col-xs-12 col-md-12 subgrid-column-4 offset-xl-0 col-xl-6"><a class="link-button btn subscribe" id="searchButton" title="">SEARCH</a>
+          </div>
+          <div class="col-xs-12 col-md-6 col-xl-6">
+            <form class="form-container"><input style="font-size: 50px" value="" name="text-name" type="text" class="input-1" id="searchQuery">
+            </form>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="row subscribe postRow">
+  <div class="col-xs-12 offset-xl-1 col-xl-10 column-3">
+    <div class="subgrid">
+      <div class="row subgrid-row-2">
+        <div class="col-xs-3 offset-xs-1 col-md-2">
+          <div class="responsive-picture picture-2">
+            <picture><img alt="Placeholder Picture" src="img/picture.svg">
+            </picture>
+          </div>
+        </div>
+        <div class="col-xs-3">
+          <a class="link-text text-link-1 profileUserName" href="profilepage.html"></a>
+        </div>
+        <div class="col-xs-2"><a class="link-button btn viewbtn followButton" href="" title=""></a>
+        </div>
+      </div>
+    </div>
+    <div class="subgrid">
+      <div class="row subgrid-row-1">
+        <div class="col-xs-10 push-xs-0 offset-xs-1">
+          <div class="responsive-picture picture-1">
+            <picture><img alt="Placeholder Picture" src="img/picture.svg">
+            </picture>
+          </div>
+        </div>
+      </div>
+      <div class="row subgrid-row-2">
+        <div class="col-xs-12 col-xl-12">
+          <p class="paragraph paragraph-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas et metus.</p>
+        </div>
+        <div class="col-xs-8 push-xs-2"><a class="link-button btn viewbtn deletePostButton" href="" title="">Delete Post</a><a class="link-button btn viewbtn viewPostButton" href="viewpost.html" title="">View Post</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- external libs -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+<script src="js/outofview.js"></script>
+<script src="js/tether.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/amazon-cognito-identity.min.js"></script>
+
+
+<!-- my libs -->
+<script src="js/authentication.js"></script>
+<script src="js/routeFunctions.js"></script>
+<script src="js/ui.js"></script>
+
+<script> feedPage() </script>
+</body>
+
+</html>

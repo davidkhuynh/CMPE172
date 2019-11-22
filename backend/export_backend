@@ -8,6 +8,7 @@ sshpass -p $(cat $passfile) rsync -avP --exclude=venv/ api/ $(cat $host):/home/e
 # login and start server
 sshpass -p $(cat $passfile) ssh $(cat $host) -tt << EOF
   ./stop
+  pip3 install -r requirements.txt --user
   ./start
   echo "now starting server...5 sec"
   sleep 5

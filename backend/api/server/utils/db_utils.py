@@ -1,6 +1,4 @@
 from dataclasses import dataclass
-import datetime
-from datetime import date
 
 
 @dataclass
@@ -10,18 +8,8 @@ class QueryConstraints(object):
     total: int = 10
 
 
-@dataclass
-class User(object):
-    username: str=""
-    birthday: date=datetime.datetime.now().date()
-    picture: str=""
-    first_name: str=""
-    last_name: str=""
-    bio: str=""
-
-
 def grab_range_from_db(request_data, query_func, **kwargs):
-    constraints = __parse_query_constraints(request_data)
+    constraints = __parse_query_constraints(request_data) if request_data else QueryConstraints()
     queried_content = query_func(constraints, **kwargs)
     return queried_content
 

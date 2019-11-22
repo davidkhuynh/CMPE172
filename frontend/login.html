@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="la">
+
+
+<body class="grid-1">
+  <div id="navArea" class="row nav-row">
+    <div id="navOuter">
+      <!-- loaded in ui.js -->
+    </div>
+  </div>
+  <div class="row subscribe">
+    <div class="col-xs-12 col-xl-6 offset-xl-3">
+      <h4 class="heading-1"><span class="heading-text-1">LOGIN</span>
+      </h4>
+      <h4></h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-4 col-md-4 col-lg-4 col-xl-4"></div>    
+    <div class="col-xs-8 push-xs-2 column-5 col-xl-4 pull-xl-0 push-xl-4 col-lg-4 push-lg-4 pull-lg-0">
+      <form class="form-container form-container-1">
+        <span class="text-element form-input-caption">Username</span><input value="" name="text-name" type="text" class="form-input" id="loginUser">
+        <span class="text-element form-input-caption">Password</span><input value="" name="text-name" type="password" class="form-input" id="loginPassword">
+      </form><a class="link-button btn form" title="" id="loginButton">LOGIN</a>
+    </div>
+    <div class="col-xs-4 col-md-4 col-lg-4 col-xl-4"></div>
+
+    <div class="col-xs-4 col-md-4 col-lg-4 col-xl-4"></div>  
+    <div class="col-xs-4 col-md-4 col-lg-4 col-xl-4 pt-4">     
+
+          <div class="container-fluid alert alert-success alert-dismissible " style="visibility:hidden" role="alert" id="loginSuccessful">
+        <h4 class="alert-heading">LOGIN SUCCESSFUL</h4><a class="link-button close cstm-close" href="#" data-dismiss="alert">×</a>
+      </div>
+      <div class="container-fluid alert alert-dismissible  alert-danger" style="visibility:hidden" role="alert" id="loginFailed">
+        <h4 class="alert-heading">LOGIN FAILED</h4><a class="link-button close cstm-close" href="#" data-dismiss="alert">×</a>
+      </div> 
+    </div>
+    <div class="col-xs-4 col-md-4 col-lg-4 col-xl-4"></div>  
+
+  </div>
+
+  <!-- external libs -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+  <script src="js/outofview.js"></script>
+  <script src="js/tether.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/amazon-cognito-identity.min.js"></script>
+
+
+  <!-- my libs -->
+  <script src="js/authentication.js"></script>
+  <script src="js/routeFunctions.js"></script>
+  <script src="js/ui.js"></script>
+
+  <script>loginPage()</script>
+</body>
+
+</html>
