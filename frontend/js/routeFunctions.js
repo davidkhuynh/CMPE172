@@ -403,18 +403,18 @@ const RouteFunctions = {
         document.getElementById('postText').value = postData.text;
 
 
-          if (postData.picture) 
+          if (postData.picture)
           {
             let pictureURL = IMAGE_HOST_URL + postData.picture;
             console.log(pictureURL);
             $("#postPicture").attr("src", pictureURL);
-          } else 
+          } else
           {
             $("#postPicture").hide();
           }
       }
     });
-  },  
+  },
 
   deletePost: (postId) => {
     Authentication.authAjax({
@@ -513,16 +513,17 @@ function postNode(postId, username, picture, profilePicture, text, options) {
 
   let postPart =
     `<div class="subgrid">
-        <div class="row subgrid-row-1">
+            ` + ((picture != null) ?
+        `<div class="row subgrid-row-1">
           <div class="col-xs-11 col-m-11 col-lg-11 col-xl-10 offset-xs-1 offset-m-1 offset-lg-1 offset-xl-1">
             <div class="responsive-picture picture-1">
-              <picture>
-                <img alt="${text}" src=" ${picture != null ? IMAGE_HOST_URL + picture : ""}">
-              </picture>
+                <picture>
+                  <img alt="${text}" src=" ${IMAGE_HOST_URL + picture}" >
+                </picture>
             </div>
           </div>
-        </div>
-        <div class="row subgrid-row-2">
+        </div>` : '') +
+        `<div class="row subgrid-row-2">
           <div class="col-xs-12 col-xl-12">
             <p class="paragraph paragraph-2"> ${text} </p>
           </div>
