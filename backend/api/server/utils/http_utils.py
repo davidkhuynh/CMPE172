@@ -46,6 +46,7 @@ class CustomJSONEncoder(JSONEncoder):
                 "id": obj.id,
                 "username": obj.username,
                 "picture": obj.picture,
+                "profilePicture": obj.profile_picture,
                 "text": obj.text,
                 "postedOn": obj.posted_on,
                 "editedOn": obj.edited_on

@@ -158,7 +158,7 @@ function uploadPostPage() {
       }
 
       else {
-        window.location = "explore.html";
+        window.location = "viewpost.html#" + response.id;
       }
 
     });
@@ -406,7 +406,7 @@ function editPostPage(postId, descriptionPart) {
       }
 
       else {
-        window.location = "explore.html";
+        window.location = "viewpost.html#" + response.id;
       }
     });
   });
