@@ -39,7 +39,7 @@ class Posts(object):
     def __init__(self, config: SQLConfig):
         self._config = config
 
-    def _attach_profile_picture(self, posts):
+    def _attach_extra_post_data(self, posts):
         with sql_connection(self._config) as conn:
             with conn.cursor() as cur:
                 for post in posts:
@@ -47,6 +47,8 @@ class Posts(object):
                                 (post.username,))
                     row = cur.fetchone()
                     post.profile_picture = row[0]
+                    cur.execute("SELECT tag FROM PostTags WHERE postId=%s", (post.id,))
+                    post.tags = flatten(cur.fetchall())
         return posts
 
     def get_post(self, post_id: str):
@@ -102,7 +104,7 @@ class Posts(object):
                             (username,))
                 posts = _posts_from_rows(cur)
 
-        return self._attach_profile_picture(posts)
+        return self._attach_extra_post_data(posts)
 
     def create_post(self, username: str, text: str, picture: str = None):
         with sql_connection(self._config) as conn:
@@ -130,7 +132,7 @@ class Posts(object):
 
                 posts = _posts_from_rows(cur)
 
-        return self._attach_profile_picture(posts)
+        return self._attach_extra_post_data(posts)
 
     def all_posts(self, constraints: QueryConstraints):
         with sql_connection(self._config) as conn:
@@ -142,7 +144,7 @@ class Posts(object):
 
                 posts = _posts_from_rows(cur)
 
-        return self._attach_profile_picture(posts)
+        return self._attach_extra_post_data(posts)
 
     def feed_posts(self, constraints: QueryConstraints, username: str):
         with sql_connection(self._config) as conn:
@@ -157,7 +159,7 @@ class Posts(object):
 
                 posts = _posts_from_rows(cur)
 
-        return self._attach_profile_picture(posts)
+        return self._attach_extra_post_data(posts)
 
     def delete_post(self, post_id: str):
         with sql_connection(self._config) as conn:

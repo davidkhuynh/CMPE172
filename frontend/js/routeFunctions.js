@@ -71,7 +71,6 @@ const RouteFunctions = {
     let html_to_append = '';
 
     $.each(data, function (i, item) {
-
       let insertViewEditDelete = {insertDelete: false, insertView: true};
       if (item.username === Authentication.getCurrentUsername()) {
         insertViewEditDelete = {insertDelete: true, insertView: true};
@@ -84,7 +83,8 @@ const RouteFunctions = {
         item.profilePicture,
         item.text,
         insertViewEditDelete,
-        item.postedOn
+        item.postedOn,
+        item.tags
       );
     });
 
@@ -479,7 +479,7 @@ function createPost(user, text) {
 }
 
 // options: {insertDelete: true, insertView: true}
-function postNode(postId, username, picture, profilePicture, text, options, postedOn) {
+function postNode(postId, username, picture, profilePicture, text, options, postedOn, tags) {
   console.log("picture");
   console.log(picture);
   console.log("profile picture");
@@ -528,6 +528,11 @@ function postNode(postId, username, picture, profilePicture, text, options, post
     actionsPart += editButton;
   }
 
+  let tagElements = "";
+  $.each(tags, (index, tag) => {
+    tagElements += `<span class="badge badge-info">${tag}</span>`;
+  });
+
   let postPart =
     `<div class="subgrid">
             ` + ((picture != null) ?
@@ -543,6 +548,14 @@ function postNode(postId, username, picture, profilePicture, text, options, post
         `<div class="row subgrid-row-2">
           <div class="col-xs-12 col-xl-12">
             <p class="paragraph paragraph-2"> ${text} </p>
+          </div>
+          <div>
+            <b style="padding-left: 20px;">What's in this image?</b>
+            <div class="col-xs-12 col-xl-12">
+                <div class="post-tags">
+                    ${tagElements} 
+                </div>
+            </div>
           </div>
           <div class="col-xs-4 col-m-4 col-lg-4 col-xl-4 offset-xs-1 offset-m-1 offset-lg-1 offset-xl-1">
             ${actionsPart}
