@@ -136,7 +136,7 @@ const RouteFunctions = {
         }
 
         else {
-          $("#profilePicture").attr("src", response.profilePicture);
+          $("#profilePicture").attr("src", IMAGE_HOST_URL + response.profilePicture);
         }
       },
       onFailure: (errorData) => {
@@ -155,13 +155,13 @@ const RouteFunctions = {
         document.getElementById('editProfileDisplayName').value = response.displayName;
         document.getElementById('editProfileBio').value = response.bio;
 
-        //if (response.profilePicture === null){
-        //$("#fileField").attr("src", "img/user-icon.svg");
-        //}
+        if (response.profilePicture === null){
+        $("#postPicture").attr("src", "img/user-icon.svg");
+        }
 
-        //else {
-        //$("#fileField").attr("src", response.profilePicture);
-        //}
+        else {
+        $("#postPicture").attr("src", IMAGE_HOST_URL + response.profilePicture);
+        }
       },
       onFailure: (errorData) => {
         console.log(errorData)
@@ -390,6 +390,28 @@ const RouteFunctions = {
       }
     });
   },
+
+  loadPostEdit: (postId) => {
+    ajax({
+      url: SERVER_URL + "/post/" + postId,
+      type: "GET",
+      onSuccess: (postData) => {
+        document.getElementById('postPicture').value = postData.username;
+        document.getElementById('postText').value = postData.text;
+
+
+          if (postData.picture) 
+          {
+            let pictureURL = IMAGE_HOST_URL + postData.picture;
+            console.log(pictureURL);
+            $("#postPicture").attr("src", pictureURL);
+          } else 
+          {
+            $("#postPicture").hide();
+          }
+      }
+    });
+  },  
 
   deletePost: (postId) => {
     Authentication.authAjax({

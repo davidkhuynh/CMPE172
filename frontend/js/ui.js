@@ -396,6 +396,8 @@ function editPostPage(postId, descriptionPart) {
   makeHeader(`Editing Post: ${descriptionPart}`, isAuthenticated);
   postId = window.location.hash.substr(1);
   console.log(postId);
+  
+  RouteFunctions.loadPostEdit(postId);
   $('#submitPostButton').click(() => {
     console.log(postId, document.getElementById('postText').value);
     RouteFunctions.editPost(postId, document.getElementById('postText').value, (err, response) => {
