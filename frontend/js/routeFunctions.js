@@ -34,12 +34,13 @@ function createUserWithProfilePicture(username, birthday, displayName, bio, prof
 }
 
 const RouteFunctions = {
-  createUser: (username, birthday, displayName, bio, email, password) => {
+  createUser: (username, birthday, displayName, bio, email, password, callback) => {
     Authentication.signUpUser(username, email, password, (err, result) => {
       console.log(username, email, password);
       if (err) {
         console.log("error adding user to backend secrets...");
         console.log(err);
+        callback(err ,null);
         return;
       }
       console.log(
@@ -53,10 +54,10 @@ const RouteFunctions = {
             "bio": bio,
           },
           onSuccess: (response) => {
-            console.log(response);
+            callback(null, response);
           },
           onFailure: (errorData) => {
-            console.log(errorData);
+            callback(errorData, null);
 
           }
         })
