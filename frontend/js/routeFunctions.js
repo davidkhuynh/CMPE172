@@ -83,29 +83,33 @@ const RouteFunctions = {
     });
   },
 
-  unfollow: (username) => {
+  unfollow: (username, callback) => {
     Authentication.authAjax({
       url: SERVER_URL + "/unfollow/" + username,
       type: "GET",
       onSuccess: (response) => {
         console.log(response);
+        callback(null, response);
       },
       onFailure: (errorData) => {
         console.log(errorData)
+        callback(errorData, null);
       }
     });
   },
 
-  follow: (userToFollow) => {
+  follow: (userToFollow, callback) => {
     Authentication.authAjax({
       url: SERVER_URL + "/follow/" + userToFollow,
       type: "GET",
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
+        callback(null, response);
       },
       onFailure: (errorData) => {
         console.log(errorData)
+        callback(errorData, null);
       }
     });
   },
@@ -226,8 +230,10 @@ const RouteFunctions = {
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
-        RouteFunctions.__uploadPostImage(response.postId);
-        callback(null, response);
+        RouteFunctions.__uploadPostImage(response.postId)
+          .then(() => {
+            callback(null, response);
+          });
       },
       onFailure: (errorData) => {
         console.log(errorData);
@@ -236,8 +242,7 @@ const RouteFunctions = {
     });
   },
 
-  editPost: (postId, text, callback = () => {
-  }) => {
+  editPost: (postId, text, callback) => {
     Authentication.authAjax({
       url: SERVER_URL + "/edit_post/" + postId,
       type: "POST",
@@ -302,7 +307,7 @@ const RouteFunctions = {
   },
 
   deletePost: (postId) => {
-    ajax({
+    Authentication.authAjax({
       url: SERVER_URL + "/delete_post/" + postId,
       type: "POST",
       onSuccess: (response) => {
@@ -450,17 +455,15 @@ function postNode(postId, username, picture, profilePicture, text, options) {
   let userPart =
     `<div class="subgrid">
         <div class="row subgrid-row-2">
-          <div class="col-xs-3 offset-xs-1 col-md-2">
+          <div class="col-xs-1 col-m-1 col-lg-1 col-xl-1 offset-xs-1 offset-m-1 offset-lg-1 offset-xl-1">
             <div class="responsive-picture picture-2">
               <picture>
                 <img alt="${username}" src="${profilePicture != null ? profilePicture : ""}">
               </picture>
             </div>
           </div>
-          <div class="col-xs-3">
+          <div class="col-xs-2 col-m-2 col-lg-2 col-xl-2">
             <a class="link-text text-link-1 profileUsername" href="profilepage.html#${username}"> ${username} </a>
-          </div>
-          <div class="col-xs-2"><a class="link-button btn viewbtn" title="">Follow</a>
           </div>
         </div> 
       </div>`;
@@ -479,7 +482,7 @@ function postNode(postId, username, picture, profilePicture, text, options) {
   if (options.insertDelete) {
     actionsPart += deleteButton;
   }
-  if (options.insertDelete) {
+  if (options.insertView) {
     actionsPart += viewButton;
   }
 
@@ -490,7 +493,7 @@ function postNode(postId, username, picture, profilePicture, text, options) {
   let postPart =
     `<div class="subgrid">
         <div class="row subgrid-row-1">
-          <div class="col-xs-10 push-xs-0 offset-xs-1">
+          <div class="col-xs-11 col-m-11 col-lg-11 col-xl-10 offset-xs-1 offset-m-1 offset-lg-1 offset-xl-1">
             <div class="responsive-picture picture-1">
               <picture>
                 <img alt="${text}" src=" ${picture != null ? IMAGE_HOST_URL + picture : ""}">
@@ -502,7 +505,7 @@ function postNode(postId, username, picture, profilePicture, text, options) {
           <div class="col-xs-12 col-xl-12">
             <p class="paragraph paragraph-2"> ${text} </p>
           </div>
-          <div class="col-xs-8 push-xs-2">
+          <div class="col-xs-4 col-m-4 col-lg-4 col-xl-4 offset-xs-1 offset-m-1 offset-lg-1 offset-xl-1">
             ${actionsPart}
           </div>
         </div>
@@ -549,7 +552,7 @@ function followNode(username) {
 
 
 //for explore.html
-function loadExplorePosts() {
+function loadExplorePosts(username) {
   $.ajax(
     {
       url: SERVER_URL + "/explore",
@@ -563,13 +566,22 @@ function loadExplorePosts() {
       let html_to_append = '';
 
       $.each(data, function (i, item) {
+
+        let insertViewEditDelete = {insertDelete: false, insertView: true};
+        if (item.username == username) {
+          insertViewEditDelete = {insertDelete: true, insertView: true};
+
+
+        }
+
+
         html_to_append += postNode(
           item.id,
           item.username,
           item.picture,
           item.profilePicture,
           item.text,
-          {insertDelete: true, insertView: true}
+          insertViewEditDelete
         );
       });
       $(".postRow").html(html_to_append);
@@ -584,7 +596,6 @@ function loadFollowers(username) {
     }
   ).done(
     (data) => {
-      console.log(data);
       let html_to_append = '';
 
       $.each(data, function (i, item) {
@@ -604,7 +615,6 @@ function loadFollowing(username) {
     }
   ).done(
     (data) => {
-      console.log(data);
       let html_to_append = '';
 
       $.each(data, function (i, item) {
@@ -625,6 +635,9 @@ function isFollowing(username, following, callback) {
     }
   ).done(
     (data) => {
+
+      let isAFollower = false;
+
       if (data.length == 0) {
         callback(data, null);
       }
@@ -634,15 +647,25 @@ function isFollowing(username, following, callback) {
       $.each(data, function (i, item) {
 
         if (item == following) {
-          console.log("yes");
-          callback(null, data);
+          console.log("HERE");
+          console.log(item);
+          console.log(following);
+          isAFollower = true;
         }
 
-        else {
-          console.log("not following");
-          callback(data, null);
-        }
       });
+
+      console.log(isAFollower);
+      if (isAFollower === false) {
+        console.log("Is not not following");
+        callback(data, null);
+
+      }
+
+      else if (isAFollower === true) {
+        console.log("Is is following");
+        callback(null, data);
+      }
     });
 }
 

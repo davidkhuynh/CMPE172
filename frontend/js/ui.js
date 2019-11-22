@@ -18,7 +18,7 @@ function makeHead(pageTitle) {
 function makeNav(isAuthenticated) {
   // set up navbar
   $("#navArea").append("").attr("id", "navOuter").addClass("row nav-row");
-  $("#navOuter").append(`<div id="nav" class="col-xs-12 col-xl-12 column-2 navbar-sticky-top navbar">`);
+  $("#navOuter").append(`<div id="nav" class="col-xs-6 col-m-6 col-lg-6 col-xl-6 offset-xs-3 offset-m-3 offset-lg-3 offset-xl-3  column-2 navbar-sticky-top navbar">`);
 
   // append navbar functions
   if (isAuthenticated) {
@@ -58,14 +58,14 @@ function indexPage() {
   Authentication.refreshSession();
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader("Feed", isAuthenticated);
-  loadExplorePosts();
+  loadExplorePosts(Authentication.getCurrentUsername());
 }
 
 function explorePage() {
   Authentication.refreshSession();
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader("Explore", isAuthenticated);
-  loadExplorePosts();
+  loadExplorePosts(Authentication.getCurrentUsername());
 }
 
 function loginPage() {
@@ -201,33 +201,51 @@ function profilePage(user) {
 
     isFollowing(Authentication.getCurrentUsername(), user, (err, response) => {
 
-      if (err)
-      {
-        document.getElementById("followButton").style.visibility = "visible";
-      }
+    if (err)
+    {
+      console.log("Is not following");
+      document.getElementById("followButton").style.visibility = "visible";
+      document.getElementById("followedButton").style.visibility = "hidden";
 
-      else
-      {
-        document.getElementById("followedButton").style.visibility = "visible";
+    }
 
-      }
+    else if (response)
+    {
+      console.log("Is following");
+      document.getElementById("followedButton").style.visibility = "visible";
+      document.getElementById("followButton").style.visibility = "hidden";
 
-    });
+
+    }
+
+  });
+
   }
 
-
   $('#followButton').click(() => {
-    RouteFunctions.follow(user);
+    RouteFunctions.follow(user, (err,response) => {
+      if (response === null){
+        console.log("yes");
+            window.location.reload();
+      }      
+    });
     document.getElementById("followedButton").style.visibility = "visible";
     document.getElementById("followButton").style.visibility = "hidden";
   });
 
   $('#followedButton').click(() => {
-    RouteFunctions.unfollow(user);
+    RouteFunctions.unfollow(user, (err,response) => {
+      if (response){
+        console.log("yes");
+            window.location.reload();
+      }
+    });
     document.getElementById("followedButton").style.visibility = "hidden";
     document.getElementById("followButton").style.visibility = "visible";
 
   });
+
+
 
   $('#followersButton').click(() => {
     window.location.href = "followers.html#" + user ;
@@ -237,7 +255,15 @@ function profilePage(user) {
     window.location.href = "following.html#" + user ;
   });
 
-  loadExplorePosts();
+  $('#followerCount').click(() => {
+    window.location.href = "followers.html#" + user ;
+  });
+
+  $('#followingCount').click(() => {
+    window.location.href = "following.html#" + user ;
+  });  
+
+  loadExplorePosts(Authentication.getCurrentUsername());
 
 }
 
@@ -276,6 +302,15 @@ function editProfilePage(displayName, bio) {
 
 
   })
+  
+  $(document).on("change", "#pictureFile", () => {
+    let picture = $("#pictureFile").get(0).files[0];
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      $("#postPicture").attr("src", e.target.result);
+    };
+    reader.readAsDataURL(picture);
+  });  
 
 }
 
@@ -362,8 +397,25 @@ function editPostPage(postId, descriptionPart) {
   console.log(postId);
   $('#submitPostButton').click(() => {
     console.log(postId, document.getElementById('postText').value);
-    RouteFunctions.editPost(postId, document.getElementById('postText').value);
+    RouteFunctions.editPost(postId, document.getElementById('postText').value, (err,response) => {
+      if (err) {
+        console.log("unable to upload");
+      }
+
+      else {
+        window.location = "explore.html";
+      }
+    });
   });
+
+  $(document).on("change", "#pictureFile", () => {
+    let picture = $("#pictureFile").get(0).files[0];
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      $("#postPicture").attr("src", e.target.result);
+    };
+    reader.readAsDataURL(picture);
+  });  
 }
 
 // util functions
