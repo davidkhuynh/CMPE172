@@ -111,6 +111,16 @@ const RouteFunctions = {
     ).done(RouteFunctions.__populatePosts);
   },
 
+  loadUserPosts: (username) => {
+    $.ajax(
+      {
+        url: SERVER_URL + "/user_posts/" + username,
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+      }
+    ).done(RouteFunctions.__populatePosts);
+  },
+
   loadUserPage: (username) => {
     ajax({
       url: SERVER_URL + "/user/" + username,

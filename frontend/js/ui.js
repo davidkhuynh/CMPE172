@@ -278,8 +278,7 @@ function profilePage(user) {
     window.location.href = "following.html#" + user;
   });
 
-  loadExplorePosts(user);
-
+  RouteFunctions.loadUserPosts(user);
 }
 
 function myProfilePage() {

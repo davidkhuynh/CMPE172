@@ -155,7 +155,7 @@ def user_posts(username: str):
 
         1. list n of user's posts
     """
-    queried_posts = db_utils.grab_range_from_db(request.json, db.posts.user_posts, username=username)
+    queried_posts = db.posts.user_posts_default(username)
     return success(queried_posts)
 
 
