@@ -26,6 +26,7 @@ The idea pursued for this project is fumblr — a re-envisioned blogging platfor
 - View all of a User's posts
 - Random Post "Explore" View
 - Tailored "Feed" View only showing posts from those you follow
+- Automatic Tagging of Images using AWS Rekognition
 
 ## Screenshots
 ![Edit Post]https://i.ibb.co/51wC9xY/Selection-999-099.png)
@@ -39,11 +40,13 @@ The idea pursued for this project is fumblr — a re-envisioned blogging platfor
   - Route 53
   - EC2 and Elastic Load Balancer
   - RDS
+  - Rekognition
 - Local Tools
   - [Python 3.6](https://www.python.org/downloads/release/python-369/)
   - [MariaDB](https://mariadb.org/) for running unit tests locally
   - [venv](https://docs.python.org/3/library/venv.html)
   - [pip](https://pypi.org/project/pip/) 
+  - awscli
 - secrets folder in backend/api/server
   - The files needed inside the secrets folder can be determined by running the backend and seeing which files are missing and what variables they contain
 - Recommended: Linux or MacOS (not tested on Windows)
