@@ -188,7 +188,7 @@ function profilePage(user) {
   RouteFunctions.followerCount(user);
   RouteFunctions.followingCount(user);
 
-  if (user == Authentication.getCurrentUsername()) 
+  if (user === Authentication.getCurrentUsername())
   {
     document.getElementById("followButton").style.visibility = "hidden";
     document.getElementById("followedButton").style.visibility = "hidden";

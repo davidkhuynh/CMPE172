@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS Users (
     displayName VARCHAR(256),
     bio VARCHAR(4096),
     createdOn TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    profilePicture VARCHAR(4096),
 
     PRIMARY KEY (username)
 );

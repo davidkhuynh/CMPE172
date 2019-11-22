@@ -38,7 +38,8 @@ class CustomJSONEncoder(JSONEncoder):
                 "birthday": obj.birthday,
                 "displayName" : obj.display_name,
                 "bio": obj.bio,
-                "createdOn": obj.created_on
+                "createdOn": obj.created_on,
+                "profilePicture": obj.profile_picture
             }
         if isinstance(obj, Post):
             return {

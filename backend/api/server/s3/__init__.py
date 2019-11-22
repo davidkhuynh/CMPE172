@@ -20,7 +20,7 @@ def upload_picture(picture_file, filename, directory="") -> bool:
 
 
 
-def delete_picture(filename, directory) -> bool:
+def delete_picture(filename, directory="") -> bool:
     s3_client = boto3.client("s3")
     filepath = os.path.join(directory, filename)
     try:

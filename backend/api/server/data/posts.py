@@ -14,6 +14,7 @@ class Post(object):
     text: str
     posted_on: datetime.datetime
     edited_on: datetime.datetime
+    profile_picture: str=""
 
 
 def _post_from_row(row):
@@ -40,8 +41,12 @@ class Posts(object):
             with conn.cursor() as cur:
                 cur.execute("SELECT * FROM Posts WHERE id=%s;", (post_id,))
                 row = cur.fetchone()
+                post = _post_from_row(row)
+                cur.execute("SELECT profilePicture FROM Users WHERE username=%s", (post.username,))
+                row = cur.fetchone()
+                post.profile_picture = row[0]
 
-        return _post_from_row(row)
+        return post
 
     def edit_post(self, post_id: str, text: str):
         with sql_connection(self._config) as conn:

@@ -74,6 +74,7 @@ const RouteFunctions = {
         $("#profileDisplayName").html(response.displayName);
         $("#profileUserName").html("@" + response.username);
         $("#profileBio").html(response.bio);
+        $("#profilePicture").attr("src", response.profilePicture);
 
       },
       onFailure: (errorData) => {
@@ -136,7 +137,7 @@ const RouteFunctions = {
         console.log(errorData)
       }
     });
-  }, 
+  },
 
   followerCount: (username) => {
     ajax({
@@ -165,7 +166,18 @@ const RouteFunctions = {
         console.log(errorData)
       }
     });
-  },  
+  },
+
+  __uploadProfilePicture: (callback) => {
+    // return if no file in upload field
+    if ($("#fileField").val() === '')
+      return Promise.resolve("no file");
+
+    return Authentication.authFileUpload({
+      url: SERVER_URL + "upload_profile_picture",
+      uploadForm: $("#uploadForm")
+    });
+  },
 
   editProfile: (displayName, bio, callback) => {
     Authentication.authAjax({
@@ -178,15 +190,29 @@ const RouteFunctions = {
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
-        callback(null, response);
+        RouteFunctions.__uploadProfilePicture()
+          .then((response) => {
+            callback(null, response);
+          });
       },
       onFailure: (errorData) => {
-        console.log(errorData)
+        console.log(errorData);
         console.log(displayName);
         console.log(bio);
         callback(errorData, null);
 
       }
+    });
+  },
+
+  __uploadPostImage: (postId) => {
+    // return if no file in upload field
+    if ($("#fileField").val() === '')
+      return Promise.resolve("no file");
+
+    return Authentication.authFileUpload({
+      url: SERVER_URL + "/update_post_picture/" + postId,
+      uploadForm: $("#uploadForm"),
     });
   },
 
@@ -200,16 +226,18 @@ const RouteFunctions = {
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
+        RouteFunctions.__uploadPostImage(response.postId);
         callback(null, response);
       },
       onFailure: (errorData) => {
-        console.log(errorData)
+        console.log(errorData);
         callback(errorData, null);
       }
     });
   },
 
-  editPost: (postId, text) => {
+  editPost: (postId, text, callback = () => {
+  }) => {
     Authentication.authAjax({
       url: SERVER_URL + "/edit_post/" + postId,
       type: "POST",
@@ -217,23 +245,15 @@ const RouteFunctions = {
         "text": text,
       },
       onSuccess: (response) => {
-        // update all of the fields
         console.log(response);
-        Authentication.authFileUpload({
-          url: SERVER_URL + "/update_post_picture/" + postId,
-          uploadForm: $("#uploadForm"),
-          onSuccess: (response) => {
-            console.log("image upload success!");
-            console.log(response);
-          },
-          onFailure: (errorData) => {
-            console.log("image upload failure....");
-            console.log(errorData);
-          }
-        })
+        RouteFunctions.__uploadPostImage(postId)
+          .then(() => {
+            callback(null, response);
+          });
       },
       onFailure: (errorData) => {
-        console.log(errorData)
+        console.log(errorData);
+        callback(errorData, null);
       }
     });
   },
@@ -275,10 +295,10 @@ const RouteFunctions = {
         }
       },
       onFailure: (errorData) => {
-        console.log(errorData)
+        console.log(errorData);
         callback(errorData, null)
       }
-    });    
+    });
   },
 
   deletePost: (postId) => {
@@ -311,7 +331,7 @@ const RouteFunctions = {
 
 };
 
-  function viewUserProfile(user) {
+function viewUserProfile(user) {
 
   $.post(SERVER_URL + "/user/" + user, function (user_data) {
     console.log(user_data);
@@ -424,7 +444,7 @@ function deletePost(postId) {
 }
 
 // options: {insertDelete: true, insertView: true}
-function postNode(postId, username, picture, text, options) {
+function postNode(postId, username, picture, profilePicture, text, options) {
   console.log("picture");
   console.log(picture);
   let userPart =
@@ -433,7 +453,7 @@ function postNode(postId, username, picture, text, options) {
           <div class="col-xs-3 offset-xs-1 col-md-2">
             <div class="responsive-picture picture-2">
               <picture>
-                <img alt="${text}" src="${picture}">
+                <img alt="${username}" src="${profilePicture != null ? profilePicture : ""}">
               </picture>
             </div>
           </div>
@@ -473,7 +493,7 @@ function postNode(postId, username, picture, text, options) {
           <div class="col-xs-10 push-xs-0 offset-xs-1">
             <div class="responsive-picture picture-1">
               <picture>
-                <img alt="Placeholder Picture" src=" ${IMAGE_HOST_URL + picture}">
+                <img alt="${text}" src=" ${picture != null ? IMAGE_HOST_URL + picture : ""}">
               </picture>
             </div>
           </div>
@@ -547,6 +567,7 @@ function loadExplorePosts() {
           item.id,
           item.username,
           item.picture,
+          item.profilePicture,
           item.text,
           {insertDelete: true, insertView: true}
         );

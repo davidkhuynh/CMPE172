@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from flask import request
 from server import s3
 from dataclasses import dataclass
@@ -27,11 +29,11 @@ def upload_profile_picture(request: request, username: str) -> UploadInfo:
     :param username:
     :return:
     """
-    return __validate_and_upload_picture(request, "profilePicture", username, "profile_pics")
+    return __validate_and_upload_picture(request, "profilePicture", str(uuid4()))
 
 
-def delete_profile_picture(username: str):
-    return s3.delete_picture(filename=username, directory="profile_pics")
+def delete_profile_picture(profile_picture: str):
+    return s3.delete_picture(filename=profile_picture)
 
 
 ## private
