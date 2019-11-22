@@ -52,6 +52,7 @@ $("#searchButton").click(() => {
   let searchQuery = $("#searchQuery").val();
   window.location = "search.html#" + searchQuery;
 });
+
 //
 
 function makeHeader(pageTitle, isAuthenticated = false) {
@@ -68,7 +69,7 @@ function indexPage() {
 }
 
 function feedPage() {
-  $(window).on('hashchange',function(){
+  $(window).on('hashchange', function () {
     window.location.reload(true);
   });
 
@@ -83,7 +84,7 @@ function feedPage() {
 }
 
 function explorePage() {
-  $(window).on('hashchange',function(){
+  $(window).on('hashchange', function () {
     window.location.reload(true);
   });
 
@@ -93,7 +94,7 @@ function explorePage() {
 }
 
 function searchPage() {
-  $(window).on('hashchange',function(){
+  $(window).on('hashchange', function () {
     window.location.reload(true);
   });
 
@@ -118,7 +119,7 @@ function loginPage() {
         return;
       }
 
-      window.location = "explore.html";
+      window.location = "feed.html";
     });
   });
 }
@@ -227,7 +228,7 @@ function signupPage() {
 }
 
 function profilePage(user) {
-  $(window).on('hashchange',function(){
+  $(window).on('hashchange', function () {
     window.location.reload(true);
   });
 
@@ -348,7 +349,7 @@ function editProfilePage(displayName, bio) {
       $("#postPicture").attr("src", e.target.result);
     };
     reader.readAsDataURL(picture);
-  });  
+  });
 }
 
 function followerPage(user) {
@@ -392,8 +393,6 @@ function viewPostPage() {
   // load post content
   let postId = window.location.hash.substr(1);
   RouteFunctions.viewPost(postId, (err, response) => {
-
-
       if (err) {
         console.log(err);
       }
@@ -405,7 +404,9 @@ function viewPostPage() {
         });
 
         $('#deletePostButton').click(() => {
-          deletePost(postId);
+          RouteFunctions.deletePost(postId).then(() => {
+            window.location = "profilepage.html#" + Authentication.getCurrentUsername()
+          });
         });
       }
     }
@@ -424,7 +425,7 @@ function editPostPage(postId, descriptionPart) {
   makeHeader(`Editing Post: ${descriptionPart}`, isAuthenticated);
   postId = window.location.hash.substr(1);
   console.log(postId);
-  
+
   RouteFunctions.loadPostEdit(postId);
   $('#submitPostButton').click(() => {
     console.log(postId, document.getElementById('postText').value);
@@ -452,8 +453,9 @@ function editPostPage(postId, descriptionPart) {
 
 // util functions
 function handleDeletePost(postId) {
-  deletePost(postId);
-  window.location = "explore.html";
+  RouteFunctions.deletePost(postId).then(() => {
+    window.location.reload();
+  });
 }
 
 function handleViewPost(postId) {
