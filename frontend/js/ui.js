@@ -223,13 +223,23 @@ function profilePage(user) {
   }
 
   $('#followButton').click(() => {
-    RouteFunctions.follow(user);
+    RouteFunctions.follow(user, (err,response) => {
+      if (response === null){
+        console.log("yes");
+            window.location.reload();
+      }      
+    });
     document.getElementById("followedButton").style.visibility = "visible";
     document.getElementById("followButton").style.visibility = "hidden";
   });
 
   $('#followedButton').click(() => {
-    RouteFunctions.unfollow(user);
+    RouteFunctions.unfollow(user, (err,response) => {
+      if (response){
+        console.log("yes");
+            window.location.reload();
+      }
+    });
     document.getElementById("followedButton").style.visibility = "hidden";
     document.getElementById("followButton").style.visibility = "visible";
 

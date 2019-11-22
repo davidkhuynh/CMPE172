@@ -82,29 +82,34 @@ const RouteFunctions = {
     });
   },
 
-  unfollow: (username) => {
+  unfollow: (username, callback) => {
     Authentication.authAjax({
       url: SERVER_URL + "/unfollow/" + username,
       type: "GET",
       onSuccess: (response) => {
         console.log(response);
+        callback(null, response);
       },
       onFailure: (errorData) => {
         console.log(errorData)
+        callback(errorData, null);
       }
     });
   },
 
-  follow: (userToFollow) => {
+  follow: (userToFollow, callback) => {
     Authentication.authAjax({
       url: SERVER_URL + "/follow/" + userToFollow,
       type: "GET",
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
+        callback(null, response);
       },
       onFailure: (errorData) => {
         console.log(errorData)
+        callback(errorData, null);    window.location = "profilepage.html#" + user;
+
       }
     });
   },
