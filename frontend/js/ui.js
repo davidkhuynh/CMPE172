@@ -302,6 +302,15 @@ function editProfilePage(displayName, bio) {
 
 
   })
+  
+  $(document).on("change", "#pictureFile", () => {
+    let picture = $("#pictureFile").get(0).files[0];
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      $("#postPicture").attr("src", e.target.result);
+    };
+    reader.readAsDataURL(picture);
+  });  
 
 }
 
@@ -398,6 +407,15 @@ function editPostPage(postId, descriptionPart) {
       }
     });
   });
+
+  $(document).on("change", "#pictureFile", () => {
+    let picture = $("#pictureFile").get(0).files[0];
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      $("#postPicture").attr("src", e.target.result);
+    };
+    reader.readAsDataURL(picture);
+  });  
 }
 
 // util functions
