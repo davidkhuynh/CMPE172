@@ -100,7 +100,7 @@ const Authentication = {
         contentType: false,
         dataType: "json"
       }
-    ).done(arg.onSuccess).fail(arg.onFailure);
+    );
   },
 
 

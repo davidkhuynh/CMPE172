@@ -109,7 +109,7 @@ def feed(sort_by: str="mostRecent", first: int=0):
         1. list n most recent posts from people user follows
     """
     # todo: followers etc
-    queried_posts = db_utils.grab_range_from_db(request.json, db.posts.all_posts)
+    queried_posts = db_utils.grab_range_from_db(None, db.posts.all_posts)
 
     return success(queried_posts)
 
@@ -181,16 +181,16 @@ def create_user():
     return success(new_user)
 
 
-@app.route("/upload_user_pic", methods=["POST"])
+@app.route("/upload_profile_picture", methods=["POST"])
 @cognito.auth_required
-def upload_user_pic():
+def upload_profile_picture():
     """
         file: profilePicture
     :return:
     """
     upload_info = pic_utils.upload_profile_picture(request, cognito.current_user)
     if upload_info.upload_state == UploadState.success:
-        db.users.update_profile_picture(cognito.current_user)
+        db.users.update_profile_pic_filename(cognito.current_user, upload_info.filename)
         return success(f"updated profile picture for {cognito.current_user}")
 
     if upload_info.upload_state == UploadState.no_upload:
@@ -219,8 +219,10 @@ def edit_profile():
 @app.route("/delete_current_user/", methods=["POST"])
 @cognito.auth_required
 def delete_current_user():
+    user = db.users.get_user(cognito.current_user)
+
     # delete profile pic from s3
-    pic_utils.delete_profile_picture(cognito.current_user)
+    pic_utils.delete_profile_picture(user.profile_picture)
 
     # update secrets
     db.users.delete_user(cognito.current_user)

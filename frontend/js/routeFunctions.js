@@ -75,6 +75,7 @@ const RouteFunctions = {
         $("#profileDisplayName").html(response.displayName);
         $("#profileUserName").html("@" + response.username);
         $("#profileBio").html(response.bio);
+        $("#profilePicture").attr("src", response.profilePicture);
 
       },
       onFailure: (errorData) => {
@@ -141,7 +142,7 @@ const RouteFunctions = {
         console.log(errorData)
       }
     });
-  }, 
+  },
 
   followerCount: (username) => {
     ajax({
@@ -170,7 +171,18 @@ const RouteFunctions = {
         console.log(errorData)
       }
     });
-  },  
+  },
+
+  __uploadProfilePicture: (callback) => {
+    // return if no file in upload field
+    if ($("#fileField").val() === '')
+      return Promise.resolve("no file");
+
+    return Authentication.authFileUpload({
+      url: SERVER_URL + "upload_profile_picture",
+      uploadForm: $("#uploadForm")
+    });
+  },
 
   editProfile: (displayName, bio, callback) => {
     Authentication.authAjax({
@@ -183,15 +195,29 @@ const RouteFunctions = {
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
-        callback(null, response);
+        RouteFunctions.__uploadProfilePicture()
+          .then((response) => {
+            callback(null, response);
+          });
       },
       onFailure: (errorData) => {
-        console.log(errorData)
+        console.log(errorData);
         console.log(displayName);
         console.log(bio);
         callback(errorData, null);
 
       }
+    });
+  },
+
+  __uploadPostImage: (postId) => {
+    // return if no file in upload field
+    if ($("#fileField").val() === '')
+      return Promise.resolve("no file");
+
+    return Authentication.authFileUpload({
+      url: SERVER_URL + "/update_post_picture/" + postId,
+      uploadForm: $("#uploadForm"),
     });
   },
 
@@ -205,10 +231,13 @@ const RouteFunctions = {
       onSuccess: (response) => {
         // update all of the fields
         console.log(response);
-        callback(null, response);
+        RouteFunctions.__uploadPostImage(response.postId)
+          .then(() => {
+            callback(null, response);
+          });
       },
       onFailure: (errorData) => {
-        console.log(errorData)
+        console.log(errorData);
         callback(errorData, null);
       }
     });
@@ -222,27 +251,14 @@ const RouteFunctions = {
         "text": text,
       },
       onSuccess: (response) => {
-        // update all of the fields
         console.log(response);
-        Authentication.authFileUpload({
-          url: SERVER_URL + "/update_post_picture/" + postId,
-          uploadForm: $("#uploadForm"),
-          onSuccess: (response) => {
-            console.log("image upload success!");
-            console.log(response);
+        RouteFunctions.__uploadPostImage(postId)
+          .then(() => {
             callback(null, response);
-          },
-          onFailure: (errorData) => {
-            console.log("image upload failure....");
-            console.log(errorData);
-            callback(errorData, null);
-          }
-        })
-
-        callback(null, response);
+          });
       },
       onFailure: (errorData) => {
-        console.log(errorData)
+        console.log(errorData);
         callback(errorData, null);
       }
     });
@@ -285,10 +301,10 @@ const RouteFunctions = {
         }
       },
       onFailure: (errorData) => {
-        console.log(errorData)
+        console.log(errorData);
         callback(errorData, null)
       }
-    });    
+    });
   },
 
   deletePost: (postId) => {
@@ -321,7 +337,7 @@ const RouteFunctions = {
 
 };
 
-  function viewUserProfile(user) {
+function viewUserProfile(user) {
 
   $.post(SERVER_URL + "/user/" + user, function (user_data) {
     console.log(user_data);
@@ -434,7 +450,7 @@ function deletePost(postId) {
 }
 
 // options: {insertDelete: true, insertView: true}
-function postNode(postId, username, picture, text, options) {
+function postNode(postId, username, picture, profilePicture, text, options) {
   console.log("picture");
   console.log(picture);
   let userPart =
@@ -443,7 +459,7 @@ function postNode(postId, username, picture, text, options) {
           <div class="col-xs-1 col-m-1 col-lg-1 col-xl-1 offset-xs-1 offset-m-1 offset-lg-1 offset-xl-1">
             <div class="responsive-picture picture-2">
               <picture>
-                <img alt="${text}" src="${picture}">
+                <img alt="${username}" src="${profilePicture != null ? profilePicture : ""}">
               </picture>
             </div>
           </div>
@@ -481,7 +497,7 @@ function postNode(postId, username, picture, text, options) {
           <div class="col-xs-11 col-m-11 col-lg-11 col-xl-10 offset-xs-1 offset-m-1 offset-lg-1 offset-xl-1">
             <div class="responsive-picture picture-1">
               <picture>
-                <img alt="Placeholder Picture" src=" ${IMAGE_HOST_URL + picture}">
+                <img alt="${text}" src=" ${picture != null ? IMAGE_HOST_URL + picture : ""}">
               </picture>
             </div>
           </div>
@@ -553,8 +569,7 @@ function loadExplorePosts(username) {
       $.each(data, function (i, item) {
 
         let insertViewEditDelete = {insertDelete: false, insertView: true};
-        if (item.username == username)
-        {
+        if (item.username == username) {
           insertViewEditDelete = {insertDelete: true, insertView: true};
 
 
@@ -565,6 +580,7 @@ function loadExplorePosts(username) {
           item.id,
           item.username,
           item.picture,
+          item.profilePicture,
           item.text,
           insertViewEditDelete
         );
@@ -623,38 +639,33 @@ function isFollowing(username, following, callback) {
 
       let isAFollower = false;
 
-      if (data.length == 0) 
-      {
-          callback(data, null);
+      if (data.length == 0) {
+        callback(data, null);
       }
 
       let html_to_append = '';
 
-      $.each(data, function (i, item) 
-      {
+      $.each(data, function (i, item) {
 
-          if (item == following) 
-          {
-            console.log("HERE");
-            console.log(item);
-            console.log(following);
-            isAFollower = true;
-          }
+        if (item == following) {
+          console.log("HERE");
+          console.log(item);
+          console.log(following);
+          isAFollower = true;
+        }
 
       });
 
       console.log(isAFollower);
-      if (isAFollower === false)
-      {
-          console.log("Is not not following");
-          callback(data, null);
+      if (isAFollower === false) {
+        console.log("Is not not following");
+        callback(data, null);
 
       }
 
-      else if (isAFollower === true)
-      {
-          console.log("Is is following");
-          callback(null, data);
+      else if (isAFollower === true) {
+        console.log("Is is following");
+        callback(null, data);
       }
     });
 }

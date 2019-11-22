@@ -16,6 +16,7 @@ class User(object):
     created_on: datetime.datetime = datetime.datetime.now()
     display_name: str = ""
     bio: str = ""
+    profile_picture: str = ""
 
 
 def _user_from_row(row):
@@ -24,7 +25,8 @@ def _user_from_row(row):
         birthday=row[1],
         display_name=row[2],
         bio=row[3],
-        created_on=row[4]
+        created_on=row[4],
+        profile_picture=row[5],
     ) if row else None
 
 
@@ -59,6 +61,14 @@ class Users(object):
                      user_data.bio))
 
         return self.get_user(user_data.username)
+
+    def update_profile_pic_filename(self, username: str, filename: str):
+        with sql_connection(self._config) as conn:
+            with conn.cursor() as cur:
+                cur.execute("UPDATE Users SET profilePicture=%s WHERE username=%s",
+                            (filename, username))
+
+        return self.get_user(username)
 
     def edit_user(self, username: str, user_data: User):
         with sql_connection(self._config) as conn:
