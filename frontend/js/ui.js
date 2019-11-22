@@ -268,7 +268,7 @@ function profilePage(user) {
     window.location.href = "following.html#" + user;
   });
 
-  loadExplorePosts(Authentication.getCurrentUsername());
+  loadExplorePosts(user);
 
 }
 
@@ -290,10 +290,10 @@ function editProfilePage(displayName, bio) {
   }
   // todo: check if post belongs to user before coming to edit page
   makeHeader(`Editing Profile`, isAuthenticated);
-
+  RouteFunctions.loadUserEdit(Authentication.getCurrentUsername());
   $('#editProfileButton').click(() => {
-
-    RouteFunctions.editProfile(document.getElementById('editDisplayName').value, document.getElementById('editBio').value, (err, response) => {
+    console.log(document.getElementById('editProfileDisplayName').value);
+    RouteFunctions.editProfile(document.getElementById('editProfileDisplayName').value, document.getElementById('editProfileBio').value, (err, response) => {
       if (err) {
         console.log(err);
       }

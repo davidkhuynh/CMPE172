@@ -75,13 +75,12 @@ const RouteFunctions = {
         $("#profileDisplayName").html(response.displayName);
         $("#profileUserName").html("@" + response.username);
         $("#profileBio").html(response.bio);
-        if (response.profilePicture.length === 0){
-          $("#profilePicture").attr("src", response.profilePicture);
-
+        if (response.profilePicture === null){
+          $("#profilePicture").attr("src", "img/user-icon.svg");
         }
 
         else {
-          $("#profilePicture").attr("src", "img/user-icon.svg");
+          $("#profilePicture").attr("src", response.profilePicture);
         }
       },
       onFailure: (errorData) => {
@@ -89,6 +88,30 @@ const RouteFunctions = {
       }
     });
   },
+
+  loadUserEdit: (username) => {
+    ajax({
+      url: SERVER_URL + "/user/" + username,
+      type: "GET",
+      onSuccess: (response) => {
+        // update all of the fields
+        console.log(response);
+        document.getElementById('editProfileDisplayName').value = response.displayName;
+        document.getElementById('editProfileBio').value = response.bio;
+
+        //if (response.profilePicture === null){
+          //$("#fileField").attr("src", "img/user-icon.svg");
+        //}
+
+        //else {
+          //$("#fileField").attr("src", response.profilePicture);
+        //}
+      },
+      onFailure: (errorData) => {
+        console.log(errorData)
+      }
+    });
+  },  
 
   unfollow: (username, callback) => {
     Authentication.authAjax({
@@ -562,6 +585,42 @@ function loadExplorePosts(username) {
   $.ajax(
     {
       url: SERVER_URL + "/explore",
+      type: "GET",
+      contentType: "application/json; charset=utf-8",
+    }
+  ).done(
+    (data) => {
+      console.log("got explore posts")
+      console.log(data);
+      let html_to_append = '';
+
+      $.each(data, function (i, item) {
+
+        let insertViewEditDelete = {insertDelete: false, insertView: true};
+        if (item.username == username) {
+          insertViewEditDelete = {insertDelete: true, insertView: true};
+
+
+        }
+
+
+        html_to_append += postNode(
+          item.id,
+          item.username,
+          item.picture,
+          item.profilePicture,
+          item.text,
+          insertViewEditDelete
+        );
+      });
+      $(".postRow").html(html_to_append);
+    });
+}
+
+function loadUserPosts(username) {
+  $.ajax(
+    {
+      url: SERVER_URL + "/user_posts/" + username,
       type: "GET",
       contentType: "application/json; charset=utf-8",
     }
