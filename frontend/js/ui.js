@@ -453,5 +453,5 @@ function handleEditPost(postId){
 
 function handleUnauthorized(message) {
   console.log(message); // todo: error banner
-  window.location = "index.html";
+  window.location = "login.html";
 }
