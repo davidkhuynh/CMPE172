@@ -78,8 +78,11 @@ function loginPage() {
     let password = $("#loginPassword").val();
     Authentication.signInUser(username, password, (err, response) => {
       if (err) {
+        document.getElementById("loginFailed").style.visibility = "visible";
+
         return;
       }
+
       window.location = "explore.html";
     });
   });
@@ -96,8 +99,8 @@ function confirmationPage() {
 
     Authentication.confirmUser(username, confirmCode, (err, response) => {
       if (err) {
-        console.log("confirmation error: ");
-        console.log(err);
+        document.getElementById("confirmationFailed").style.visibility = "visible";
+
         return;
       }
       window.location = "login.html";
@@ -115,9 +118,14 @@ function confirmationPage() {
     Authentication.resendConfirmationCode(username, (err, response) => {
       if (err) {
         console.log(err);
+        document.getElementById("confirmationResentFailed").style.visibility = "visible";
+
       }
-      console.log("resent confirmation code");
-      console.log(response);
+
+      else {
+        document.getElementById("confirmationResent").style.visibility = "visible";
+        console.log(response);
+      }
     });
   });
 }
@@ -174,9 +182,19 @@ function signupPage() {
     let birthday = $("#createBirthday").val();
     let displayName = $("#createDisplayName").val();
     let bio = $("#createBio").val();
-    let profilePicture = $("#profilePicture").get(0).files[0];
 
-    RouteFunctions.createUser(username, birthday, displayName, bio, email, password);
+    RouteFunctions.createUser(username, birthday, displayName, bio, email, password, (err, response) => {
+      if (err){
+        console.log("yes");
+        document.getElementById("signUpFailed").style.visibility = "visible";
+        return;
+      }
+
+      else {
+        window.location = "login.html";
+      }
+
+    });
   });
 }
 
@@ -286,19 +304,15 @@ function editProfilePage(displayName, bio) {
 
   $('#editProfileButton').click(() => {
 
-  RouteFunctions.editProfile(document.getElementById('editDisplayName').value, document.getElementById('editBio').value, (err, response) => {
-      if (err)
-      {
+    RouteFunctions.editProfile(document.getElementById('editDisplayName').value, document.getElementById('editBio').value, (err, response) => {
+      if (err) {
         console.log(err);
       }
-      else
-      {
+      else {
         let profileLocation = "profilepage.html#" + Authentication.getCurrentUsername();
         window.location = profileLocation;
       }
-  });
-
-
+    });
   });
 }
 
@@ -413,5 +427,5 @@ function handleEditPost(postId){
 
 function handleUnauthorized(message) {
   console.log(message); // todo: error banner
-  window.location = "index.html";
+  window.location = "login.html";
 }

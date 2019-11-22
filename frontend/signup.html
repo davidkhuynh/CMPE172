@@ -28,12 +28,22 @@
                                                                             class="form-input" id="createDisplayName">
       <span class="text-element form-input-caption">Bio</span><input value="" name="text-name" type="text"
                                                                      class="form-input" id="createBio">
-      <span class="text-element form-input-caption">Birthday</span><input value="" name="text-name" type="text" class="form-input" id="createBirthday">
+      <span class="text-element form-input-caption">Birthday</span><input placeholder="YYYY-MM-DD" value="" name="text-name" type="text" class="form-input" id="createBirthday">
     </form>
     <a class="link-button btn form" href="#" title="" id="createUserButton">REGISTER</a>
   </div>
       <div class="col-xs-4 col-md-4 col-lg-4 col-xl-4"></div>
+    <div class="col-xs-4 col-md-4 col-lg-4 col-xl-4"></div>  
+    <div class="col-xs-4 col-md-4 col-lg-4 col-xl-4 pt-4">     
 
+          <div class="container-fluid alert alert-success alert-dismissible " style="visibility:hidden" role="alert" id="signUpSuccessful">
+        <h4 class="alert-heading">LOGIN SUCCESSFUL</h4><a class="link-button close cstm-close" href="#" data-dismiss="alert">×</a>
+      </div>
+      <div class="container-fluid alert alert-dismissible  alert-danger" style="visibility:hidden" role="alert" id="signUpFailed">
+        <h4 class="alert-heading">LOGIN FAILED</h4><a class="link-button close cstm-close" href="#" data-dismiss="alert">×</a>
+      </div> 
+    </div>
+    <div class="col-xs-4 col-md-4 col-lg-4 col-xl-4"></div>  
 </div>
 
 <!-- external libs -->

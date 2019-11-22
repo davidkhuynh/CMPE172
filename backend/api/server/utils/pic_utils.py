@@ -16,7 +16,7 @@ class UploadInfo:
     upload_state: UploadState
     filename: str=""
 
-ALLOWED_FORMATS = ("jpg", "jpeg", "png", "gif", "tiff")
+ALLOWED_FORMATS = ("jpg", "jpeg", "png", "gif", "tiff", "bmp")
 
 def upload_post_picture(request: request, filename: str):
     return __validate_and_upload_picture(request, "pictureFile", filename)
