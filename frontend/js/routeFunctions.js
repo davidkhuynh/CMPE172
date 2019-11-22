@@ -108,8 +108,7 @@ const RouteFunctions = {
       },
       onFailure: (errorData) => {
         console.log(errorData)
-        callback(errorData, null);    window.location = "profilepage.html#" + user;
-
+        callback(errorData, null);
       }
     });
   },

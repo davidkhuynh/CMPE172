@@ -245,6 +245,8 @@ function profilePage(user) {
 
   });
 
+
+
   $('#followersButton').click(() => {
     window.location.href = "followers.html#" + user ;
   });
@@ -252,6 +254,14 @@ function profilePage(user) {
   $('#followingButton').click(() => {
     window.location.href = "following.html#" + user ;
   });
+
+  $('#followerCount').click(() => {
+    window.location.href = "followers.html#" + user ;
+  });
+
+  $('#followingCount').click(() => {
+    window.location.href = "following.html#" + user ;
+  });  
 
   loadExplorePosts(Authentication.getCurrentUsername());
 
