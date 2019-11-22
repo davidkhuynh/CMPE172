@@ -194,7 +194,7 @@ function profilePage(user) {
     document.getElementById("followedButton").style.visibility = "hidden";
   }
 
-  else 
+  else
   {
     document.getElementById("editProfileButton").style.visibility = "hidden";
     console.log("ok");
@@ -214,8 +214,6 @@ function profilePage(user) {
       console.log("Is following");
       document.getElementById("followedButton").style.visibility = "visible";
       document.getElementById("followButton").style.visibility = "hidden";
-
-
     }
 
   });
@@ -227,7 +225,7 @@ function profilePage(user) {
       if (response === null){
         console.log("yes");
             window.location.reload();
-      }      
+      }
     });
     document.getElementById("followedButton").style.visibility = "visible";
     document.getElementById("followButton").style.visibility = "hidden";
@@ -261,7 +259,7 @@ function profilePage(user) {
 
   $('#followingCount').click(() => {
     window.location.href = "following.html#" + user ;
-  });  
+  });
 
   loadExplorePosts(Authentication.getCurrentUsername());
 
@@ -293,25 +291,15 @@ function editProfilePage(displayName, bio) {
       {
         console.log(err);
       }
-      else 
+      else
       {
         let profileLocation = "profilepage.html#" + Authentication.getCurrentUsername();
-        window.location =  profileLocation;
+        window.location = profileLocation;
       }
   });
 
 
-  })
-  
-  $(document).on("change", "#pictureFile", () => {
-    let picture = $("#pictureFile").get(0).files[0];
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      $("#postPicture").attr("src", e.target.result);
-    };
-    reader.readAsDataURL(picture);
-  });  
-
+  });
 }
 
 function followerPage(user) {
@@ -407,15 +395,6 @@ function editPostPage(postId, descriptionPart) {
       }
     });
   });
-
-  $(document).on("change", "#pictureFile", () => {
-    let picture = $("#pictureFile").get(0).files[0];
-    let reader = new FileReader();
-    reader.onload = (e) => {
-      $("#postPicture").attr("src", e.target.result);
-    };
-    reader.readAsDataURL(picture);
-  });  
 }
 
 // util functions
