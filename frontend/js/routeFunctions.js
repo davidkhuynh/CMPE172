@@ -65,6 +65,52 @@ const RouteFunctions = {
     });
   },
 
+
+  __populatePosts: (data) => {
+    console.log(data);
+    let html_to_append = '';
+
+    $.each(data, function (i, item) {
+
+      let insertViewEditDelete = {insertDelete: false, insertView: true};
+      if (item.username === Authentication.getCurrentUsername()) {
+        insertViewEditDelete = {insertDelete: true, insertView: true};
+      }
+
+      html_to_append += postNode(
+        item.id,
+        item.username,
+        item.picture,
+        item.profilePicture,
+        item.text,
+        insertViewEditDelete
+      );
+    });
+
+    $(".postRow").html(html_to_append);
+  },
+
+  loadFeedPosts: () => {
+    Authentication.authAjax(
+      {
+        url: SERVER_URL + "/feed",
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+      }
+    ).done(RouteFunctions.__populatePosts);
+  },
+
+
+  loadExplorePosts: () => {
+    $.ajax(
+      {
+        url: SERVER_URL + "/explore",
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+      }
+    ).done(RouteFunctions.__populatePosts);
+  },
+
   loadUserPage: (username) => {
     ajax({
       url: SERVER_URL + "/user/" + username,
@@ -75,7 +121,7 @@ const RouteFunctions = {
         $("#profileDisplayName").html(response.displayName);
         $("#profileUserName").html("@" + response.username);
         $("#profileBio").html(response.bio);
-        if (response.profilePicture === null){
+        if (response.profilePicture === null) {
           $("#profilePicture").attr("src", "img/user-icon.svg");
         }
 
@@ -100,18 +146,18 @@ const RouteFunctions = {
         document.getElementById('editProfileBio').value = response.bio;
 
         //if (response.profilePicture === null){
-          //$("#fileField").attr("src", "img/user-icon.svg");
+        //$("#fileField").attr("src", "img/user-icon.svg");
         //}
 
         //else {
-          //$("#fileField").attr("src", response.profilePicture);
+        //$("#fileField").attr("src", response.profilePicture);
         //}
       },
       onFailure: (errorData) => {
         console.log(errorData)
       }
     });
-  },  
+  },
 
   unfollow: (username, callback) => {
     Authentication.authAjax({
@@ -581,50 +627,6 @@ function followNode(username) {
 
 
 //for explore.html
-function __populatePosts(data) {
-  console.log(data);
-  let html_to_append = '';
-
-  $.each(data, function (i, item) {
-
-    let insertViewEditDelete = {insertDelete: false, insertView: true};
-    if (item.username === Authentication.getCurrentUsername()) {
-      insertViewEditDelete = {insertDelete: true, insertView: true};
-    }
-
-    html_to_append += postNode(
-      item.id,
-      item.username,
-      item.picture,
-      item.profilePicture,
-      item.text,
-      insertViewEditDelete
-    );
-  });
-
-  $(".postRow").html(html_to_append);
-}
-
-function loadFeedPosts() {
-  Authentication.authAjax(
-    {
-      url: SERVER_URL + "/feed",
-      type: "GET",
-      contentType: "application/json; charset=utf-8",
-    }
-  ).done(__populatePosts);
-}
-
-
-function loadExplorePosts() {
-  $.ajax(
-    {
-      url: SERVER_URL + "/explore",
-      type: "GET",
-      contentType: "application/json; charset=utf-8",
-    }
-  ).done(__populatePosts);
-}
 
 function loadUserPosts(username) {
   $.ajax(

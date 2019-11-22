@@ -69,14 +69,14 @@ function feedPage() {
     return;
   }
   makeHeader("Feed", isAuthenticated);
-  loadFeedPosts();
+  RouteFunctions.loadFeedPosts();
 }
 
 function explorePage() {
   Authentication.refreshSession();
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader("Explore", isAuthenticated);
-  loadExplorePosts();
+  RouteFunctions.loadExplorePosts();
 }
 
 function loginPage() {
