@@ -111,6 +111,16 @@ const RouteFunctions = {
     ).done(RouteFunctions.__populatePosts);
   },
 
+  loadSearchPosts: (searchQuery) => {
+    $.ajax(
+      {
+        url: SERVER_URL + "/search/" + searchQuery,
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+      }
+    ).done(RouteFunctions.__populatePosts);
+  },
+
   loadUserPosts: (username) => {
     $.ajax(
       {

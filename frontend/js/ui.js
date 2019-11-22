@@ -47,6 +47,12 @@ function makeNav(isAuthenticated) {
   }
 }
 
+// global things
+$("#searchButton").click(() => {
+  let searchQuery = $("#searchQuery").val();
+  window.location = "search.html#" + searchQuery;
+});
+//
 
 function makeHeader(pageTitle, isAuthenticated = false) {
   makeHead(pageTitle);
@@ -62,6 +68,10 @@ function indexPage() {
 }
 
 function feedPage() {
+  $(window).on('hashchange',function(){
+    window.location.reload(true);
+  });
+
   let isAuthenticated = Authentication.isAuthenticated();
   // non-logged in users don't have a feed
   if (!isAuthenticated) {
@@ -73,10 +83,24 @@ function feedPage() {
 }
 
 function explorePage() {
-  Authentication.refreshSession();
+  $(window).on('hashchange',function(){
+    window.location.reload(true);
+  });
+
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader("Explore", isAuthenticated);
   RouteFunctions.loadExplorePosts();
+}
+
+function searchPage() {
+  $(window).on('hashchange',function(){
+    window.location.reload(true);
+  });
+
+  let searchQuery = window.location.hash.substr(1);
+  let isAuthenticated = Authentication.isAuthenticated();
+  makeHeader("Search: " + searchQuery, isAuthenticated);
+  RouteFunctions.loadSearchPosts(searchQuery);
 }
 
 function loginPage() {
@@ -195,7 +219,7 @@ function signupPage() {
       }
 
       else {
-        window.location = "confirm.html";
+        window.location = "confirmation.html";
       }
 
     });
@@ -203,6 +227,10 @@ function signupPage() {
 }
 
 function profilePage(user) {
+  $(window).on('hashchange',function(){
+    window.location.reload(true);
+  });
+
   Authentication.refreshSession();
   let isAuthenticated = Authentication.isAuthenticated();
   makeHeader(`${user}'s Profile`, isAuthenticated);

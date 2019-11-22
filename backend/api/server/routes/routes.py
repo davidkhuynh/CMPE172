@@ -123,14 +123,13 @@ def search(query: str):
 
         1. search users and posts by tag and text        
     """
-    queried_posts = db_utils.grab_range_from_db(request.json, db.posts.search_posts, search_string=query)
-    queried_users = db_utils.grab_range_from_db(request.json, db.users.search_users, username=query)
-    response_data = {
-        "queriedPosts": queried_posts,
-        "queriedUsers": queried_users
-    }
-
-    return success(response_data)
+    queried_posts = db.posts.search_posts_default(query)
+    #queried_users = db_utils.grab_range_from_db(request.json, db.users.search_users, username=query)
+    #response_data = {
+    #    "queriedPosts": queried_posts,
+    #    "queriedUsers": queried_users
+    #}
+    return success(queried_posts)
 
 
 ### user routes
