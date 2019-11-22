@@ -452,7 +452,7 @@ function editPostPage(postId, descriptionPart) {
 
 // util functions
 function handleDeletePost(postId) {
-  deletePost(postId);
+  RouteFunctions.deletePost(postId);
   window.location = "explore.html";
 }
 

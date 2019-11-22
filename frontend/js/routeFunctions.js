@@ -431,7 +431,6 @@ const RouteFunctions = {
       url: SERVER_URL + "/delete_post/" + postId,
       type: "POST",
       onSuccess: (response) => {
-        // update all of the fields
         console.log(response);
       },
       onFailure: (errorData) => {
@@ -468,11 +467,6 @@ function createPost(user, text) {
       }
     )
   );
-}
-
-function deletePost(postId) {
-  console.log(postId);
-  $.post(SERVER_URL + "/delete_post/" + postId);
 }
 
 // options: {insertDelete: true, insertView: true}
