@@ -28,8 +28,8 @@ The idea pursued for this project is fumblr — a re-envisioned blogging platfor
 - Tailored "Feed" View only showing posts from those you follow
 
 ## Screenshots
-![Edit Post](https://ibb.co/Jcg8dFx)
-![Own Profile](https://ibb.co/zPXS7X7)
+![Edit Post]https://i.ibb.co/51wC9xY/Selection-999-099.png)
+![Own Profile](https://i.ibb.co/RQ3CB3B/Selection-999-100.png)
 ![Searching](https://ibb.co/s32Z8YX)
 
 ## Prerequisite Tools
