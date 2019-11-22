@@ -142,7 +142,7 @@ body > .row > [class*='col-xs-'] {
 
 body > .row.nav-row {
   width: 100%;
-  background-color: #f28c8c;
+  background-color: #43c3fa;
 }
 
 body > .row.subscribe {
@@ -152,7 +152,7 @@ body > .row.subscribe {
 }
 
 body > .row > [class*='col-xs-'].column-2 {
-  background-color: #f28c8c;
+  background-color: #43c3fa;
 }
 
 body > .row.row-1 {
@@ -468,7 +468,7 @@ input[type=file].file-1 {
   }
 
   body > .row > [class*='col-xs-'].column-2 {
-    background-color: #f28c8c;
+    background-color: #43c3fa;
   }
 
   body > .row > [class*='col-xs-'].column-3 {
