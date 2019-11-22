@@ -179,13 +179,13 @@ const RouteFunctions = {
     });
   },
 
-  __uploadProfilePicture: (callback) => {
+  __uploadProfilePicture: () => {
     // return if no file in upload field
     if ($("#fileField").val() === '')
       return Promise.resolve("no file");
 
     return Authentication.authFileUpload({
-      url: SERVER_URL + "upload_profile_picture",
+      url: SERVER_URL + "/upload_profile_picture",
       uploadForm: $("#uploadForm")
     });
   },
@@ -202,7 +202,7 @@ const RouteFunctions = {
         // update all of the fields
         console.log(response);
         RouteFunctions.__uploadProfilePicture()
-          .then((response) => {
+          .then(() => {
             callback(null, response);
           });
       },
