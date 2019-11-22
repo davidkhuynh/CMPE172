@@ -358,9 +358,12 @@ const RouteFunctions = {
         console.log(postData);
         makeHeader(getWords(postData.text, 5), "none");
 
+        let profilePictureURL = postData.profilePicture != null ? IMAGE_HOST_URL+postData.profilePicture : "img/user-icon.svg";
+
         $("#postUser").text(postData.username);
         $("#postUser").attr("href", "profilepage.html#" + postData.username);
         $("#postText").text(postData.text);
+        $("#profilePicture").attr("src", profilePictureURL);
         if (postData.username === Authentication.getCurrentUsername()) {
           $("#postAdmin").append(`
             <div class="col-xs-4 offset-xs-2 col-xl-3 offset-xl-3">
