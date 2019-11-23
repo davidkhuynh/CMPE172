@@ -59,6 +59,7 @@ The idea pursued for this project is fumblr — a re-envisioned blogging platfor
 - pip install -r requirements.txt to install all dependencies
 - python main.py to run the server
 - simply open the .html pages in the frontend/ folder to use the site now
+    - alternatively the npm package "http-server" can be used and the frontend can be run on a local http server
 
 ### Testing Setup
 - Follow basic setup
