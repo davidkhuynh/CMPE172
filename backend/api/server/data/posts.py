@@ -84,7 +84,9 @@ class Posts(object):
             with conn.cursor() as cur:
                 # update post tags
                 cur.execute("DELETE FROM PostTags WHERE postId=%s;", (post_id,))
-                cur.executemany("INSERT INTO PostTags(postId, tag) VALUES (%s, %s);", [(post_id, tag) for tag in image_labels])
+                cur.executemany("INSERT INTO PostTags(postId, tag) "
+                                "VALUES (%s, %s);",
+                                [(post_id, tag) for tag in image_labels])
                 # update posts table
                 cur.execute("UPDATE Posts SET picture=%s WHERE id=%s;",
                             (picture, post_id))

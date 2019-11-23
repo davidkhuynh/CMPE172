@@ -1,10 +1,14 @@
 import boto3
-from server.secrets import s3_config
+from server.secrets import aws_config
+
 
 def get_labels(picture: str):
     print("getting labels...")
-    bucket = s3_config.bucket_name
-    rekog_client = boto3.client('rekognition')
+    bucket = aws_config.bucket_name
+    rekog_client = boto3.client('rekognition',
+                                aws_access_key_id=aws_config.aws_access_key,
+                                aws_secret_access_key=aws_config.aws_secret_key,
+                                region_name=aws_config.region)
     response = rekog_client.detect_labels(
         Image={
             'S3Object': {
